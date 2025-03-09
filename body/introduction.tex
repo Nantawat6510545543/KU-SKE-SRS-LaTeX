@@ -4,75 +4,80 @@
 \section{Background}
 \label{section:background}
 
-A background chapter in a book serves the purpose of providing essential context, information, or history that is relevant
-to the overall understanding of the book's subject matter. This chapter typically appears early in the book and aims to set the
-stage for the reader by offering background details that are crucial for comprehending the main narrative.
+Brain-Computer Interfaces (BCIs) have gained significant attention in the fields of neuroscience, machine learning, and human-computer interaction. Among various BCI paradigms, Motor Imagery (MI) has been widely studied for applications such as neurorehabilitation, assistive devices, and communication systems. MI-based BCI allows users to control external systems by imagining specific movements, which are decoded from Electroencephalography (EEG) signals.
+
+Despite advancements in deep learning and signal processing, MI classification remains challenging due to the low signal-to-noise ratio (SNR) of EEG signals and significant inter-subject variability. Self-Supervised Learning (SSL), a modern machine learning approach, has shown promise in learning meaningful representations from unlabeled data, which can improve downstream classification tasks. This project aims to leverage SSL for EEG-based MI classification, exploring the use of Steady-State Visual Evoked Potential (SSVEP) signals to enhance feature learning for MI tasks.
 
 \section{Problem Statement}
 \label{section:problem-statement}
 
-A problem statement refers to a clear central issue,
-challenge, or question that the project aims to address or explore. It is a
-declaration that highlights the specific problem the author intends to examine,
-discuss, or solve throughout the course of the project.
+Traditional supervised learning models for MI-based BCI require large labeled datasets to achieve high classification performance. However, collecting and labeling EEG data is time-consuming, expensive, and subject to individual variability. Additionally, current MI classification models struggle with:
+\begin{itemize}
+    \item Inter-Subject Variability: EEG signals differ significantly across individuals, making generalization challenging.
+    \item Limited Training Data: Obtaining high-quality, labeled EEG data is difficult, restricting the development of robust models.
+    \item Feature Extraction Challenges: Handcrafted feature extraction techniques, such as Common Spatial Pattern (CSP) and filter-bank CSP (FBCSP), may not fully capture the complex temporal-spatial dependencies in EEG signals.
+\end{itemize}
+To address these issues, this research explores Self-Supervised Learning (SSL) to pre-train feature representations from EEG signals and evaluate its impact on MI classification performance.
 
 \section{Solution Overview}
 \label{section:solution-overview}
 
-A software solution overview provides a high-level and
-concise description of a software product or system. It serves as an
-introduction to the software, offering a glimpse into its key features,
-functionalities, and the problems it aims to address. This overview is often
-presented in documentation, marketing materials, or other communication
-channels to give stakeholders, potential users, or decision-makers a quick
-understanding of what the software does and why it is valuable.
+This project proposes a Self-Supervised Learning (SSL) framework to enhance MI classification by leveraging SSVEP and MI signals from the OpenBMI dataset. The core idea is to learn generalizable representations from EEG signals without relying on extensive labeled data. The methodology consists of:
+\begin{enumerate}
+    \item Applying SSL to pre-train a feature extraction model on both SSVEP and MI signals.
+    \item Extracting embeddings from the SSL model and using them in a supervised classification task for MI.
+    \item Comparing the classification performance of SSL-enhanced features against traditional methods.
+\end{enumerate}
+The expected outcome is an improved MI classification model that generalizes better across subjects and requires fewer labeled data for training.
 
 \subsection{Features}
 \label{subsection:features}
 
+The proposed system incorporates the following key features:
+
 \begin{enumerate}[leftmargin=80pt]
-    \item Feature Name: Short Description of Feature
-    \item Feature Name: Short Description of Feature
+    \item Self-Supervised Learning (SSL) Model: A contrastive learning-based model trained on EEG signals to extract meaningful representations without labeled data.
+    \item Feature Extraction from SSVEP and MI Signals: Utilization of SSVEP signals to learn general representations that improve MI classification.
+    \item Supervised MI Classification: A supervised learning model that uses SSL-learned embeddings for MI classification.
+    \item Performance Evaluation and Comparison: Analysis of SSL-based features against traditional methods such as CSP, FBCSP, and CNN-based classifiers.
 \end{enumerate}
 
 \section{Target User}
 \label{section:target-user}
 
-The target user in a software project refers to the specific
-group or demographic of individuals for whom the software is designed and
-developed. Identifying the target user is a crucial step in the software
-development process as it helps the development team tailor the software to
-meet the needs, preferences, and requirements of that particular user group.
-Understanding the characteristics, behaviors, and expectations of the target
-users is essential for creating a user-friendly and effective software solution.
+The primary users of this system are researchers and developers working in the field of Brain-Computer Interfaces (BCI), particularly those focusing on MI-based BCI applications. The target user groups include:
 
-Here are some key aspects related to defining the target user in a software project:
-
-Demographics: This includes factors such as age, gender,
-occupation, education level, and other demographic characteristics. Different
-age groups or professional backgrounds may have distinct preferences and
-requirements when it comes to software usability.
-
-Skill Level: Consideration of the users' technical proficiency and
-familiarity with similar software or technology. The level of technical expertise
-can influence the complexity of the user interface, the need for tutorials or
-documentation, and other user support features.
-
-Industry or Domain: For software solutions designed for specific
-industries or domains, understanding the unique challenges, workflows, and
-terminology within that industry is crucial. Tailoring the software to meet
-industry-specific needs is often necessary.
+\begin{itemize}
+    \item Neuroscientists and BCI Researchers: To explore novel feature extraction techniques for EEG signal processing.
+    \item Machine Learning Practitioners: To apply self-supervised learning to neurophysiological data.
+    \item Biomedical Engineers: To integrate improved MI classification models into assistive technologies and neurorehabilitation devices.
+    \item Developers of BCI Applications: To enhance real-world BCI systems by improving MI classification accuracy and robustness.
+\end{itemize}
 
 \section{Benefit}
 \label{section:benefit}
 
-Describe potential benefits of your solution.
+The proposed SSL-based approach offers several benefits:
+\begin{itemize}
+    \item Improved Generalization: Learning semantic representations from EEG signals enhances cross-subject generalization.
+    \item Reduced Dependence on Labeled Data: SSL enables the model to leverage large amounts of unlabeled EEG data, reducing the need for extensive manual labeling.
+    \item Better Feature Extraction: SSL learns complex spatial-temporal dependencies in EEG signals, leading to better MI classification performance.
+    \item Enhanced Real-World Usability: The improved robustness and generalization make the system more suitable for real-world applications in neurorehabilitation and assistive devices.
+\end{itemize}
 
 \section{Terminology}
 \label{section:terminology}
 
-Terminology refers to the specific language, jargon, or
-specialized vocabulary used to describe concepts, ideas, or subjects within a
-particular field or domain. The use of terminology is often essential for clarity
-and precision, especially in books that cover technical, scientific, academic, or
-specialized topics.
+To ensure clarity in this research, the following key terms are defined:
+
+\begin{itemize}
+    \item Brain-Computer Interface (BCI): A system that enables direct communication between the brain and an external device.
+    \item Electroencephalography (EEG): A non-invasive method to record electrical activity from the brain.
+    \item Motor Imagery (MI): A mental process where a person imagines a movement without performing it physically.
+    \item Steady-State Visual Evoked Potential (SSVEP): A brain response to repetitive visual stimulation, commonly used in BCI applications.
+    \item Self-Supervised Learning (SSL): A machine learning technique that learns meaningful representations from unlabeled data.
+    \item Contrastive Learning: A training method in SSL where the model learns to distinguish between similar and dissimilar pairs of data.
+    \item Common Spatial Pattern (CSP): A signal processing technique used for EEG feature extraction by maximizing variance differences between classes.
+    \item Filter-Bank Common Spatial Pattern (FBCSP): An extension of CSP that applies multiple frequency bands for feature extraction.
+    \item Supervised Learning: A machine learning approach that trains a model using labeled data to make predictions.
+\end{itemize}
