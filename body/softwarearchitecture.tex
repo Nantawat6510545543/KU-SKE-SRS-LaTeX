@@ -1,35 +1,105 @@
 \chapter{Software Architecture Design}
 \label{chap:software-architecture-design}
-<TIP: Describe how you design your application using Unified Modelling
-Language (UML). There should be at least two diagrams that describe the
-software architecture. You may add additional or remove unnecessary diagrams.
-However, there needs to be a coherency between them at the end./>
 
-%\section{Domain Model}
-%\label{section:domain-model}
-%<TIP: Describe the business concept of your project. Showcase a
-%domain model that captures the said concept./>
-%
-%\section{Design Class Diagram}
-%\label{section:design-class-diagram}
-%<TIP: Showcase a design class diagram for your project and explain
-%how it works here. You can group classes into packages or layers to communicate your
-%design better./>
-%
-%\section{Sequence Diagram}
-%\label{section:sequence-diagram}
-%<TIP: Sequence diagrams describe how the software runs at runtime.
-%You do not have to create a sequence diagram for every scenario. However,
-%there should be one for all the main ones./>
-%
-%<ChatGPT: Creating a sequence diagram for every use case is not
-%strictly necessary, but it can be a valuable tool in certain situations. Sequence
-%diagrams are particularly useful for illustrating the interactions between different
-%components or objects in a system over time, showcasing the flow of messages
-%or actions between them./>
+This chapter describes the software architecture design of the EEG-based Motor Imagery (MI) classification system using Self-Supervised Learning (SSL). The system is designed to support research workflows, including dataset integration, preprocessing, SSL model training, evaluation, and visualization. Unified Modeling Language (UML) diagrams are used to represent structural and behavioral aspects of the system architecture.
+
+\section{Domain Model}
+\label{section:domain-model}
+
+The domain model captures core research entities and their relationships in the context of EEG analysis and SSL-based classification. These entities are grounded in scientific workflows rather than business operations.
+
+\begin{itemize}
+    \item \textbf{EEGDataset:} Represents structured EEG data collected from experiments, including metadata and raw signals.
+    \item \textbf{Preprocessor:} Responsible for applying signal filtering, artifact removal, and standardization.
+    \item \textbf{SSLModel:} Represents the core self-supervised learning module, including its architecture and training process.
+    \item \textbf{EvaluationReport:} Contains metrics (accuracy, F1-score, ROC-AUC) derived from model evaluation.
+    \item \textbf{Researcher:} A user interacting with the system to upload data, configure models, and interpret results.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{examples/domain-model-eeg.png}
+    \caption{Domain Model for EEG SSL Research Framework}
+\end{figure}
+
+\section{Design Class Diagram}
+\label{section:design-class-diagram}
+
+The class diagram provides a technical breakdown of system components. Classes are grouped by functionality into modules such as Data Handling, Model Training, and Evaluation.
+
+\begin{itemize}
+    \item \textbf{DataLoader:} Loads EEG datasets and parses metadata.
+    \item \textbf{PreprocessingPipeline:} Applies band-pass filters, ICA, normalization, and data segmentation.
+    \item \textbf{SSLTrainer:} Implements self-supervised learning algorithms and manages training sessions.
+    \item \textbf{ModelEvaluator:} Validates model outputs, computes evaluation metrics, and stores performance data.
+    \item \textbf{Visualizer:} Displays results through plots and summaries for analysis.
+    \item \textbf{UserInterface:} Connects researchers with backend components for configuring and visualizing workflows.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{examples/design-class-diagram-eeg.png}
+    \caption{Design Class Diagram for EEG SSL System}
+\end{figure}
+
+\section{Sequence Diagram}
+\label{section:sequence-diagram}
+
+The following sequence diagram illustrates the typical interaction for training a new SSL model on a selected EEG dataset:
+
+\textbf{Scenario: SSL Model Training Workflow}
+\begin{enumerate}
+    \item Researcher selects and uploads EEG data.
+    \item The system applies preprocessing to the dataset.
+    \item SSL model is initialized with pretext task configurations.
+    \item Training begins, and progress is logged.
+    \item Evaluation metrics are computed and visualized.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{examples/sequence-diagram-ssl-eeg.png}
+    \caption{Sequence Diagram – SSL Model Training Flow}
+\end{figure}
 
 \section{Algorithm}
 \label{section:algorithm}
-<TIP: Optional, If you are working on a research project that proposes a new
-algorithm, you can describe your algorithm here. It can be in the form of
-pseudocode or any diagram that you deem appropriate./>
+
+The following pseudocode outlines the simplified self-supervised learning training loop used in the project. It includes feature transformation, encoding, and contrastive loss calculation.
+
+\begin{verbatim}
+Algorithm 1: Self-Supervised EEG Feature Learning
+Input: Unlabeled EEG samples X
+Output: Learned representations Z
+
+for epoch in range(num_epochs):
+    for batch in X:
+        x1, x2 = Augment(batch)
+        z1 = Encoder(x1)
+        z2 = Encoder(x2)
+        loss = ContrastiveLoss(z1, z2)
+        UpdateWeights(loss)
+\end{verbatim}
+
+\section{AI Component}
+\label{section:ai-Component}
+
+The AI module in this system is built around a Self-Supervised Learning framework based on a dual-view contrastive encoder architecture. It supports flexible pretext tasks and multiple EEG datasets.
+
+\begin{itemize}
+    \item \textbf{Encoder Network:} A convolutional network tailored to EEG signal structures (e.g., EEGNet or custom CNNs).
+    \item \textbf{Pretext Tasks:}
+    \begin{itemize}
+        \item Spectral Band Masking
+        \item Temporal Shuffling
+        \item Channel Dropout
+    \end{itemize}
+    \item \textbf{Loss Function:} InfoNCE or triplet contrastive loss adapted to time-series EEG embeddings.
+    \item \textbf{Fine-tuning Strategy:} Optionally transfers learned representations to downstream MI classification using supervised labels.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{examples/ssl-architecture-eeg.png}
+    \caption{AI Component – Self-Supervised Learning for EEG}
+\end{figure}
