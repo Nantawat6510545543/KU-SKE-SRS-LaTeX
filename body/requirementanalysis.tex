@@ -1,50 +1,84 @@
 \chapter{Requirement Analysis}
 \label{chap:requirement-analysis}
 
+This chapter outlines the analytical framework used to determine the needs, roles, and interactions involved in the research project. It defines the stakeholders, scenarios of system usage, and initial user interface concepts for interacting with the EEG-based Motor Imagery (MI) classification platform.
+
 \section{Stakeholder Analysis}
 \label{section:stakeholder-analysis}
-<TIP: List your stakeholders for your project here/>
 
-Stakeholders are individuals, groups, or entities that
-have an interest, concern, or stake in a particular project, decision,
-organization, or system. These are individuals or groups who can affect or be
-affected by the outcomes of your project.
+Stakeholders in this research include individuals and groups who interact with, contribute to, or benefit from the system developed for EEG-based MI classification using self-supervised learning.
+
+\begin{itemize}
+    \item \textbf{Research Students:} Graduate and undergraduate students conducting EEG or BCI-related research who require tools for preprocessing, modeling, and visualizing EEG signals.
+    \item \textbf{Academic Advisors and Mentors:} Supervisors who guide the project, evaluate methodologies, and assess results.
+    \item \textbf{BCI Researchers:} Specialists in Brain-Computer Interface systems who are interested in integrating the framework into larger research workflows.
+    \item \textbf{Collaborative Institutions:} External collaborators or co-authors who may contribute datasets, methods, or validation tools.
+\end{itemize}
 
 \section{User Stories}
 \label{section:user-stories}
-<TIP: Write user stories for each of your stakeholders here./>
 
-User stories are a technique used in agile software
-development to capture and describe functional requirements from an end
-user's perspective. They are a way of expressing software features or
-functionality in a simple, non-technical language that can be easily understood
-by both developers and stakeholders.
+User stories are derived from research scenarios rather than business objectives. These help define how each type of stakeholder would interact with the system.
+
+\begin{itemize}
+    \item \textbf{As a research student}, I want to upload raw EEG datasets from various MI tasks so that I can run preprocessing and train SSL models.
+    \item \textbf{As an academic advisor}, I want to review model performance summaries and confusion matrices so that I can evaluate the effectiveness of the SSL training.
+    \item \textbf{As a BCI researcher}, I want to compare the accuracy of traditional supervised models with the SSL framework so that I can determine its viability for cross-subject generalization.
+    \item \textbf{As a collaborator}, I want to integrate new datasets into the framework pipeline so that I can validate the model across different data sources.
+\end{itemize}
 
 \section{Use Case Diagram}
 \label{section:use-case-diagram}
-<TIP: Write a use case diagram for your project here. Refer to an
-article “What is a use case diagram?” by Lucidchart for help./>
+
+The system supports various interactions between researchers and the components of the EEG SSL framework. Below is a use case diagram representing primary research activities.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{examples/use-case-diagram-eeg.png}
+    \caption{Use Case Diagram for EEG SSL Framework}
+\end{figure}
 
 \section{Use Case Model}
 \label{section:use-case-model}
-A use case is a detailed description of how a system
-interacts with an external entity (such as a user or another system) to
-accomplish a specific goal. Use cases provide a high-level view of the
-functionality of a system and help in capturing and documenting its
-requirements from the perspective of end users.
 
-<TIP: Write use cases for your project here. Make sure to use the
-appropriate type of use case for each scenario (brief, casual, and fully-dressed
-use case)./>
+This section outlines key use cases using a brief or casual structure appropriate for a research prototype.
+
+\subsection*{Use Case: Upload EEG Dataset}
+\textbf{Type:} Brief
+\textbf{Actor:} Research Student
+\textbf{Goal:} To upload a raw EEG dataset for preprocessing and model training.
+
+\subsection*{Use Case: Train SSL Model}
+\textbf{Type:} Casual
+\textbf{Primary Actor:} Research Student
+\textbf{Preconditions:} Dataset has been preprocessed.
+\textbf{Main Flow:}
+\begin{enumerate}
+    \item User selects the preprocessed dataset.
+    \item User configures SSL model parameters.
+    \item System begins training and logs progress.
+    \item Upon completion, results are visualized and saved.
+\end{enumerate}
+
+\subsection*{Use Case: Evaluate Model Accuracy}
+\textbf{Type:} Casual
+\textbf{Actor:} Advisor or Researcher
+\textbf{Goal:} To view performance metrics of the trained model.
+
+\subsection*{Use Case: Compare SSL vs Supervised}
+\textbf{Type:} Brief
+\textbf{Actor:} Researcher
+\textbf{Goal:} Compare results of SSL model with a baseline supervised model.
 
 \section{User Interface Design}
 \label{section:user-interface-design}
-<TIP: Put the initial design of your application here. You can
-showcase a detailed design of a specific page or a sitemap of your application.
-See an example below./>
 
-\begin{figure}[h]
+The user interface is designed to support interaction with the model training pipeline and result visualization. It aims to simplify research workflows such as dataset selection, preprocessing, training configuration, and evaluation reporting.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{examples/user-interface-design.png}
-    \caption{User Interface Design}
+    \caption{Initial User Interface Design for EEG Research Platform}
 \end{figure}
+
+The UI will be built using HTML and Tailwind CSS, focused on clarity and accessibility for researchers who may not have advanced technical expertise in software engineering.
