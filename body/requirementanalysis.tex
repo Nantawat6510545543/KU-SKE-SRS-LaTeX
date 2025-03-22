@@ -73,12 +73,32 @@ This section outlines key use cases using a brief or casual structure appropriat
 \section{User Interface Design}
 \label{section:user-interface-design}
 
-The user interface is designed to support interaction with the model training pipeline and result visualization. It aims to simplify research workflows such as dataset selection, preprocessing, training configuration, and evaluation reporting.
+The user interface is designed to support interaction with the model training pipeline, prediction, evaluation, and model comparison. It aims to simplify research workflows such as dataset selection, preprocessing, training configuration, and performance analysis.
+
+The UI is divided into multiple functional views, as shown below:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{examples/user-interface-design.png}
-    \caption{Initial User Interface Design for EEG Research Platform}
+    \includegraphics[width=0.9\textwidth]{figures/ui/train_model}
+    \caption{Training Interface – Dataset selection, SSL configuration, and training log}
 \end{figure}
 
-The UI will be built using HTML and Tailwind CSS, focused on clarity and accessibility for researchers who may not have advanced technical expertise in software engineering.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/ui/predict_model}
+    \caption{Prediction Interface – Uploading input data and viewing output class with confidence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/ui/evaluate_model}
+    \caption{Evaluation Interface – Upload trained model and view performance metrics and curve}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/ui/compare_model.png}
+    \caption{Comparison Interface – Visual comparison between SSL and Supervised models}
+\end{figure}
+
+The UI is implemented using HTML and Tailwind CSS for a clean, responsive layout. Each screen is tailored to specific research tasks, ensuring usability for academic researchers with limited software engineering experience.
