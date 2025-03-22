@@ -1,26 +1,63 @@
 \chapter{Literature Review and Related Work}
 \label{chap:relatedworks}
 
-In this chapter, describe other solutions/research that address the
-same topic as your project. If you are working on a software project, create a
-list of alternative solutions and analyze them in the competitor analysis section.
-If you are working on a research project, describe your related work research in
-the literature review section.
+This chapter presents related research efforts and existing solutions addressing the classification of EEG-based Motor Imagery (MI) signals. The review includes a technical comparison of frameworks using supervised and self-supervised learning (SSL), followed by a literature analysis of state-of-the-art systems. These insights help position our work within the current research landscape and identify key gaps we aim to address.
 
 \section{Competitor Analysis}
 \label{section:competitor-analysis}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{examples/asana-competitive-landscape.jpg}
-    \caption{Competitive Landscape by Asana}
-\end{figure}
+To evaluate current EEG MI classification frameworks, we analyzed their model architecture, feature extraction approaches, performance, learning strategies, and support for multi-dataset generalization. The results are summarized in Table~\ref{tab:competitor-comparison}.
 
-Refer to an article "How to create a competitive analysis (with
-examples)" by Asana. You can use the Competitor Landscape (left image) or
-Competitor Analysis Framework (right image) for your project.
+\begin{table}[H]
+    \centering
+    \caption{Technical Comparison of EEG MI Classification Frameworks}
+    \label{tab:competitor-comparison}
+    \small
+    \begin{tabularx}{\textwidth}{|p{2cm}|p{2.2cm}|p{2.2cm}|p{1.7cm}|p{2cm}|p{2cm}|}
+        \hline
+        \textbf{Framework} & \textbf{Model Architecture} & \textbf{Feature Extraction} & \textbf{Accuracy} & \textbf{Learning Type} & \textbf{Multi-Dataset Support} \\
+        \hline
+        MixNet (2024) & Multi-task Autoencoder with FBCSP and Triplet Loss & Filter Bank CSP, latent space embeddings & 85.4\% (BCIC2a) & Supervised + Metric Learning & Partial (manual alignment) \\
+        \hline
+        TRIPNet (2024) & Triple-path CNN (spectral, spatial, temporal) + Statistician Module & Pretext-task-driven SSL (band prediction, spatial noise, temporal trend) & 88.6\% (OpenBMI) & Self-Supervised & Full (4 paradigms) \\
+        \hline
+        EEG-SSL (2024) & Modular BIDS-compatible SSL framework & Raw EEG + transformations (crop, mask, time-shift) & 80.1\% (Resting-state) & Self-Supervised & Full (BIDS format) \\
+        \hline
+        EEGNet (2018) & Depthwise Separable ConvNet (compact CNN) & Raw time-domain signals & 69.5\% (BCIC2a) & Supervised & No (Single-dataset) \\
+        \hline
+    \end{tabularx}
+\end{table}
+\noindent
+\textbf{Observations:}
+\begin{itemize}
+    \item \textbf{TRIPNet} delivers the highest reported accuracy and excels in subject-independent tasks through tailored pretext tasks.
+    \item \textbf{MixNet} balances classical signal processing with deep learning but is limited by manual preprocessing across datasets.
+    \item \textbf{EEG-SSL} offers excellent scalability and dataset handling via BIDS format, with slightly lower classification accuracy.
+    \item \textbf{EEGNet}, while lightweight and widely used as a baseline, lacks generalization and modern learning strategies.
+\end{itemize}
+
+\noindent
+Our proposed framework aims to combine the strengths of these systems—accurate feature extraction, dataset scalability, and robustness—into a self-supervised model that is also user-accessible through a visual interface.
 
 \section{Literature Review}
 \label{section:literature-review}
 
-Add a literature review section if it fits with your project.
+\textbf{MixNet (Autthasan et al., 2024):}
+MixNet integrates Filter Bank Common Spatial Patterns (FBCSP) with a deep metric learning structure using autoencoders and triplet loss. It is optimized for both subject-dependent and subject-independent scenarios. However, its reliance on manual dataset alignment and lack of automated preprocessing tools limits usability in real-world applications.
+
+\vspace{0.5em}
+\textbf{TRIPNet (Ko et al., 2024):}
+TRIPNet is designed for EEG signals with a three-pathway architecture capturing spectral, spatial, and temporal EEG characteristics. It uses custom self-supervised tasks for pretraining and includes a statistician module to stabilize input variability. It performs well across multiple EEG paradigms and supports generalization, making it suitable for broad EEG applications.
+
+\vspace{0.5em}
+\textbf{EEG-SSL (Truong et al., 2024):}
+This framework supports large-scale EEG learning through the BIDS format and uses self-supervised transformations like masking and time-shifting. Its modularity supports rapid experimentation and big data workflows, although it is better suited for resting-state EEG rather than task-specific classification like MI.
+
+\vspace{0.5em}
+\textbf{EEGNet (Lawhern et al., 2018):}
+EEGNet is a compact convolutional network with depthwise separable layers. It is widely used due to its simplicity and interpretability but performs poorly in multi-subject settings and lacks adaptability to SSL methods.
+
+\vspace{0.5em}
+\textbf{Research Gap:}
+While previous works contribute strong models or scalable frameworks, no existing approach fully supports multi-dataset SSL training, efficient MI task handling, and user accessibility in a single system. This gap forms the foundation of our proposed work.
+

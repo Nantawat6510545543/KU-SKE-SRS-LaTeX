@@ -1,83 +1,90 @@
 \chapter{Introduction}
 \label{chap:introduction}
 
+
 \section{Background}
 \label{section:background}
 
-Brain-Computer Interfaces (BCIs) have gained significant attention in the fields of neuroscience, machine learning, and human-computer interaction. Among various BCI paradigms, Motor Imagery (MI) has been widely studied for applications such as neurorehabilitation, assistive devices, and communication systems. MI-based BCI allows users to control external systems by imagining specific movements, which are decoded from Electroencephalography (EEG) signals.
 
-Despite advancements in deep learning and signal processing, MI classification remains challenging due to the low signal-to-noise ratio (SNR) of EEG signals and significant inter-subject variability. Self-Supervised Learning (SSL), a modern machine learning approach, has shown promise in learning meaningful representations from unlabeled data, which can improve downstream classification tasks. This project aims to leverage SSL for EEG-based MI classification, exploring the use of Steady-State Visual Evoked Potential (SSVEP) signals to enhance feature learning for MI tasks.
+Electroencephalography (EEG) has become a vital tool in neuroscience, clinical diagnostics, and brain-computer interface (BCI) development. EEG measures the electrical activity of the brain through electrodes placed on the scalp, capturing neural oscillations and providing insights into cognitive functions and neural disorders. Recent advancements have driven significant research into EEG-based motor imagery (MI), where individuals imagine movements without physical execution, creating distinctive EEG patterns that can be leveraged for control and communication purposes.
+
 
 \section{Problem Statement}
 \label{section:problem-statement}
 
-Traditional supervised learning models for MI-based BCI require large labeled datasets to achieve high classification performance. However, collecting and labeling EEG data is time-consuming, expensive, and subject to individual variability. Additionally, current MI classification models struggle with:
-\begin{itemize}
-    \item Inter-Subject Variability: EEG signals differ significantly across individuals, making generalization challenging.
-    \item Limited Training Data: Obtaining high-quality, labeled EEG data is difficult, restricting the development of robust models.
-    \item Feature Extraction Challenges: Handcrafted feature extraction techniques, such as Common Spatial Pattern (CSP) and filter-bank CSP (FBCSP), may not fully capture the complex temporal-spatial dependencies in EEG signals.
-\end{itemize}
-To address these issues, this research explores Self-Supervised Learning (SSL) to pre-train feature representations from EEG signals and evaluate its impact on MI classification performance.
+
+Despite extensive research, EEG-based MI classification faces critical challenges. Traditional supervised learning methods typically yield limited accuracy (around 50%) due to high signal variability, noise, and individual differences among subjects. Additionally, the scarcity and high cost of obtaining labeled EEG data hinder the development of robust, generalizable classification models. Consequently, there is a clear need for innovative methodologies capable of enhancing accuracy and reliability while reducing reliance on labeled data.
+
 
 \section{Solution Overview}
 \label{section:solution-overview}
 
-This project proposes a Self-Supervised Learning (SSL) framework to enhance MI classification by leveraging SSVEP and MI signals from the OpenBMI dataset. The core idea is to learn generalizable representations from EEG signals without relying on extensive labeled data. The methodology consists of:
-\begin{enumerate}
-    \item Applying SSL to pre-train a feature extraction model on both SSVEP and MI signals.
-    \item Extracting embeddings from the SSL model and using them in a supervised classification task for MI.
-    \item Comparing the classification performance of SSL-enhanced features against traditional methods.
-\end{enumerate}
-The expected outcome is an improved MI classification model that generalizes better across subjects and requires fewer labeled data for training.
+
+To address these challenges, this project proposes the implementation of Self-Supervised Learning (SSL) techniques tailored specifically for EEG MI classification. SSL uses unlabeled data to learn meaningful representations through internally generated tasks (pretext tasks), significantly improving classification performance and robustness without extensive labeled datasets.
 
 \subsection{Features}
 \label{subsection:features}
 
-The proposed system incorporates the following key features:
 
 \begin{enumerate}[leftmargin=80pt]
-    \item Self-Supervised Learning (SSL) Model: A contrastive learning-based model trained on EEG signals to extract meaningful representations without labeled data.
-    \item Feature Extraction from SSVEP and MI Signals: Utilization of SSVEP signals to learn general representations that improve MI classification.
-    \item Supervised MI Classification: A supervised learning model that uses SSL-learned embeddings for MI classification.
-    \item Performance Evaluation and Comparison: Analysis of SSL-based features against traditional methods such as CSP, FBCSP, and CNN-based classifiers.
+    \item Unified Preprocessing Pipeline: Standardizes and integrates multiple diverse EEG datasets, enhancing sample size and data consistency.
+    \item Advanced SSL Framework: Employs MixNet architecture with tailored pretext tasks designed explicitly for EEG data.
+    \item User-Friendly Interface: Interactive HTML/Tailwind-based analytics platform for intuitive EEG data exploration and visualization.
 \end{enumerate}
+
 
 \section{Target User}
 \label{section:target-user}
 
-The primary users of this system are researchers and developers working in the field of Brain-Computer Interfaces (BCI), particularly those focusing on MI-based BCI applications. The target user groups include:
+
+The primary users of this software include biomedical and neuroscience researchers, clinical practitioners, brain-computer interface developers, and the machine learning community.
+
 
 \begin{itemize}
-    \item Neuroscientists and BCI Researchers: To explore novel feature extraction techniques for EEG signal processing.
-    \item Machine Learning Practitioners: To apply self-supervised learning to neurophysiological data.
-    \item Biomedical Engineers: To integrate improved MI classification models into assistive technologies and neurorehabilitation devices.
-    \item Developers of BCI Applications: To enhance real-world BCI systems by improving MI classification accuracy and robustness.
+
+    \item \textbf{Demographics:} Researchers and clinicians with backgrounds in neuroscience, biomedical engineering, and related fields.
+
+    \item \textbf{Skill Level:} Varied technical proficiency, ranging from novice clinicians to expert researchers and software developers.
+
+    \item \textbf{Industry or Domain:} Primarily neuroscience, clinical diagnostics, neurorehabilitation, and brain-computer interface development.
+
 \end{itemize}
+
 
 \section{Benefit}
 \label{section:benefit}
 
-The proposed SSL-based approach offers several benefits:
+
+The proposed SSL-based EEG MI classification system offers several key benefits:
+
+
 \begin{itemize}
-    \item Improved Generalization: Learning semantic representations from EEG signals enhances cross-subject generalization.
-    \item Reduced Dependence on Labeled Data: SSL enables the model to leverage large amounts of unlabeled EEG data, reducing the need for extensive manual labeling.
-    \item Better Feature Extraction: SSL learns complex spatial-temporal dependencies in EEG signals, leading to better MI classification performance.
-    \item Enhanced Real-World Usability: The improved robustness and generalization make the system more suitable for real-world applications in neurorehabilitation and assistive devices.
+
+    \item Enhanced accuracy (targeting above 80%) compared to traditional supervised methods.
+
+    \item Reduced dependence on costly, labeled EEG datasets.
+
+    \item Improved model robustness and generalizability across diverse subjects and experimental conditions.
+
+    \item Intuitive interface for easy data analysis and visualization, accessible to a broad range of users.
+
 \end{itemize}
+
 
 \section{Terminology}
 \label{section:terminology}
 
-To ensure clarity in this research, the following key terms are defined:
 
 \begin{itemize}
-    \item Brain-Computer Interface (BCI): A system that enables direct communication between the brain and an external device.
-    \item Electroencephalography (EEG): A non-invasive method to record electrical activity from the brain.
-    \item Motor Imagery (MI): A mental process where a person imagines a movement without performing it physically.
-    \item Steady-State Visual Evoked Potential (SSVEP): A brain response to repetitive visual stimulation, commonly used in BCI applications.
-    \item Self-Supervised Learning (SSL): A machine learning technique that learns meaningful representations from unlabeled data.
-    \item Contrastive Learning: A training method in SSL where the model learns to distinguish between similar and dissimilar pairs of data.
-    \item Common Spatial Pattern (CSP): A signal processing technique used for EEG feature extraction by maximizing variance differences between classes.
-    \item Filter-Bank Common Spatial Pattern (FBCSP): An extension of CSP that applies multiple frequency bands for feature extraction.
-    \item Supervised Learning: A machine learning approach that trains a model using labeled data to make predictions.
+
+    \item \textbf{Electroencephalography (EEG):} A method for recording electrical activity of the brain using scalp electrodes.
+
+    \item \textbf{Motor Imagery (MI):} The mental simulation of physical movements without actual muscle activity.
+
+    \item \textbf{Brain-Computer Interface (BCI):} A direct communication pathway between the brain and an external device.
+
+    \item \textbf{Self-Supervised Learning (SSL):} Machine learning methodology where models learn from unlabeled data through internally generated tasks.
+
+    \item \textbf{MixNet:} A neural network architecture combining classical and modern deep-learning methods, specifically optimized for EEG classification.
+
 \end{itemize}
