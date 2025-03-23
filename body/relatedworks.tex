@@ -1,10 +1,10 @@
 \chapter{Literature Review and Related Work}
-\label{chap:relatedworks}
+\label{ch:relatedworks}
 
 This chapter presents related research efforts and existing solutions addressing the classification of EEG-based Motor Imagery (MI) signals. The review includes a technical comparison of frameworks using supervised and self-supervised learning (SSL), followed by a literature analysis of state-of-the-art systems. These insights help position our work within the current research landscape and identify key gaps we aim to address.
 
 \section{Competitor Analysis}
-\label{section:competitor-analysis}
+\label{sec:competitor-analysis}
 
 To evaluate current EEG MI classification frameworks, we analyzed their model architecture, feature extraction approaches, performance, learning strategies, and support for multi-dataset generalization. The results are summarized in Table~\ref{tab:competitor-comparison}.
 
@@ -40,7 +40,7 @@ To evaluate current EEG MI classification frameworks, we analyzed their model ar
 Our proposed framework aims to combine the strengths of these systems—accurate feature extraction, dataset scalability, and robustness—into a self-supervised model that is also user-accessible through a visual interface.
 
 \section{Literature Review}
-\label{section:literature-review}
+\label{sec:literature-review}
 
 \textbf{MixNet (Autthasan et al., 2024):}
 MixNet integrates Filter Bank Common Spatial Patterns (FBCSP) with a deep metric learning structure using autoencoders and triplet loss. It is optimized for both subject-dependent and subject-independent scenarios. However, its reliance on manual dataset alignment and lack of automated preprocessing tools limits usability in real-world applications.
@@ -52,10 +52,6 @@ TRIPNet is designed for EEG signals with a three-pathway architecture capturing 
 \vspace{0.5em}
 \textbf{EEG-SSL (Truong et al., 2024):}
 This framework supports large-scale EEG learning through the BIDS format and uses self-supervised transformations like masking and time-shifting. Its modularity supports rapid experimentation and big data workflows, although it is better suited for resting-state EEG rather than task-specific classification like MI.
-
-\vspace{0.5em}
-\textbf{EEGNet (Lawhern et al., 2018):}
-EEGNet is a compact convolutional network with depthwise separable layers. It is widely used due to its simplicity and interpretability but performs poorly in multi-subject settings and lacks adaptability to SSL methods.
 
 \vspace{0.5em}
 \textbf{Research Gap:}

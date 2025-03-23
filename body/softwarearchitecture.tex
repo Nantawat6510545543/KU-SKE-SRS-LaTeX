@@ -1,10 +1,10 @@
 \chapter{Software Architecture Design}
-\label{chap:software-architecture-design}
+\label{ch:software-architecture-design}
 
 This chapter describes the software architecture design of the EEG-based Motor Imagery (MI) classification system using Self-Supervised Learning (SSL). The system is designed to support research workflows, including dataset integration, preprocessing, SSL model training, evaluation, and visualization. Unified Modeling Language (UML) diagrams are used to represent structural and behavioral aspects of the system architecture.
 
 \section{Domain Model}
-\label{section:domain-model}
+\label{sec:domain-model}
 
 The domain model captures core research entities and their relationships in the context of EEG analysis and SSL-based classification. These entities are grounded in scientific workflows rather than business operations.
 
@@ -18,12 +18,13 @@ The domain model captures core research entities and their relationships in the 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{examples/domain-model-eeg.png}
+    \includegraphics[width=0.75\textwidth]{domain-model-eeg.png}
     \caption{Domain Model for EEG SSL Research Framework}
+    \label{fig:figure9}
 \end{figure}
 
 \section{Design Class Diagram}
-\label{section:design-class-diagram}
+\label{sec:design-class-diagram}
 
 The class diagram provides a technical breakdown of system components. Classes are grouped by functionality into modules such as Data Handling, Model Training, and Evaluation.
 
@@ -38,12 +39,13 @@ The class diagram provides a technical breakdown of system components. Classes a
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{examples/design-class-diagram-eeg.png}
+    \includegraphics[width=0.95\textwidth]{design-class-diagram-eeg.png}
     \caption{Design Class Diagram for EEG SSL System}
+    \label{fig:figure7}
 \end{figure}
 
 \section{Sequence Diagram}
-\label{section:sequence-diagram}
+\label{sec:sequence-diagram}
 
 The following sequence diagram illustrates the typical interaction for training a new SSL model on a selected EEG dataset:
 
@@ -58,14 +60,16 @@ The following sequence diagram illustrates the typical interaction for training 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{examples/sequence-diagram-ssl-eeg.png}
+    \includegraphics[width=0.9\textwidth]{figures/sequence-diagram-ssl-eeg}
     \caption{Sequence Diagram – SSL Model Training Flow}
+    \label{fig:figure8}
 \end{figure}
 
 \section{Algorithm}
-\label{section:algorithm}
+\label{sec:algorithm}
 
-The following pseudocode outlines the simplified self-supervised learning training loop used in the project. It includes feature transformation, encoding, and contrastive loss calculation.
+The following pseudocode outlines the simplified self-supervised learning training loop used in the project.
+It includes feature transformation, encoding, and contrastive loss calculation.
 
 \begin{verbatim}
 Algorithm 1: Self-Supervised EEG Feature Learning
@@ -82,9 +86,10 @@ for epoch in range(num_epochs):
 \end{verbatim}
 
 \section{AI Component}
-\label{section:ai-Component}
+\label{sec:ai-component}
 
-The AI module in this system is built around a Self-Supervised Learning framework based on a dual-view contrastive encoder architecture. It supports flexible pretext tasks and multiple EEG datasets.
+The AI module in this system is built around a Self-Supervised Learning framework based on a dual-view contrastive encoder architecture.
+It supports flexible pretext tasks and multiple EEG datasets.
 
 \begin{itemize}
     \item \textbf{Encoder Network:} A convolutional network tailored to EEG signal structures (e.g., EEGNet or custom CNNs).
@@ -98,8 +103,3 @@ The AI module in this system is built around a Self-Supervised Learning framewor
     \item \textbf{Fine-tuning Strategy:} Optionally transfers learned representations to downstream MI classification using supervised labels.
 \end{itemize}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{examples/ssl-architecture-eeg.png}
-    \caption{AI Component – Self-Supervised Learning for EEG}
-\end{figure}
