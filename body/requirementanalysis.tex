@@ -41,6 +41,7 @@ The system supports various interactions between researchers and the components 
     \includegraphics[width=0.85\textwidth]{figures/use-case-diagram-eeg}
     \caption{Use Case Diagram for EEG SSL Framework}\label{fig:figure}
 \end{figure}
+\newpage
 
 \section{Use Case Model}
 \label{sec:use-case-model}
@@ -73,7 +74,7 @@ This section outlines key use cases using a brief or casual structure appropriat
 \textbf{Type:} Brief
 \textbf{Actor:} Researcher
 \textbf{Goal:} Compare results of SSL model with a baseline supervised model.
-
+\newpage
 
 \section{User Interface Design}
 \label{sec:user-interface-design}
@@ -81,35 +82,36 @@ This section outlines key use cases using a brief or casual structure appropriat
 The user interface is designed to support interaction with the model training pipeline, prediction, evaluation, and model comparison.
 It aims to simplify research workflows such as dataset selection, preprocessing, training configuration, and performance analysis.
 
+The UI is implemented using HTML and Tailwind CSS for a clean, responsive layout.
+Each screen is tailored to specific research tasks, ensuring usability for academic researchers with limited software engineering experience.
+
 The UI is divided into multiple functional views, as shown below:
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/train_model}
     \caption{Training Interface – Dataset selection, SSL configuration, and training log}
     \label{fig:figure2}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/predict_model}
     \caption{Prediction Interface – Uploading input data and viewing output class with confidence}
     \label{fig:figure3}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/evaluate_model}
     \caption{Evaluation Interface – Upload trained model and view performance metrics and curve}
     \label{fig:figure4}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/compare_model}
     \caption{Comparison Interface – Visual comparison between SSL and Supervised models}
     \label{fig:figure5}
 \end{figure}
 
-The UI is implemented using HTML and Tailwind CSS for a clean, responsive layout.
-Each screen is tailored to specific research tasks, ensuring usability for academic researchers with limited software engineering experience.

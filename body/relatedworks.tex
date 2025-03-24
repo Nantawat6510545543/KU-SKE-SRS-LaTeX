@@ -23,8 +23,6 @@ To evaluate current EEG MI classification frameworks, we analyzed their model ar
         \hline
         EEG-SSL (2024) & Modular BIDS-compatible SSL framework & Raw EEG + transformations (crop, mask, time-shift) & 80.1\% (Resting-state) & Self-Supervised & Full (BIDS format) \\
         \hline
-        EEGNet (2018) & Depthwise Separable ConvNet (compact CNN) & Raw time-domain signals & 69.5\% (BCIC2a) & Supervised & No (Single-dataset) \\
-        \hline
     \end{tabularx}
 \end{table}
 \noindent
@@ -50,6 +48,7 @@ However, a limitation of MixNet is its reliance on manual dataset alignment, whi
 While MixNet outperforms state-of-the-art methods in terms of F1-score and computational efficiency, especially in the low-density EEG dataset BCIC IV2b, the need for manual preprocessing underscores the need for further development in automated tools to streamline its application in practical scenarios.
 
 \vspace{0.5em}
+\newpage
 \textbf{TRIPNet (Ko et al., 2024):}
 TRIPNet (Ko et al., 2024) introduces a deep learning framework designed specifically for EEG signals, utilizing a three-pathway architecture that captures spectral, spatial, and temporal characteristics of the data. The model leverages custom self-supervised tasks for pretraining, enabling it to learn meaningful EEG representations without the need for costly human-centered annotations. These self-supervision strategies are carefully crafted to be neurophysiologically plausible, ensuring that the network can learn EEG features effectively while remaining consistent with neurobiological principles.
 
@@ -62,6 +61,7 @@ Looking ahead, the authors suggest that future research could explore hyperspect
 In conclusion, TRIPNet offers a significant step forward in EEG representation, demonstrating its ability to provide reliable decision-making with zero-calibration data and a user-friendly system. Despite its promising results, there is still room for improvement, particularly in exploring new pretext tasks for self-supervision.
 
 \vspace{0.5em}
+\newpage
 \textbf{EEG-SSL (Truong et al., 2024):}
 The proposed Self-Supervised Learning (SSL) framework effectively addresses the challenges of large-scale EEG analysis by leveraging BIDS-formatted datasets. This framework facilitates efficient data preprocessing, segmentation, and encoding, overcoming the variability of channel configurations across different datasets. By incorporating self-supervised transformations, such as masking and time-shifting, the framework enables robust representation learning without requiring labeled data. This approach demonstrated its potential through experiments like the Relative Positioning (RP) task, where the model successfully learned meaningful representations, with training loss curves validating its learning capability.
 
@@ -74,6 +74,7 @@ In terms of future directions, the framework shows promise for downstream tasks,
 Overall, this framework’s ability to process large-scale EEG data with minimal human annotation, while providing a flexible and customizable architecture, positions it as a strong foundation for future neuroinformatics research.
 
 \vspace{0.5em}
+\newpage
 \textbf{Research Gap:}
 While previous works such as MixNet, TRIPNet, and the Self-Supervised Learning (SSL) framework contribute strong models and scalable frameworks for EEG analysis, no existing approach fully integrates multi-dataset SSL training, efficient Motor Imagery (MI) task handling, and user accessibility within a single system. MixNet excels in subject-independent MI classification but is limited by manual dataset alignment and preprocessing, which hinders scalability and usability in real-world scenarios. Similarly, TRIPNet utilizes a robust three-pathway architecture for spectral, spatial, and temporal features but is more suited for general EEG applications rather than task-specific classifications like MI. The SSL framework, while highly flexible and modular, is optimized for resting-state EEG tasks and lacks direct support for task-specific classifications like MI, making it less suitable for time-sensitive applications like motor imagery.
 
