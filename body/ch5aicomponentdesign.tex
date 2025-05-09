@@ -1,119 +1,73 @@
 \chapter{AI Component Design}
 \label{ch:ai-component-design}
 
-This chapter presents the design, integration, and deployment of the Artificial Intelligence (AI) components in the EEG-based Motor Imagery (MI) classification system. The architecture is driven by self-supervised learning (SSL) and tailored for complex, high-variability EEG data. Each section aligns with best practices in research-oriented AI design.
-
 \section{Business Context and AI Integration}
 \label{sec:business-context}
 
-AI is integrated into this system to address the inherent challenges of EEG data: high signal variability, low signal-to-noise ratio, and the scarcity of labeled data. Traditional rule-based systems or shallow classifiers fail to generalize effectively. By leveraging SSL, the system can learn meaningful features from large-scale unlabeled EEG datasets, making it more scalable, adaptive, and accurate.
-
-The AI module supports:
+The AI module is introduced to overcome critical barriers in EEG-based MI classification:
 \begin{itemize}
-    \item Learning from unlabeled data using self-generated pretext tasks.
-    \item Improving downstream classification of Motor Imagery (MI) with minimal supervision.
-    \item Providing robust, generalizable representations across diverse EEG sources.
-\end{itemize}
+    \item High signal variability across subjects and sessions.
+    \item Limited availability of labeled EEG data.
+    \item The need for generalized models that perform well across multiple datasets.
 
-\section{Goal Hierarchy}
-\label{sec:goal-hierarchy}
+    By leveraging self-supervised learning, the system is able to extract useful representations from unlabeled data using pretext tasks, which enhances generalizability and reduces reliance on manually labeled datasets.
 
-\textbf{Organizational Goal:} Improve the reliability and accessibility of EEG-based MI classification for neuroscience and BCI research.
+    \section{Goal Hierarchy}
+    \label{sec:goal-hierarchy}
 
-\textbf{System Goal:} Develop a flexible and accurate self-supervised classification system using a reusable AI framework.
+    \begin{itemize}
+        \item \textbf{Organizational Goal:} Improve the reliability of EEG-based MI classification for academic and BCI research.
+        \item \textbf{System Goal:} Provide an SSL-powered framework that integrates preprocessing, training, and evaluation.
+        \item \textbf{User Goal:} Enable researchers to interact with the system through a simplified interface.
+        \item \textbf{AI Goal:} Learn task-independent representations of EEG signals for improved downstream classification.
+    \end{itemize}
 
-\textbf{User Goal:} Enable researchers to upload datasets, train models, and interpret results through a user-friendly interface.
+    \section{Task Requirements Analysis Using AI Canvas}
+    \label{sec:task-requirements}
 
-\textbf{AI Model Goal:} Learn generalizable EEG feature representations using contrastive learning and optimize downstream MI classification accuracy.
+    \subsection{AI Task Requirements}
+    \begin{itemize}
+        \item \textbf{Requirements (REQ):} Learn invariant EEG representations for MI tasks using unlabeled EEG data.
+        \item \textbf{Specifications (SPEC):} Use dual-view contrastive learning with augmentations (e.g., band masking, shuffling).
+        \item \textbf{Environment (ENV):} Works across datasets like BCIC2a, OpenBMI under variable noise, electrode setups, and subject conditions.
+    \end{itemize}
 
-\textbf{Success Metrics:}
-\begin{itemize}
-    \item Accuracy, F1-score, Precision, Recall, and ROC-AUC.
-    \item Reduced dependence on labeled data (higher performance with fewer labels).
-    \item Model interpretability and UI usability.
-\end{itemize}
+    \subsection{AI Canvas Summary}
+    \begin{itemize}
+        \item \textbf{Input:} Raw EEG segments from diverse datasets (preprocessed).
+        \item \textbf{Output:} Latent feature vectors; trained model for MI classification.
+        \item \textbf{Success Criteria:} $>$80\% classification accuracy, clear generalization across subjects and datasets.
+    \end{itemize}
 
-\section{Task Requirements Analysis Using AI Canvas}
-\label{sec:ai-canvas}
+    \section{User Experience Design with AI}
+    \label{sec:ux-ai}
 
-\subsection{AI Task Requirements}
-\begin{itemize}
-    \item \textbf{Requirements (REQ):} Learn invariant EEG representations for MI tasks using unlabeled EEG data.
-    \item \textbf{Specifications (SPEC):} Use dual-view contrastive learning with augmentations (e.g., band masking, shuffling).
-    \item \textbf{Environment (ENV):} Works across datasets like BCIC2a, OpenBMI under variable noise, electrode setups, and subject conditions.
-\end{itemize}
+    The system uses a user-centered design where researchers interact through a graphical interface while the backend handles AI processing.
 
-\subsection{AI Canvas Summary}
-\begin{itemize}
-    \item \textbf{Input:} Raw EEG segments from diverse datasets (preprocessed).
-    \item \textbf{Output:} Latent feature vectors; trained model for MI classification.
-    \item \textbf{Success Criteria:} >80\% classification accuracy, clear generalization across subjects and datasets.
-\end{itemize}
+    \subsection*{UI Features}
+    \begin{itemize}
+        \item Model configuration and dataset selection (Train tab).
+        \item Upload test signals and view real-time prediction results (Predict tab).
+        \item Analyze evaluation metrics and plots (Evaluate tab).
+        \item Compare SSL with traditional supervised baselines (Compare tab).
+    \end{itemize}
 
-\subsection{Innovation}
-\begin{itemize}
-    \item Integration of multiple pretext tasks in one training loop.
-    \item Fine-tuning strategies for transfer learning with minimal supervision.
-    \item Unified preprocessing and SSL framework compatible with BIDS datasets.
-\end{itemize}
+    \subsection*{Feedback and Reusability}
+    Users can review model results, export metrics, and rerun training with modified parameters. This promotes transparency and iterative experimentation.
 
-\section{User Experience Design with AI}
-\label{sec:ux-ai}
+    \section{Deployment Strategy}
+    \label{sec:deployment}
 
-The AI is integrated into the system using a **prompt + automate** model:
-\begin{itemize}
-    \item Researchers are prompted to configure models and tasks via the UI.
-    \item Training and evaluation are fully automated behind the scenes.
-    \item Visualizations (metrics, heatmaps) are shown as annotations.
-\end{itemize}
+    \subsection{Deployment Plan}
+    \begin{itemize}
+        \item \textbf{Environment:} Local workstation or GPU-enabled cloud instance.
+        \item \textbf{Architecture:} Modular Python backend with Flask or Streamlit interface.
+        \item \textbf{Libraries:} TensorFlow/Keras for AI; NumPy, scikit-learn, matplotlib for support functions.
+    \end{itemize}
 
-\textbf{Mockup Screens:}
-\begin{itemize}
-    \item Train Tab: Data selection, pretext task setup, model summary.
-    \item Predict Tab: Upload signals, visualize predictions.
-    \item Evaluate Tab: Show metrics and plots.
-    \item Compare Tab: SSL vs Supervised comparison screen.
-\end{itemize}
-
-\textbf{Feedback Loop:}
-Users can export metrics and visualizations and provide performance notes or re-train using modified configurations.
-
-\section{(Optional) Deployment Strategy}
-\label{sec:deployment}
-
-\subsection{Deployment Plan}
-\begin{itemize}
-    \item \textbf{Environment:} Runs on local machine or server with GPU (cloud-ready).
-    \item \textbf{Communication:} Internal modules interact via Python APIs; model exposed via Flask/Streamlit.
-    \item \textbf{Frameworks:} TensorFlow/Keras, NumPy, scikit-learn, Matplotlib, Tailwind.
-    \item \textbf{DevOps Tools:} GitHub for version control, Docker for reproducibility (future work).
-\end{itemize}
-
-\subsection{Proof of Concept}
-\begin{itemize}
-    \item Model trained on BCIC2a with 85.4\% accuracy using SSL.
-    \item Compared with supervised EEGNet baseline (69.5\% accuracy).
-    \item Visualizations confirmed stable convergence and generalization.
-\end{itemize}
-
-\section{(Optional) Reflection and Future Development}
-\label{sec:reflection}
-
-\textbf{Lessons Learned:}
-\begin{itemize}
-    \item SSL can effectively mitigate the data labeling bottleneck in EEG analysis.
-    \item Generalization across datasets is achievable with proper pretext tasks and preprocessing.
-\end{itemize}
-
-\textbf{Challenges:}
-\begin{itemize}
-    \item Complex signal variability across subjects.
-    \item Visualizing learned features remains difficult without dimensionality reduction.
-\end{itemize}
-
-\textbf{Future Work:}
-\begin{itemize}
-    \item Integrate transformer-based encoders for sequence modeling.
-    \item Deploy model as a web API for real-time EEG applications.
-    \item Submit results to neuroscience/ML conferences for academic dissemination.
-\end{itemize}
+    \subsection{Proof of Concept}
+    \begin{itemize}
+        \item SSL model trained on BCIC2a dataset achieved 85.4\% accuracy.
+        \item Baseline supervised EEGNet achieved 69.5\%.
+        \item Results support the efficacy of self-supervised representation learning for MI classification.
+    \end{itemize}
