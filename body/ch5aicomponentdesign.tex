@@ -11,63 +11,64 @@ The AI module is introduced to overcome critical barriers in EEG-based MI classi
     \item The need for generalized models that perform well across multiple datasets.
 
     By leveraging self-supervised learning, the system is able to extract useful representations from unlabeled data using pretext tasks, which enhances generalizability and reduces reliance on manually labeled datasets.
+\end{itemize}
 
-    \section{Goal Hierarchy}
-    \label{sec:goal-hierarchy}
+\section{Goal Hierarchy}
+\label{sec:goal-hierarchy}
 
-    \begin{itemize}
-        \item \textbf{Organizational Goal:} Improve the reliability of EEG-based MI classification for academic and BCI research.
-        \item \textbf{System Goal:} Provide an SSL-powered framework that integrates preprocessing, training, and evaluation.
-        \item \textbf{User Goal:} Enable researchers to interact with the system through a simplified interface.
-        \item \textbf{AI Goal:} Learn task-independent representations of EEG signals for improved downstream classification.
-    \end{itemize}
+\begin{itemize}
+    \item \textbf{Organizational Goal:} Improve the reliability of EEG-based MI classification for academic and BCI research.
+    \item \textbf{System Goal:} Provide an SSL-powered framework that integrates preprocessing, training, and evaluation.
+    \item \textbf{User Goal:} Enable researchers to interact with the system through a simplified interface.
+    \item \textbf{AI Goal:} Learn task-independent representations of EEG signals for improved downstream classification.
+\end{itemize}
 
-    \section{Task Requirements Analysis Using AI Canvas}
-    \label{sec:task-requirements}
+\section{Task Requirements Analysis Using AI Canvas}
+\label{sec:task-requirements}
 
-    \subsection{AI Task Requirements}
-    \begin{itemize}
-        \item \textbf{Requirements (REQ):} Learn invariant EEG representations for MI tasks using unlabeled EEG data.
-        \item \textbf{Specifications (SPEC):} Use dual-view contrastive learning with augmentations (e.g., band masking, shuffling).
-        \item \textbf{Environment (ENV):} Works across datasets like BCIC2a, OpenBMI under variable noise, electrode setups, and subject conditions.
-    \end{itemize}
+\subsection{AI Task Requirements}
+\begin{itemize}
+    \item \textbf{Requirements (REQ):} Learn invariant EEG representations for MI tasks using unlabeled EEG data.
+    \item \textbf{Specifications (SPEC):} Use dual-view contrastive learning with augmentations (e.g., band masking, shuffling).
+    \item \textbf{Environment (ENV):} Works across datasets like BCIC2a, OpenBMI under variable noise, electrode setups, and subject conditions.
+\end{itemize}
 
-    \subsection{AI Canvas Summary}
-    \begin{itemize}
-        \item \textbf{Input:} Raw EEG segments from diverse datasets (preprocessed).
-        \item \textbf{Output:} Latent feature vectors; trained model for MI classification.
-        \item \textbf{Success Criteria:} $>$80\% classification accuracy, clear generalization across subjects and datasets.
-    \end{itemize}
+\subsection{AI Canvas Summary}
+\begin{itemize}
+    \item \textbf{Input:} Raw EEG segments from diverse datasets (preprocessed).
+    \item \textbf{Output:} Latent feature vectors; trained model for MI classification.
+    \item \textbf{Success Criteria:} $>$80\% classification accuracy, clear generalization across subjects and datasets.
+\end{itemize}
 
-    \section{User Experience Design with AI}
-    \label{sec:ux-ai}
+\section{User Experience Design with AI}
+\label{sec:ux-ai}
 
-    The system uses a user-centered design where researchers interact through a graphical interface while the backend handles AI processing.
+The system uses a user-centered design where researchers interact through a graphical interface while the backend handles AI processing.
 
-    \subsection*{UI Features}
-    \begin{itemize}
-        \item Model configuration and dataset selection (Train tab).
-        \item Upload test signals and view real-time prediction results (Predict tab).
-        \item Analyze evaluation metrics and plots (Evaluate tab).
-        \item Compare SSL with traditional supervised baselines (Compare tab).
-    \end{itemize}
+\subsection*{UI Features}
+\begin{itemize}
+    \item Model configuration and dataset selection (Train tab).
+    \item Upload test signals and view real-time prediction results (Predict tab).
+    \item Analyze evaluation metrics and plots (Evaluate tab).
+    \item Compare SSL with traditional supervised baselines (Compare tab).
+\end{itemize}
 
-    \subsection*{Feedback and Reusability}
-    Users can review model results, export metrics, and rerun training with modified parameters. This promotes transparency and iterative experimentation.
+\subsection*{Feedback and Reusability}
+Users can review model results, export metrics, and rerun training with modified parameters. This promotes transparency and iterative experimentation.
 
-    \section{Deployment Strategy}
-    \label{sec:deployment}
+\section{Deployment Strategy}
+\label{sec:deployment}
 
-    \subsection{Deployment Plan}
-    \begin{itemize}
-        \item \textbf{Environment:} Local workstation or GPU-enabled cloud instance.
-        \item \textbf{Architecture:} Modular Python backend with Flask or Streamlit interface.
-        \item \textbf{Libraries:} TensorFlow/Keras for AI; NumPy, scikit-learn, matplotlib for support functions.
-    \end{itemize}
+\subsection{Deployment Plan}
+\begin{itemize}
+    \item \textbf{Environment:} Local workstation or GPU-enabled cloud instance.
+    \item \textbf{Architecture:} Modular Python backend with Flask or Streamlit interface.
+    \item \textbf{Libraries:} TensorFlow/Keras for AI; NumPy, scikit-learn, matplotlib for support functions.
+\end{itemize}
 
-    \subsection{Proof of Concept}
-    \begin{itemize}
-        \item SSL model trained on BCIC2a dataset achieved 85.4\% accuracy.
-        \item Baseline supervised EEGNet achieved 69.5\%.
-        \item Results support the efficacy of self-supervised representation learning for MI classification.
-    \end{itemize}
+\subsection{Proof of Concept}
+\begin{itemize}
+    \item SSL model trained on BCIC2a dataset achieved 85.4\% accuracy.
+    \item Baseline supervised EEGNet achieved 69.5\%.
+    \item Results support the efficacy of self-supervised representation learning for MI classification.
+\end{itemize}
