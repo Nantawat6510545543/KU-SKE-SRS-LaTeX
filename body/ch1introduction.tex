@@ -1,66 +1,32 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-
 \section{Background}
 \label{sec:background}
 
-Electroencephalography (EEG) has become a vital tool in neuroscience, clinical diagnostics, and brain-computer interface (BCI) development. EEG measures the electrical activity of the brain through electrodes placed on the scalp, capturing neural oscillations and providing insights into cognitive functions and neural disorders. Recent advancements have driven significant research into EEG-based motor imagery (MI), where individuals imagine movements without physical execution, creating distinctive EEG patterns that can be leveraged for control and communication purposes.
-
+This document is rewritten to align with the EEG Foundation Challenge (EEG2025), which calls for models that generalize across tasks and subjects using large-scale, high-density EEG. The Healthy Brain Network EEG (HBN-EEG) dataset provides 128-channel recordings across six tasks, with FAIR, BIDS, and HED annotations that enable reproducible analyses. The competition emphasizes zero-shot transfer to new tasks and subjects, and prediction of latent psychopathology factors.\footnote{See \cite{eeg_foundation_challenge_2025,hbn_fair_2024,hbn_transdiagnostic_2017}.}
 
 \section{Problem Statement}
 \label{sec:problem-statement}
 
-Despite extensive research, EEG-based MI classification faces critical challenges. Traditional supervised learning methods typically yield limited accuracy (around 50\%) due to high signal variability, noise, and individual differences among subjects. Additionally, the scarcity and high cost of obtaining labeled EEG data hinder the development of robust, generalizable classification models. Consequently, there is a clear need for innovative methodologies capable of enhancing accuracy and reliability while reducing reliance on labeled data.
+Under the challenge’s constraints, the test phase exposes only limited CCD segments (e.g., ITI), making behavior prediction difficult without full event-locked trials. We aim to (1) establish a constrained baseline using the 2-second CCD ITI to predict reaction time (RT) and accuracy, and (2) leverage cross-task transfer from SuS to CCD-ITI to capture subject-specific steady-state responsivity that may generalize to CCD behavior.
 
+\section{Project Aim}
+\label{sec:project-aim}
 
-\section{Solution Overview}
-\label{sec:solution-overview}
-
-To address these challenges, this project proposes the implementation of Self-Supervised Learning (SSL) techniques tailored specifically for EEG MI classification. SSL uses unlabeled data to learn meaningful representations through internally generated tasks (pretext tasks), significantly improving classification performance and robustness without extensive labeled datasets.
-
-\subsection{Features}
-\label{subsec:features}
-
-\begin{enumerate}[leftmargin=80pt]
-    \item Unified Preprocessing Pipeline: Standardizes and integrates multiple diverse EEG datasets, enhancing sample size and data consistency.
-    \item Advanced SSL Framework: Employs MixNet architecture with tailored pretext tasks designed explicitly for EEG data.
-    \item User-Friendly Interface: Interactive HTML/Tailwind-based analytics platform for intuitive EEG data exploration and visualization.
-\end{enumerate}
-
-
-\section{Target User}
-\label{sec:target-user}
-
-The primary users of this software include biomedical and neuroscience researchers, clinical practitioners, brain-computer interface developers, and the machine learning community.
-
+Our goal is to build a principled baseline and transfer framework that:
 \begin{itemize}
-    \item \textbf{Demographics:} Researchers and clinicians with backgrounds in neuroscience, biomedical engineering, and related fields.
-    \item \textbf{Skill Level:} Varied technical proficiency, ranging from novice clinicians to expert researchers and software developers.
-    \item \textbf{Industry or Domain:} Primarily neuroscience, clinical diagnostics, neurorehabilitation, and brain-computer interface development.
+    \item Verifies SSVEP and P300 presence with a reproducible preprocessing pipeline (SNR spectra and evoked responses),
+    \item Predicts CCD RT and accuracy using features derived strictly from ITI segments,
+    \item Improves performance by pretraining on SuS steady-state responses and fine-tuning on CCD-ITI (cross-task transfer).
 \end{itemize}
-
-
-\section{Benefit}
-\label{sec:benefit}
-
-The proposed SSL-based EEG MI classification system offers several key benefits:
-
-\begin{itemize}
-    \item Enhanced accuracy (targeting above 80\%) compared to traditional supervised methods.
-    \item Reduced dependence on costly, labeled EEG datasets.
-    \item Improved model robustness and generalizability across diverse subjects and experimental conditions.
-    \item Intuitive interface for easy data analysis and visualization, accessible to a broad range of users.
-\end{itemize}
-
 
 \section{Terminology}
 \label{sec:terminology}
 
 \begin{itemize}
-    \item \textbf{Electroencephalography (EEG):} A method for recording electrical activity of the brain using scalp electrodes.
-    \item \textbf{Motor Imagery (MI):} The mental simulation of physical movements without actual muscle activity.
-    \item \textbf{Brain-Computer Interface (BCI):} A direct communication pathway between the brain and an external device.
-    \item \textbf{Self-Supervised Learning (SSL):} Machine learning methodology where models learn from unlabeled data through internally generated tasks.
-    \item \textbf{MixNet:} A neural network architecture combining classical and modern deep-learning methods, specifically optimized for EEG classification.
+    \item \textbf{SSVEP:} Steady-State Visual Evoked Potential, frequency-locked EEG response to periodic stimulation.
+    \item \textbf{P300:} Positive ERP component around \~300 ms after salient events, associated with attention and context updating.
+    \item \textbf{ITI:} Inter-Trial Interval, baseline period between trials; in CCD, flickering gratings persist during ITI.
+    \item \textbf{BIDS/HED:} Data and event annotation standards supporting consistent, analysis-ready datasets.
 \end{itemize}
