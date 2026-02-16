@@ -1,3 +1,25 @@
 out/
 .idea
 .context
+
+---- LaTeX build artifacts ----
+
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.run.xml
+
+---- Bibliography ----
+
+*.bbl
+*.blg
