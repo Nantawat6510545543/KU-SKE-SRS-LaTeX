@@ -3,16 +3,101 @@
 
 \section{Software Development Methodology}
 \label{sec:software-development-methodology}
-\textit{TIP: Describe your software development methodology in this section.}
+This project was developed using an iterative, milestone-driven workflow.
+The core goal was to implement a reproducible pipeline for prestimulus EEG-based behavioral prediction on the HBN-EEG dataset (CCD ITI segments), and to support rapid experimentation with baseline preprocessing and modeling choices.
+
+The development process followed four repeating steps:
+\begin{enumerate}[label=\textbf{M\arabic*.}, leftmargin=*]
+	\item \textbf{Define a measurable milestone:} e.g., extract CCD ITI prestimulus windows, compute features, train a baseline regressor, or produce evaluation plots.
+	\item \textbf{Implement and validate:} develop the smallest working version of the milestone, then validate with quick sanity checks (shape checks, trial counts, summary statistics, and train/validation splits).
+	\item \textbf{Evaluate and document:} run a consistent evaluation protocol and record results, assumptions, and limitations.
+	\item \textbf{Refine:} address issues found in evaluation (data leakage risks, unstable preprocessing, model underfitting/overfitting) before moving to the next milestone.
+\end{enumerate}
+
+To keep the work aligned with the baseline scope, the model development emphasized:
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Clear data boundaries} between subjects/sessions when creating splits.
+	\item \textbf{Simple baselines first} (feature-based regressors) before attempting more complex architectures.
+	\item \textbf{Reproducibility} through deterministic preprocessing parameters, fixed random seeds, and consistent evaluation scripts.
+\end{itemize}
+
+\subsection{Architecture and Patterns}
+\label{subsec:architecture-and-patterns}
+The software is organized to keep experiment logic, UI interaction, and data processing decoupled.
+In practice, the implementation follows a layered structure and applies a small set of design patterns that make experimentation and extension safer:
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Layered architecture:} controller $\rightarrow$ services $\rightarrow$ models $\rightarrow$ pipeline $\rightarrow$ cache.
+	\item \textbf{MVC-ish separation:} Views (EEG UI) focus on interaction and rendering; the Controller orchestrates actions; Models represent cohorts/tasks and their derived artifacts.
+	\item \textbf{Facade pattern:} an \texttt{EEGController} provides a single entry point for common workflows (load data, preprocess, featurize, train, evaluate), hiding internal complexity.
+	\item \textbf{DTOs (Data Transfer Objects):} small, explicit data containers are used when passing results between layers (e.g., feature tables, prediction outputs, and metric summaries).
+	\item \textbf{Dependency Injection / Inversion of Control:} the controller injects service dependencies (e.g., via callbacks and class factories), improving testability and enabling swapping implementations.
+	\item \textbf{Registry/Plugin + Command-style actions:} actions are decorator-registered and invoked by key, enabling extensible UI commands without hard-coding control flow.
+	\item \textbf{Strategy pattern:} task-specific preprocessors are implemented per task type, so CCD ITI rules can differ from other task types without branching throughout the codebase.
+	\item \textbf{Composite/Aggregation:} an \texttt{EEGCohortModel} aggregates multiple \texttt{EEGTaskModel} instances to support cohort-level evaluation.
+	\item \textbf{Interfaces/Protocols:} a \texttt{TaskLike} interface (or protocol) standardizes what a task model must provide to downstream pipeline components.
+	\item \textbf{Factory pattern:} loaders/processors are created through injectable factories, allowing dataset variants and preprocessing configurations to be selected at runtime.
+	\item \textbf{Cache-aside with versioned file cache:} \texttt{CacheKey}/\texttt{LocalCache} implement a cache-aside policy so expensive steps (e.g., extracted windows/features) are reused safely across runs.
+	\item \textbf{Lazy loading:} raw signals/events are loaded on demand; derived objects (e.g., epochs/features) are computed only when required.
+	\item \textbf{Separation of concerns:} loader vs.
+processor responsibilities are split; UI vs.
+batch runs share the same underlying services.
+\end{itemize}
 
 \section{Technology Stack}
 \label{sec:technology-stack}
-\textit{TIP: Describe your technology stack here.}
+The implementation combines a Python-based machine learning pipeline with a lightweight user-facing interface and a \LaTeX{} report workflow.
+
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Programming language:} Python (data processing, feature extraction, modeling, evaluation).
+	\item \textbf{Scientific computing:} NumPy and Pandas for array/dataframe operations.
+	\item \textbf{EEG processing:} MNE-Python for signal handling and standard EEG preprocessing utilities.
+	\item \textbf{Machine learning:} scikit-learn for baseline models and metrics; PyTorch for neural baselines (when applicable).
+	\item \textbf{Visualization:} Matplotlib/Seaborn for static plots; Plotly for interactive exploration.
+	\item \textbf{User interface (documentation/prototype):} a React-based notebook-style UI used to visualize signals, preview tabular features, and record experiment notes.
+	\item \textbf{Version control:} Git for change tracking and branching.
+	\item \textbf{Report tooling:} \LaTeX{} (TeX Live) with \texttt{latexmk} to automate multi-pass builds (cross-references and bibliography).
+\end{itemize}
 
 \section{Coding Standards}
 \label{sec:coding-standards}
-\textit{TIP: Describe your coding standard for this project here.}
+The codebase follows a small set of conventions to keep experiments easy to reproduce and results easy to interpret.
+
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Modular structure:} preprocessing, feature extraction, training, and evaluation are separated into distinct modules to reduce coupling.
+	\item \textbf{Configuration over hard-coding:} key parameters (window length, frequency bands, feature sets, split strategy, model hyperparameters) are stored in configuration objects/files.
+	\item \textbf{Reproducible runs:} fixed random seeds, explicit train/validation/test split definitions, and logging of dataset filters and preprocessing parameters.
+	\item \textbf{Consistent naming:} functions and variables are named after domain concepts (trial, epoch, prestimulus window, RT target, accuracy target) rather than implementation details.
+	\item \textbf{Input validation:} early checks for missing channels, unexpected sampling rates, and mismatched trial labels to avoid silent failures.
+	\item \textbf{Documentation:} concise docstrings for public functions, and short experiment notes describing what changed between runs.
+\end{itemize}
+
+For evaluation outputs, plots and metrics are produced by scripts that can be rerun end-to-end, ensuring that reported results can be regenerated from the same inputs.
 
 \section{Progress Tracking Report}
 \label{sec:progress-tracking-report}
-\textit{TIP: Show that you have been working on this project overtime.}
+Work was tracked by incremental milestones, with each milestone producing a tangible artifact (code, plots, tables, or document sections).
+Table~\ref{tab:progress-tracking} summarizes the main development stages.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Phase} & \textbf{Activities} & \textbf{Outputs} \\
+\hline
+1: Setup \& scoping & Repository setup, baseline-only scope definition (CCD ITI prestimulus), and report structure alignment & Buildable \LaTeX{} document, chapter plan \\
+\hline
+2: Data understanding & Explore HBN-EEG metadata/task structure; identify CCD ITI segments and behavioral targets (RT, accuracy) & Dataset summary notes, initial sanity plots \\
+\hline
+3: Preprocessing pipeline & Implement prestimulus window extraction and consistent preprocessing parameters; verify trial counts and split boundaries & Reusable preprocessing scripts, cached intermediate outputs \\
+\hline
+4: Baseline modeling & Train baseline regressors for RT and accuracy (as regression targets); compare simple model families and features & Baseline metrics (e.g., MAE/MSE), prediction vs.
+ground-truth plots \\
+\hline
+5: Evaluation \& reporting & Define evaluation protocol, error analysis, and limitations; integrate key results into deliverables chapter & Evaluation tables/figures, updated Chapters 6--7 \\
+\hline
+6: UI documentation & Document the notebook-style interface used for exploration and experiment logging & UI screenshots and usage description \\
+\hline
+\end{tabularx}
+\caption{Progress tracking summary for the baseline prestimulus behavioral prediction project.}
+\label{tab:progress-tracking}
+\end{table}
