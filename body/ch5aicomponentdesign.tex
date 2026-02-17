@@ -15,75 +15,55 @@
 
 \vspace{1em}
 \noindent\textbf{Diagram Explanation:}
-The system is designed as an experimental EEG research platform integrating signal visualization, dataset inspection, and machine learning experimentation into a unified workflow.
-The frontend interface allows users to explore EEG signals, construct datasets, and execute AI models, while the backend handles preprocessing, model execution, and evaluation.
-
-The workflow proceeds as:
-
-signal inspection → dataset verification → model training → evaluation → comparison
-
-This ensures that machine learning results are directly connected to verified signal characteristics rather than blindly training on raw data.
+The workflow begins with EEG recordings from multiple paradigms, including Motor Imagery (MI), SSVEPs, and ERPs. These raw signals undergo preprocessing using Filter Bank Common Spatial Pattern (FBCSP) to extract spectral-spatial features.
+The resulting features are then passed into a self-supervised learning (SSL) module, which learns semantic embeddings from unlabeled EEG data.
+These learned representations are later extracted and used for downstream MI classification, improving accuracy and generalization by leveraging knowledge from diverse EEG tasks.
 \pagebreak
 
 \vspace{1em}
 \noindent\textbf{Why is AI suitable for this problem?}
-
-EEG analysis involves high-dimensional temporal signals with complex spatial relationships across electrodes. Manual feature engineering is difficult because:
-
 \begin{itemize}
-    \item patterns vary across subjects
-    \item noise and artifacts are common
-    \item signal distributions change across recording sessions
+    \item EEG signals are complex, high-dimensional, and noisy.
+    Rule-based or manually designed systems are not scalable or adaptable across paradigms.
 \end{itemize}
-Machine learning models can learn latent representations that capture discriminative neural patterns more effectively than handcrafted features.
 
 \vspace{0.5em}
 \noindent\textbf{Is the problem large, complex, or always changing?}
-
-Yes.
-
-
-EEG data presents three major challenges:
 \begin{itemize}
-    \item Large — continuous multi-channel time series
-    \item Complex — spatial-temporal correlations
-    \item Non-stationary — signals differ between subjects and sessions
+    \item Yes.
+    The system must generalize across multiple EEG types (MI, SSVEP, ERP) and accommodate unseen subjects and sessions.
+    The input data structure and classification objectives can vary significantly.
 \end{itemize}
-Because of this variability, deterministic rule-based systems are unsuitable.
 
 \vspace{0.5em}
 \noindent\textbf{Can we accept an answer that’s not 100\% perfect?}
-
-Yes. This is a research system.
-
-\vspace{0.5em}
-
-The system is intended for research experimentation rather than safety-critical decision making.
-Model predictions are used as analytical indicators, not medical diagnoses.
-Therefore probabilistic predictions with measurable accuracy are acceptable.
+\begin{itemize}
+    \item Yes.
+    In a research context, the goal is to improve MI classification performance over existing baselines.
+    Absolute accuracy is not required — approximate, generalizable solutions are valuable.
+\end{itemize}
 
 %5.2
 \section{Goal Hierarchy}
 \label{sec:goal-hierarchy}
 
-\noindent\textbf{Organizational Goal:} Enable efficient experimentation in EEG machine learning research
+\noindent\textbf{Organizational Goal:} Advance EEG-based research and improve MI classification reliability with minimal annotation cost.
 
 \vspace{0.5em}
-\noindent\textbf{System Goal:} Provide an interactive platform that links signal inspection with machine learning experimentation
+\noindent\textbf{System Goal:} Enable EEG researchers to conduct multi-paradigm feature learning using a unified, self-supervised architecture.
 
 \vspace{0.5em}
-\noindent\textbf{User Goal:} Explore EEG signals, construct datasets, train models, and compare results without manual scripting
+\noindent\textbf{User Goal:} Simplify the research process by automating preprocessing, training, evaluation, and comparison through an integrated system.
 
 \vspace{0.5em}
-\noindent\textbf{AI Model Goal:} Learn representations that generalize across subjects and improve classification performance
+\noindent\textbf{AI Model Goal:} Learn general-purpose EEG embeddings using contrastive SSL and boost MI classification accuracy using transferred representations.
 
 \vspace{1em}
 \noindent\textbf{Success Metrics:}
 \begin{itemize}
-    \item classification accuracy improvement over baseline
-    \item consistent performance on unseen subjects
-    \item reduced experiment setup time
-    \item reproducible experiment workflow
+    \item Accuracy, F1-score, Precision, Recall.
+    \item Robust cross-subject generalization.
+    \item Automation of model training with minimal user input.
 \end{itemize}
 
 %5.3
@@ -93,95 +73,43 @@ Therefore probabilistic predictions with measurable accuracy are acceptable.
 \subsection{AI Task Requirements}
 \label{subsec:ai-task-requirements}
 \begin{itemize}[leftmargin=3.5em]
-    \item \textbf{Requirements (REQ):} Learn discriminative EEG representations for motor-imagery classification using standardized datasets.
-    \item \textbf{Specifications (SPEC):} Evaluate whether learned representations improve classification accuracy and generalization compared to baseline approaches.
-    \item \textbf{Environment (ENV):} Evaluated on multi-subject EEG datasets with different recording conditions. (e.g., noise, subject variation).
+    \item \textbf{Requirements (REQ):} Learn semantic EEG features across MI, SSVEP, and ERP signals using unlabeled data.
+    \item \textbf{Specifications (SPEC):} Investigate how SSL-based representations improve MI classification accuracy and generalization.
+    \item \textbf{Environment (ENV):} Evaluated using EEG datasets like BCIC2a and OpenBMI under varying conditions (e.g., noise, subject variation).
 \end{itemize}
 
 \subsection{AI Canvas Summary}
 \label{subsec:ai-canvas-summary}
 \begin{itemize}[leftmargin=3.5em]
-    \item \textbf{Input:} Preprocessed EEG segments
-    \item \textbf{Output:} Predicted motor-imagery class labels
-    \item \textbf{Success Criteria:} Model performs better than random guessing and generalizes to unseen subjects. (Ideally $>$80\% accuracy)
+    \item \textbf{Input:} EEG signal segments from multiple paradigms (preprocessed).
+    \item \textbf{Output:} Semantic embeddings and MI class predictions.
+    \item \textbf{Success Criteria:} $>$80\% accuracy on unseen subjects; generalization across tasks and datasets.
 \end{itemize}
 
 \subsection{Innovation}
 \label{subsec:innovation}
-The system integrates visualization-driven dataset validation with model training inside a single interactive interface, reducing mismatch between inspected signals and training data.
+\begin{itemize}[leftmargin=3.5em]
+    \item A unified self-supervised learning pipeline capable of integrating diverse EEG paradigms (MI, SSVEPs, ERPs) into a common representation space.
+\end{itemize}
 
 \pagebreak
 %5.4
 \section{User Experience Design with AI}
 \label{sec:ux-ai}
 
-The platform follows a research-oriented workflow where users first inspect signals before executing machine learning models.
-To support this process, the interface uses a \textbf{mode-action} structure.
+The proposed system is designed to offer a seamless and fully automated user experience, allowing researchers to interact with complex AI pipelines without needing deep programming knowledge.
+The goal is to minimize manual configuration while preserving flexibility for experimentation.
 
 \vspace{1em}
 \noindent\textbf{Interface Overview:}
-The interface contains four primary operational modes:
+The user interface is divided into four main functional tabs — Train, Predict, Evaluate, and Compare — each offering a focused and intuitive workflow.
 
 \begin{itemize}[leftmargin=3.5em]
-    \item \textbf{Plot Mode:} — detailed single-view signal inspection
-    \item \textbf{Grid Plot Mode:} — comparative multi-condition visualization
-    \item \textbf{Data Mode:} — structured data inspection and preparation
-    \item \textbf{AI Mode:} — machine learning experimentation
-\end{itemize}
-
-Each mode exposes only relevant actions.
-
-\vspace{2em}
-\noindent\textbf{Visualization and Inspection Modes}
-
-\subsection{Plot Mode}
-
-Provides detailed EEG inspection including sensor layout, time-domain plots, frequency plots, epoch plots, evoked responses, and SNR analysis.
-
-Available actions include:
-\begin{itemize}
-    \item sensor layout visualization
-    \item time-domain signal plots
-    \item frequency-domain plots
-    \item epoch visualization
-    \item evoked response plots
-    \item evoked topography plots
-    \item SNR spectrum analysis
-\end{itemize}
-
-\subsection{Grid Plot Mode}
-
-Allows comparison across conditions using PSD, SNR, and evoked grids.
-
-Available actions include:
-\begin{itemize}
-    \item PSD Grid
-    \item SNR Grid
-    \item Evoked Grid
-\end{itemize}
-
-\subsection{Data Mode}
-
-Displays structured EEG data tables to confirm dataset composition.
-
-Available actions include:
-\begin{itemize}
-    \item EEG sample tables
-    \item epoch tables
-    \item metadata
-\end{itemize}
-
-\subsection{AI Interaction Mode}
-
-AI Mode enables machine learning experimentation using the prepared EEG data.
-
-Available actions include:
-
-\begin{itemize}
-    \item Training
-    \item Prediction
-    \item Evaluation
-    \item Model Comparison
+    \item \textbf{Train Tab:} Allows users to select EEG datasets, configure SSL models, set hyperparameters (e.g., learning rate, epochs), and initiate training.
+    A real-time training log displays progress and final performance.
+    \item \textbf{Predict Tab:} Users can upload EEG samples and receive predictions including predicted class and confidence scores.
+    \item \textbf{Evaluate Tab:} After uploading a trained model, users can view evaluation metrics such as accuracy, precision, recall, and F1-score, as well as a training loss/accuracy curve.
+    \item \textbf{Compare Tab:} Enables side-by-side model comparison (e.g., SSL vs supervised) with metric summaries and bar chart visualizations.
 \end{itemize}
 
 \vspace{1em}
@@ -191,9 +119,8 @@ Logs, graphs, and final metrics are dynamically updated and available for export
 
 \vspace{1em}
 \noindent\textbf{Feedback Loop:}
-inspect → adjust → train → evaluate → compare → refine
-
-Researchers can rapidly modify dataset selections and rerun experiments without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
+The system encourages iterative research workflows.
+Users can adjust hyperparameters, change datasets, and refine model settings based on prior experimental outcomes.
 
 \noindent\textbf{Interface Screenshots:}
 
@@ -202,93 +129,6 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
     \includegraphics[width=0.95\textwidth]{figures/ui/EEGUI}
     \caption{React Notebook Interface – Model visualization and execution}
     \label{fig:ui_react_notebook}
-\end{figure}
-
-%Evoked & Epoch Plots
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/epochs.png}
-    \caption{Epoch visualization}
-    \label{fig:plot_epochs}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/evoked.png}
-    \caption{Evoked response}
-    \label{fig:plot_evoked}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_grid.png}
-    \caption{Evoked grid view}
-    \label{fig:plot_evoked_grid}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_joint.png}
-    \caption{Evoked joint plot}
-    \label{fig:plot_evoked_joint}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_topo.png}
-    \caption{Evoked topomap}
-    \label{fig:plot_evoked_topo}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_per_condition.png}
-    \caption{Evoked per condition}
-    \label{fig:plot_evoked_per_condition}
-\end{figure}
-
-%Frequency & Spectral Analysis
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/frequency.png}
-    \caption{Frequency spectrum}
-    \label{fig:plot_frequency}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/psd_grid.png}
-    \caption{Power spectral density grid}
-    \label{fig:plot_psd_grid}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/snr_spectrum.png}
-    \caption{Signal-to-noise ratio spectrum}
-    \label{fig:plot_snr_spectrum}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/snr_grid.png}
-    \caption{Signal-to-noise ratio grid}
-    \label{fig:plot_snr_grid}
-\end{figure}
-
-%Sensor & Time Domain
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/sensor.png}
-    \caption{Sensor layout}
-    \label{fig:plot_sensor}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/time_domain.png}
-    \caption{Time-domain signal}
-    \label{fig:plot_time_domain}
 \end{figure}
 
 \begin{figure}[H]
@@ -321,50 +161,46 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 
 \FloatBarrier
 
+
 %5.5
 \section{Deployment Strategy}
 \label{sec:deployment-strategy}
 
 \subsection{Deployment Plan}
 \label{subsec:deployment-plan}
-The AI component is deployed in a research environment using both local execution and cloud notebooks.
-
-The system consists of:
-
-Frontend — interactive research interface
-Backend — REST API service
-Model — EEG classification network
-
-Technologies used:
-
-\begin{itemize}
-    \item React — interactive frontend framework
-    \item FastAPI — model service endpoints
-    \item TensorFlow — neural network execution
-    \item scientific Python libraries — preprocessing and evaluation
-\end{itemize}
-
-
-
-The frontend web system replaces manual notebook execution and allows controlled interaction with the EEG pipeline,
-and the backend exposes endpoints for training, prediction, and evaluation, allowing modular integration and testing.
+The AI component in this project is developed for research purposes and is deployed in controlled environments: on local machines and on Google Colab.
+This setup allows for flexible experimentation, reproducibility, and access to GPU acceleration when needed.
 
 The core model used in our system is based on \textbf{MixNet-BCI}, an open-source EEG classification framework developed by VISTEC. This model is integrated into our workflow for signal preprocessing, feature extraction, and classification of motor imagery tasks.
 
+System interaction is supported through a local \textbf{FastAPI} server, which simulates integration with other software components.
+RESTful endpoints are used to send EEG data and receive classification results, mimicking real-world application scenarios in a lightweight and modular fashion.
+
+The following tools and frameworks are used in our deployment:
+\begin{itemize}
+    \item \textbf{MixNet-BCI (VISTEC)} — for model architecture and EEG classification.
+    \item \textbf{FastAPI} — for exposing the AI model via REST API endpoints.
+    \item \textbf{Google Colab} — for cloud-based training and evaluation using GPU resources.
+    \item \textbf{TensorFlow, TensorFlow Addons} — for low-level deep learning operations.
+    \item \textbf{scikit-learn, pandas, h5py} — for data preprocessing and analysis.
+    \item \textbf{mne, moabb} — for EEG signal handling and benchmarking against standard datasets.
+\end{itemize}
+
+The system is designed to be \textbf{easy to use}, especially for researchers.
+With ready-to-run Colab notebooks, pre-defined functions, and simple API access, users can quickly run experiments, modify parameters, and analyze results without complex setup or infrastructure.
+
 \subsection{Proof of Concept}
 \label{subsec:proof-of-concept}
-The model pipeline was validated using benchmark EEG datasets under two conditions:
-
+To validate the AI component, we integrated MixNet-BCI into our processing pipeline and tested it using the BCI Competition IV-2a dataset.
+We experimented with two configurations:
 \begin{itemize}
     \item \textbf{Subject-Dependent Setting:} Model is trained and tested on individual subjects.
     \item \textbf{Subject-Independent Setting:} Model is trained on a group of subjects and tested on unseen individuals.
 \end{itemize}
 
-The system successfully supports end-to-end workflow:
+This proof of concept demonstrates that MixNet-BCI, combined with our deployment strategy, effectively supports EEG-based motor imagery classification in a modular and research-ready environment.
+Outputs are visualized within Jupyter/Colab notebooks, and inference can be accessed through the FastAPI interface for integration testing.
 
-visualization → dataset selection → training → inference → evaluation
-
-Results can be accessed both through the interface and API endpoints.
 
 %5.6
 \section{Reflection and Future Development}
@@ -375,21 +211,17 @@ Results can be accessed both through the interface and API endpoints.
 \begin{itemize}[leftmargin=3.5em]
     \item SSL can extract high-quality embeddings from unlabeled EEG data that generalize to MI classification tasks.
     \item Multi-paradigm training (e.g., SSVEP + ERP) provides richer features than MI alone.
-    \item Integrated workflows reduce experimentation overhead
 \end{itemize}
 
 
 \subsection*{Challenges}
 \begin{itemize}[leftmargin=3.5em]
-    \item subject variability affects generalization
-    \item interpreting learned representations remains difficult
-    \item noisy EEG signals impact performance
+    \item Temporal alignment and signal variability across EEG paradigms.
+    \item Visualizing and interpreting high-dimensional learned representations.
 \end{itemize}
 
 \subsection*{Future Work}
 \begin{itemize}[leftmargin=3.5em]
-    \item transformer-based temporal modeling
-    \item real-time prediction interface
-    \item automated hyperparameter search
-    \item live experiment integration
+    \item Introduce transformer-based models for long-range EEG dependencies.
+    \item Deploy a live MI classification demo with real-time prediction.
 \end{itemize}
