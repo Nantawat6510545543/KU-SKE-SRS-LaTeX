@@ -4,8 +4,8 @@
 
 Electroencephalography (EEG) research commonly relies on interactive notebook environments for data inspection and experimentation. While flexible, these workflows introduce hidden execution states, environment dependency, and limited reproducibility, making collaboration and systematic experimentation difficult. Furthermore, large-scale EEG datasets require significant computational resources that are not always available on user machines.
 
-This project presents a web-based EEG research platform that transforms an exploratory notebook workflow into a structured experimentation interface. The system separates frontend interaction from backend computation, allowing heavy preprocessing and model execution to run remotely while users interact through a lightweight browser application. The platform focuses on dataset visualization, preprocessing configuration, and experiment management.
+This project develops a baseline pipeline for prestimulus EEG-based behavioral prediction on the Healthy Brain Network EEG (HBN-EEG) dataset. We focus on the Contrast Change Detection (CCD) task and use the 2-second inter-trial interval (ITI) segment as a constrained prestimulus window for modeling.
 
-An experimental neural network is integrated as an analysis component to evaluate whether EEG representations preserve experimental conditions across subjects. Rather than acting as a production classifier, the AI module serves as a measurement tool for comparing preprocessing strategies and dataset characteristics.
+The proposed baseline extracts steady-state and spectral features from CCD-ITI epochs after standard preprocessing (e.g., bandpass filtering, artifact mitigation, and normalization). We train lightweight models to predict reaction time (RT) and trial-level accuracy as regression targets, and evaluate performance using regression metrics (e.g., MAE/MSE).
 
-The platform improves accessibility, reproducibility, and usability of EEG research workflows while maintaining flexibility for future model development.
+To support reproducible experimentation, the system includes a lightweight web interface for configuring preprocessing and running analyses without relying on a full notebook environment or heavy local machine learning installations.

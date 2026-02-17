@@ -9,16 +9,16 @@ This project aligns with the EEG Foundation Challenge (EEG2025), which calls for
 \section{Problem Statement}
 \label{sec:problem-statement}
 
-Under the challenge’s constraints, the test phase exposes only limited CCD segments (e.g., ITI), making behavior prediction difficult without full event-locked trials. We aim to (1) establish a constrained baseline using the 2-second CCD ITI to predict reaction time (RT) and accuracy, and (2) leverage cross-task transfer from SuS to CCD-ITI to capture subject-specific steady-state responsivity that may generalize to CCD behavior.
+Under the challenge’s constraints, the test phase exposes only limited CCD segments (e.g., ITI), making behavior prediction difficult without full event-locked trials. We aim to establish a constrained baseline using the 2-second CCD ITI to predict reaction time (RT) and accuracy.
 
 \section{Project Aim}
 \label{sec:project-aim}
 
-Our goal is to build a principled baseline and transfer framework that:
+Our goal is to build a principled baseline framework that:
 \begin{itemize}
     \item Verifies SSVEP and P300 presence with a reproducible preprocessing pipeline (SNR spectra and evoked responses),
     \item Predicts CCD RT and accuracy using features derived strictly from ITI segments,
-    \item Improves performance by pretraining on SuS steady-state responses and fine-tuning on CCD-ITI (cross-task transfer).
+    \item Establishes a clear, reproducible baseline under the competition constraints.
 \end{itemize}
 
 \section{Terminology}
