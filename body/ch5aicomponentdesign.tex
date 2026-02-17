@@ -8,7 +8,7 @@
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/ssl-workflow}
-    \caption{Self-supervised learning for semantic feature extraction from EEG signals.}
+    \caption{Baseline workflow for prestimulus EEG-based behavioral prediction from CCD-ITI segments.}
     \label{fig:ssl-workflow}
 \end{figure}
 \noindent
@@ -20,9 +20,9 @@ The frontend interface allows users to explore EEG signals, construct datasets, 
 
 The workflow proceeds as:
 
-signal inspection → dataset verification → model training → evaluation → comparison
+signal inspection → dataset verification → baseline training → evaluation
 
-This ensures that machine learning results are directly connected to verified signal characteristics rather than blindly training on raw data.
+This ensures that baseline results are directly connected to verified signal characteristics rather than blindly training on raw data.
 \pagebreak
 
 \vspace{1em}
@@ -35,7 +35,7 @@ EEG analysis involves high-dimensional temporal signals with complex spatial rel
     \item noise and artifacts are common
     \item signal distributions change across recording sessions
 \end{itemize}
-Machine learning models can learn latent representations that capture discriminative neural patterns more effectively than handcrafted features.
+Machine learning models can learn robust mappings from EEG-derived features to behavioral targets more effectively than fixed heuristics.
 
 \vspace{0.5em}
 \noindent\textbf{Is the problem large, complex, or always changing?}
@@ -60,7 +60,7 @@ Yes. This is a research system.
 
 The system is intended for research experimentation rather than safety-critical decision making.
 Model predictions are used as analytical indicators, not medical diagnoses.
-Therefore probabilistic predictions with measurable accuracy are acceptable.
+Therefore approximate predictions with measurable error are acceptable.
 
 %5.2
 \section{Goal Hierarchy}
@@ -80,7 +80,7 @@ Therefore probabilistic predictions with measurable accuracy are acceptable.
 \vspace{1em}
 \noindent\textbf{Success Metrics:}
 \begin{itemize}
-    \item classification accuracy improvement over baseline
+    \item reduced prediction error (e.g., MAE/MSE) for RT and accuracy
     \item consistent performance on unseen subjects
     \item reduced experiment setup time
     \item reproducible experiment workflow
@@ -93,8 +93,8 @@ Therefore probabilistic predictions with measurable accuracy are acceptable.
 \subsection{AI Task Requirements}
 \label{subsec:ai-task-requirements}
 \begin{itemize}[leftmargin=3.5em]
-    \item \textbf{Requirements (REQ):} Learn discriminative EEG representations for motor-imagery classification using standardized datasets.
-    \item \textbf{Specifications (SPEC):} Evaluate whether learned representations improve classification accuracy and generalization compared to baseline approaches.
+    \item \textbf{Requirements (REQ):} Predict behavioral outcomes from prestimulus CCD-ITI EEG segments in HBN-EEG.
+    \item \textbf{Specifications (SPEC):} Evaluate baseline models that map CCD-ITI features to reaction time (RT) and trial-level accuracy as regression targets.
     \item \textbf{Environment (ENV):} Evaluated on multi-subject EEG datasets with different recording conditions. (e.g., noise, subject variation).
 \end{itemize}
 
@@ -102,8 +102,8 @@ Therefore probabilistic predictions with measurable accuracy are acceptable.
 \label{subsec:ai-canvas-summary}
 \begin{itemize}[leftmargin=3.5em]
     \item \textbf{Input:} Preprocessed EEG segments
-    \item \textbf{Output:} Predicted motor-imagery class labels
-    \item \textbf{Success Criteria:} Model performs better than random guessing and generalizes to unseen subjects. (Ideally $>$80\% accuracy)
+    \item \textbf{Output:} Predicted RT and trial-level accuracy (regression)
+    \item \textbf{Success Criteria:} Lower prediction error with stable generalization to unseen subjects.
 \end{itemize}
 
 \subsection{Innovation}
@@ -294,14 +294,14 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/train_model}
-    \caption{Training Interface – Dataset selection, SSL configuration, and training log}
+    \caption{Training Interface – Dataset selection, baseline configuration, and training log}
     \label{fig:ui_train_model}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/predict_model}
-    \caption{Prediction Interface – Uploading input data and viewing output class with confidence}
+    \caption{Prediction Interface – Uploading input data and viewing predicted RT and accuracy}
     \label{fig:ui_predict_model}
 \end{figure}
 
@@ -315,7 +315,7 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/compare_model}
-    \caption{Comparison Interface – Visual comparison between SSL and Supervised models}
+    \caption{Comparison Interface – Visual comparison between baseline configurations}
     \label{fig:ui_compare_mode}
 \end{figure}
 
@@ -334,6 +334,7 @@ The system consists of:
 Frontend — interactive research interface
 Backend — REST API service
 Model — EEG classification network
+Model — behavioral prediction baseline
 
 Technologies used:
 
@@ -349,11 +350,11 @@ Technologies used:
 The frontend web system replaces manual notebook execution and allows controlled interaction with the EEG pipeline,
 and the backend exposes endpoints for training, prediction, and evaluation, allowing modular integration and testing.
 
-The core model used in our system is based on \textbf{MixNet-BCI}, an open-source EEG classification framework developed by VISTEC. This model is integrated into our workflow for signal preprocessing, feature extraction, and classification of motor imagery tasks.
+The baseline model in our system targets prestimulus behavioral prediction from CCD-ITI segments by mapping EEG-derived features to reaction time (RT) and trial-level accuracy as regression targets.
 
 \subsection{Proof of Concept}
 \label{subsec:proof-of-concept}
-The model pipeline was validated using benchmark EEG datasets under two conditions:
+The model pipeline is validated under two evaluation settings:
 
 \begin{itemize}
     \item \textbf{Subject-Dependent Setting:} Model is trained and tested on individual subjects.
@@ -373,8 +374,8 @@ Results can be accessed both through the interface and API endpoints.
 
 \subsection*{Lessons Learned}
 \begin{itemize}[leftmargin=3.5em]
-    \item SSL can extract high-quality embeddings from unlabeled EEG data that generalize to MI classification tasks.
-    \item Multi-paradigm training (e.g., SSVEP + ERP) provides richer features than MI alone.
+    \item Prestimulus CCD-ITI segments contain steady-state information that can support behavioral prediction.
+    \item A consistent preprocessing and verification workflow improves reproducibility of results.
     \item Integrated workflows reduce experimentation overhead
 \end{itemize}
 
