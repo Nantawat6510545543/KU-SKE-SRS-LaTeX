@@ -4,8 +4,8 @@
 
 Electroencephalography (EEG) research commonly relies on interactive notebook environments for data inspection and experimentation. While flexible, these workflows introduce hidden execution states, environment dependency, and limited reproducibility, making collaboration and systematic experimentation difficult. Furthermore, large-scale EEG datasets require significant computational resources that are not always available on user machines.
 
-This project develops a baseline pipeline for prestimulus EEG-based behavioral prediction on the Healthy Brain Network EEG (HBN-EEG) dataset. We focus on the Contrast Change Detection (CCD) task and use the 2-second inter-trial interval (ITI) segment as a constrained prestimulus window for modeling.
+This project develops a pipeline for prestimulus EEG-based behavioral prediction on the Healthy Brain Network EEG (HBN-EEG) dataset. We focus on the Contrast Change Detection (CCD) task and use the 2-second inter-trial interval (ITI) segment as a constrained prestimulus window for modeling.
 
-The proposed baseline extracts steady-state and spectral features from CCD-ITI epochs after standard preprocessing (e.g., bandpass filtering, artifact mitigation, and normalization). We train lightweight models to predict reaction time (RT) and trial-level accuracy as regression targets, and evaluate performance using regression metrics (e.g., MAE/MSE).
+The proposed approach extracts steady-state and spectral features from CCD-ITI epochs after standard preprocessing (e.g., bandpass filtering, artifact mitigation, and normalization). We train lightweight models to predict reaction time (RT) and trial-level accuracy as regression targets, and evaluate performance using regression metrics (e.g., MAE/MSE).
 
 To support reproducible experimentation, the system includes a lightweight web interface for configuring preprocessing and running analyses without relying on a full notebook environment or heavy local machine learning installations.

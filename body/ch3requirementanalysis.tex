@@ -5,14 +5,14 @@
 \label{sec:objectives}
 
 \begin{itemize}
-    \item \textbf{Baseline (CCD-ITI only):} Predict reaction time (RT) and accuracy as regression targets using features derived strictly from the 2-second CCD ITI.
+    \item \textbf{CCD-ITI approach:} Predict reaction time (RT) and accuracy as regression targets using features derived strictly from the 2-second CCD ITI.
     \item \textbf{Verification:} Confirm presence of SSVEP and P300 components via SNR spectra and evoked response plots.
 \end{itemize}
 
 \section{Dataset and Tasks}
 \label{sec:dataset-tasks}
 
-HBN-EEG provides six tasks: Resting State, Surround Suppression (SuS), Movie Watching, Sequence Learning, Contrast Change Detection (CCD), and Symbol Search. CCD includes periodic stimulation during ITI, yielding steady-state signals suitable for baseline modeling under limited test segments.\footnote{\cite{hbn_fair_2024,eeg_eye_tracking_2017}.}
+HBN-EEG provides six tasks: Resting State, Surround Suppression (SuS), Movie Watching, Sequence Learning, Contrast Change Detection (CCD), and Symbol Search. CCD includes periodic stimulation during ITI, yielding steady-state signals suitable for modeling under limited test segments.\footnote{\cite{hbn_fair_2024,eeg_eye_tracking_2017}.}
 
 \section{Preprocessing and Features}
 \label{sec:preprocessing}
@@ -20,6 +20,6 @@ HBN-EEG provides six tasks: Resting State, Surround Suppression (SuS), Movie Wat
 \begin{itemize}
     \item \textbf{Preprocessing:} Bandpass filtering, epoching (CCD ITI: \(-2\) to 0 s), artifact mitigation, and normalization.
     \item \textbf{Verification:} Compute SNR spectra at stimulation frequencies; plot evoked responses to confirm SSVEP/P300.
-    \item \textbf{Baseline Features:} ITI-derived steady-state features (spectral power, harmonics, topographies) for RT/accuracy prediction.
+    \item \textbf{Features:} ITI-derived steady-state features (spectral power, harmonics, topographies) for RT/accuracy prediction.
 \end{itemize}
 

@@ -4,20 +4,20 @@
 \section{Software Development Methodology}
 \label{sec:software-development-methodology}
 This project was developed using an iterative, milestone-driven workflow.
-The core goal was to implement a reproducible pipeline for prestimulus EEG-based behavioral prediction on the HBN-EEG dataset (CCD ITI segments), and to support rapid experimentation with baseline preprocessing and modeling choices.
+The core goal was to implement a reproducible pipeline for prestimulus EEG-based behavioral prediction on the HBN-EEG dataset (CCD ITI segments), and to support rapid experimentation with preprocessing and modeling choices.
 
 The development process followed four repeating steps:
 \begin{enumerate}[label=\textbf{M\arabic*.}, leftmargin=*]
-	\item \textbf{Define a measurable milestone:} e.g., extract CCD ITI prestimulus windows, compute features, train a baseline regressor, or produce evaluation plots.
+	\item \textbf{Define a measurable milestone:} e.g., extract CCD ITI prestimulus windows, compute features, train a regressor, or produce evaluation plots.
 	\item \textbf{Implement and validate:} develop the smallest working version of the milestone, then validate with quick sanity checks (shape checks, trial counts, summary statistics, and train/validation splits).
 	\item \textbf{Evaluate and document:} run a consistent evaluation protocol and record results, assumptions, and limitations.
 	\item \textbf{Refine:} address issues found in evaluation (data leakage risks, unstable preprocessing, model underfitting/overfitting) before moving to the next milestone.
 \end{enumerate}
 
-To keep the work aligned with the baseline scope, the model development emphasized:
+To keep the work aligned with the project scope, the model development emphasized:
 \begin{itemize}[leftmargin=*]
 	\item \textbf{Clear data boundaries} between subjects/sessions when creating splits.
-	\item \textbf{Simple baselines first} (feature-based regressors) before attempting more complex architectures.
+	\item \textbf{Simple models first} (feature-based regressors) before attempting more complex architectures.
 	\item \textbf{Reproducibility} through deterministic preprocessing parameters, fixed random seeds, and consistent evaluation scripts.
 \end{itemize}
 
@@ -51,7 +51,7 @@ The implementation combines a Python-based machine learning pipeline with a ligh
 	\item \textbf{Programming language:} Python (data processing, feature extraction, modeling, evaluation).
 	\item \textbf{Scientific computing:} NumPy and Pandas for array/dataframe operations.
 	\item \textbf{EEG processing:} MNE-Python for signal handling and standard EEG preprocessing utilities.
-	\item \textbf{Machine learning:} scikit-learn for baseline models and metrics; PyTorch for neural baselines (when applicable).
+	\item \textbf{Machine learning:} scikit-learn for classical models and metrics; PyTorch for neural models (when applicable).
 	\item \textbf{Visualization:} Matplotlib/Seaborn for static plots; Plotly for interactive exploration.
 	\item \textbf{User interface (documentation/prototype):} a React-based notebook-style UI used to visualize signals, preview tabular features, and record experiment notes.
 	\item \textbf{Version control:} Git for change tracking and branching.
@@ -84,13 +84,13 @@ Table~\ref{tab:progress-tracking} summarizes the main development stages.
 \hline
 \textbf{Phase} & \textbf{Activities} & \textbf{Outputs} \\
 \hline
-1: Setup \& scoping & Repository setup, baseline-only scope definition (CCD ITI prestimulus), and report structure alignment & Buildable \LaTeX{} document, chapter plan \\
+1: Setup \& scoping & Repository setup, project scope definition (CCD ITI prestimulus), and report structure alignment & Buildable \LaTeX{} document, chapter plan \\
 \hline
 2: Data understanding & Explore HBN-EEG metadata/task structure; identify CCD ITI segments and behavioral targets (RT, accuracy) & Dataset summary notes, initial sanity plots \\
 \hline
 3: Preprocessing pipeline & Implement prestimulus window extraction and consistent preprocessing parameters; verify trial counts and split boundaries & Reusable preprocessing scripts, cached intermediate outputs \\
 \hline
-4: Baseline modeling & Train baseline regressors for RT and accuracy (as regression targets); compare simple model families and features & Baseline metrics (e.g., MAE/MSE), prediction vs.
+4: Model development & Train regressors for RT and accuracy (as regression targets); compare simple model families and features & Evaluation metrics (e.g., MAE/MSE), prediction vs.
 ground-truth plots \\
 \hline
 5: Evaluation \& reporting & Define evaluation protocol, error analysis, and limitations; integrate key results into deliverables chapter & Evaluation tables/figures, updated Chapters 6--7 \\
@@ -98,6 +98,6 @@ ground-truth plots \\
 6: UI documentation & Document the notebook-style interface used for exploration and experiment logging & UI screenshots and usage description \\
 \hline
 \end{tabularx}
-\caption{Progress tracking summary for the baseline prestimulus behavioral prediction project.}
+\caption{Progress tracking summary for the prestimulus behavioral prediction project.}
 \label{tab:progress-tracking}
 \end{table}

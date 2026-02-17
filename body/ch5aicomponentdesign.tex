@@ -8,7 +8,7 @@
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/CCD-workflow}
-    \caption{Baseline workflow for prestimulus EEG-based behavioral prediction from CCD-ITI segments.}
+    \caption{Workflow for prestimulus EEG-based behavioral prediction from CCD-ITI segments.}
     \label{fig:ssl-workflow}
 \end{figure}
 \noindent
@@ -20,9 +20,9 @@ The frontend interface allows users to explore EEG signals, construct datasets, 
 
 The workflow proceeds as:
 
-signal inspection → dataset verification → baseline training → evaluation
+signal inspection → dataset verification → model training → evaluation
 
-This ensures that baseline results are directly connected to verified signal characteristics rather than blindly training on raw data.
+This ensures that model results are directly connected to verified signal characteristics rather than blindly training on raw data.
 \pagebreak
 
 \vspace{1em}
@@ -94,7 +94,7 @@ Therefore approximate predictions with measurable error are acceptable.
 \label{subsec:ai-task-requirements}
 \begin{itemize}[leftmargin=3.5em]
     \item \textbf{Requirements (REQ):} Predict behavioral outcomes from prestimulus CCD-ITI EEG segments in HBN-EEG.
-    \item \textbf{Specifications (SPEC):} Evaluate baseline models that map CCD-ITI features to reaction time (RT) and trial-level accuracy as regression targets.
+    \item \textbf{Specifications (SPEC):} Evaluate models that map CCD-ITI features to reaction time (RT) and trial-level accuracy as regression targets.
     \item \textbf{Environment (ENV):} Evaluated on multi-subject EEG datasets with different recording conditions. (e.g., noise, subject variation).
 \end{itemize}
 
@@ -294,7 +294,7 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/train_model}
-    \caption{Training Interface – Dataset selection, baseline configuration, and training log}
+    \caption{Training Interface – Dataset selection, model configuration, and training log}
     \label{fig:ui_train_model}
 \end{figure}
 
@@ -315,7 +315,7 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/ui/compare_model}
-    \caption{Comparison Interface – Visual comparison between baseline configurations}
+    \caption{Comparison Interface – Visual comparison between model configurations}
     \label{fig:ui_compare_mode}
 \end{figure}
 
@@ -327,15 +327,14 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 
 \subsection{Deployment Plan}
 \label{subsec:deployment-plan}
-The AI-based application is deployed as a web-based system in a research environment.
-The trained model is hosted on a backend server and accessed through a browser interface.
+The AI component is deployed in a research environment using both local execution and cloud notebooks.
 
 The system consists of:
 
 \begin{itemize}
     \item Frontend — interactive research interface
     \item Backend — REST API service
-    \item Model — behavioral prediction baseline
+    \item Model — behavioral prediction model
 \end{itemize}
 
 Technologies used:
@@ -352,7 +351,7 @@ Technologies used:
 The frontend web system replaces manual notebook execution and allows controlled interaction with the EEG pipeline,
 and the backend exposes endpoints for training, prediction, and evaluation, allowing modular integration and testing.
 
-The baseline model in our system targets prestimulus behavioral prediction from CCD-ITI segments by mapping EEG-derived features to reaction time (RT) and trial-level accuracy as regression targets.
+The model in our system targets prestimulus behavioral prediction from CCD-ITI segments by mapping EEG-derived features to reaction time (RT) and trial-level accuracy as regression targets.
 
 \subsection{Proof of Concept}
 \label{subsec:proof-of-concept}

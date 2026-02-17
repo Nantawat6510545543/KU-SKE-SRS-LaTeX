@@ -4,12 +4,12 @@
 \section{Domain Model}
 \label{sec:domain-model}
 
-The architecture reflects a research workflow tailored to the EEG2025 challenge: baseline prediction using CCD-ITI segments. Components:
+The architecture reflects a research workflow tailored to the EEG2025 challenge: behavioral prediction using CCD-ITI segments. Components:
 
 \begin{itemize}
     \item \textbf{DataLoader:} Ingests BIDS/HED-formatted HBN-EEG and parses CCD events and metadata.\footnote{\cite{hbn_fair_2024}.}
     \item \textbf{PreprocessingPipeline:} Bandpass filters, epochs CCD-ITI, artifact mitigation, normalization.
-    \item \textbf{BaselineModel:} Maps ITI-derived steady-state features to RT and accuracy as regression targets.
+    \item \textbf{PredictionModel:} Maps ITI-derived steady-state features to RT and accuracy as regression targets.
     \item \textbf{Evaluator:} Computes regression metrics (e.g., MAE/MSE) and produces SNR/ERP verification plots.
     \item \textbf{Visualizer:} Summarizes metrics and renders spectra/evoked responses.
 \end{itemize}
@@ -24,10 +24,10 @@ The architecture reflects a research workflow tailored to the EEG2025 challenge:
 \section{Training and Evaluation Flow}
 \label{sec:sequence-diagram}
 
-\textbf{Scenario: Baseline Workflow}
+\textbf{Scenario: Workflow}
 \begin{enumerate}
     \item Load CCD-ITI segments; preprocess and verify steady-state/evoked responses.
-    \item Train baseline on CCD-ITI to predict RT/accuracy.
+    \item Train the model on CCD-ITI to predict RT/accuracy.
     \item Evaluate metrics and visualize spectra/evoked responses.
 \end{enumerate}
 

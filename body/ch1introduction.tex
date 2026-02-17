@@ -9,16 +9,16 @@ This project aligns with the EEG Foundation Challenge (EEG2025), which calls for
 \section{Problem Statement}
 \label{sec:problem-statement}
 
-Under the challenge’s constraints, the test phase exposes only limited CCD segments (e.g., ITI), making behavior prediction difficult without full event-locked trials. We aim to establish a constrained baseline using the 2-second CCD ITI to predict reaction time (RT) and accuracy.
+Under the challenge’s constraints, the test phase exposes only limited CCD segments (e.g., ITI), making behavior prediction difficult without full event-locked trials. We aim to establish a constrained approach using the 2-second CCD ITI to predict reaction time (RT) and accuracy.
 
 \section{Project Aim}
 \label{sec:project-aim}
 
-Our goal is to build a principled baseline framework that:
+Our goal is to build a principled framework that:
 \begin{itemize}
     \item Verifies SSVEP and P300 presence with a reproducible preprocessing pipeline (SNR spectra and evoked responses),
     \item Predicts CCD RT and accuracy using features derived strictly from ITI segments,
-    \item Establishes a clear, reproducible baseline under the competition constraints.
+    \item Establishes a clear, reproducible approach under the competition constraints.
 \end{itemize}
 
 \section{Terminology}
@@ -27,6 +27,6 @@ Our goal is to build a principled baseline framework that:
 \begin{itemize}
     \item \textbf{SSVEP:} Steady-State Visual Evoked Potential, frequency-locked EEG response to periodic stimulation.
     \item \textbf{P300:} Positive ERP component around \~300 ms after salient events, associated with attention and context updating.
-    \item \textbf{ITI:} Inter-Trial Interval, baseline period between trials; in CCD, flickering gratings persist during ITI.
+    \item \textbf{ITI:} Inter-Trial Interval, rest period between trials; in CCD, flickering gratings persist during ITI.
     \item \textbf{BIDS/HED:} Data and event annotation standards supporting consistent, analysis-ready datasets.
 \end{itemize}
