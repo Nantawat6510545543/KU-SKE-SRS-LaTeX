@@ -4,29 +4,27 @@
 \section{Background}
 \label{sec:background}
 
-This project aligns with the EEG Foundation Challenge (EEG2025), which calls for models that generalize across tasks and subjects using large-scale, high-density EEG. The Healthy Brain Network EEG (HBN-EEG) dataset provides 128-channel recordings across six tasks, with FAIR, BIDS, and HED annotations that enable reproducible analyses. The competition emphasizes zero-shot transfer to new tasks and subjects, and prediction of latent psychopathology factors.\footnote{See \cite{eeg_foundation_challenge_2025,hbn_fair_2024,hbn_transdiagnostic_2017}.}
+Understanding how brain activity relates to behavioral performance is a central goal in cognitive neuroscience and applied EEG research. A practical question is whether measurable EEG patterns can be used to predict how well a person will perform a task, such as how quickly they respond (reaction time) and whether the response is correct (accuracy).
+
+This work uses the Healthy Brain Network EEG (HBN-EEG) dataset, which provides 128-channel EEG recordings across multiple tasks and is distributed in BIDS format with HED annotations to support reproducible analysis. The dataset is provided through the EEG Foundation Challenge (EEG2025), and we use it as the data source while keeping the research question and system design goals driven by this project.\footnote{See \cite{eeg_foundation_challenge_2025,hbn_fair_2024}.}
 
 \section{Problem Statement}
 \label{sec:problem-statement}
 
-Under the challenge’s constraints, the test phase exposes only limited CCD segments (e.g., ITI), making behavior prediction difficult without full event-locked trials. We aim to establish a constrained approach using the 2-second CCD ITI to predict reaction time (RT) and accuracy.
+A key challenge in EEG-based behavioral prediction is that the most informative signals are often tied to the task timeline, while the available data for modeling may be restricted to short windows that occur before a response is made. This motivates a constrained setting: can prestimulus EEG alone predict how well a person will perform?
+
+In this project, we study this question using the Contrast Change Detection (CCD) task in HBN-EEG, a visual task with periodic stimulation and trial-wise behavioral labels. Under the available data constraints, the prestimulus window can be restricted to the short rest time between two trials (i.e., the period after one response ends and before the next trial begins). This rest period is commonly referred to as the \textit{inter-trial interval (ITI)}. The problem is therefore to determine whether information present in the 2-second CCD-ITI segment is sufficient to predict (1) reaction time as a continuous outcome and (2) response correctness as a binary outcome.
 
 \section{Project Aim}
 \label{sec:project-aim}
 
-Our goal is to build a principled framework that:
-\begin{itemize}
-    \item Verifies SSVEP and P300 presence with a reproducible preprocessing pipeline (SNR spectra and evoked responses),
-    \item Predicts CCD RT and accuracy using features derived strictly from ITI segments,
-    \item Establishes a clear, reproducible approach under the competition constraints.
-\end{itemize}
+This project aims to develop a principled and reproducible pipeline for prestimulus behavioral prediction in CCD using the 2-second ITI window. The pipeline standardizes preprocessing and feature extraction for steady-state components, trains models for two targets---reaction time (regression) and correctness (classification)---and reports performance using appropriate metrics (MAE/MSE for RT; accuracy, F1-score, precision, and recall for correctness). In addition, the project provides a lightweight interface that supports running and comparing experiments without relying on fragmented notebook versions.
 
 \section{Terminology}
 \label{sec:terminology}
 
 \begin{itemize}
     \item \textbf{SSVEP:} Steady-State Visual Evoked Potential, frequency-locked EEG response to periodic stimulation.
-    \item \textbf{P300:} Positive ERP component around \~300 ms after salient events, associated with attention and context updating.
     \item \textbf{ITI:} Inter-Trial Interval, rest period between trials; in CCD, flickering gratings persist during ITI.
     \item \textbf{BIDS/HED:} Data and event annotation standards supporting consistent, analysis-ready datasets.
 \end{itemize}

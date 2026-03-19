@@ -4,7 +4,7 @@
 \section{Challenge and Dataset Context}
 \label{sec:challenge-context}
 
-The EEG Foundation Challenge proposes two tracks: (1) zero-shot decoding across new tasks and subjects, and (2) prediction of psychopathology factors from EEG. It leverages an unprecedented high-density, multi-task HBN-EEG dataset formatted in BIDS with HED annotations.\footnote{\cite{eeg_foundation_challenge_2025,hbn_fair_2024}.}
+The EEG Foundation Challenge (EEG2025) provides the Healthy Brain Network EEG (HBN-EEG) dataset as a large-scale, high-density, multi-task EEG resource. Importantly for reproducible research, the dataset is distributed in BIDS format with HED annotations, which standardize file organization and event labeling across recordings.\footnote{\cite{eeg_foundation_challenge_2025,hbn_fair_2024}.}
 
 \section{HBN-EEG Resources}
 \label{sec:hbn-resources}
@@ -18,5 +18,7 @@ The EEG Foundation Challenge proposes two tracks: (1) zero-shot decoding across 
 \section{Positioning of This Work}
 \label{sec:positioning}
 
-Our study focuses on a constrained but practical scenario: prestimulus behavior prediction (RT, accuracy) from CCD ITI-only segments in HBN-EEG. This targets the challenge setting of limited test data while keeping the methodology simple and reproducible using FAIR/BIDS/HED resources.
+This project uses HBN-EEG to study a focused research question: whether prestimulus EEG contains predictive information about behavioral performance. We model two outcomes: reaction time (RT) as a regression target and trial correctness (accuracy) as a binary classification target.
+
+We evaluate this question in the Contrast Change Detection (CCD) task, where periodic visual stimulation during the rest period between trials supports steady-state feature extraction. By restricting inputs to a fixed 2-second prestimulus window, the modeling setting is intentionally constrained and emphasizes signal validation (via SNR spectra) and reproducible evaluation.
 

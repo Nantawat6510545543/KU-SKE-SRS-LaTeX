@@ -9,8 +9,8 @@ The architecture reflects a research workflow tailored to the EEG2025 challenge:
 \begin{itemize}
     \item \textbf{DataLoader:} Ingests BIDS/HED-formatted HBN-EEG and parses CCD events and metadata.\footnote{\cite{hbn_fair_2024}.}
     \item \textbf{PreprocessingPipeline:} Bandpass filters, epochs CCD-ITI, artifact mitigation, normalization.
-    \item \textbf{PredictionModel:} Maps ITI-derived steady-state features to RT and accuracy as regression targets.
-    \item \textbf{Evaluator:} Computes regression metrics (e.g., MAE/MSE) and produces SNR/ERP verification plots.
+    \item \textbf{PredictionModel:} Predicts RT (regression) and trial correctness (classification) from ITI-derived steady-state features.
+    \item \textbf{Evaluator:} Computes regression metrics (e.g., MAE/MSE) for RT and classification metrics (accuracy, F1-score, precision, recall) for correctness; produces SNR verification plots.
     \item \textbf{Visualizer:} Summarizes metrics and renders spectra/evoked responses.
 \end{itemize}
 
@@ -27,7 +27,7 @@ The architecture reflects a research workflow tailored to the EEG2025 challenge:
 \textbf{Scenario: Workflow}
 \begin{enumerate}
     \item Load CCD-ITI segments; preprocess and verify steady-state/evoked responses.
-    \item Train the model on CCD-ITI to predict RT/accuracy.
+    \item Train the model on CCD-ITI to predict RT and correctness.
     \item Evaluate metrics and visualize spectra/evoked responses.
 \end{enumerate}
 
@@ -36,6 +36,6 @@ The architecture reflects a research workflow tailored to the EEG2025 challenge:
 
 \begin{itemize}
     \item \textbf{Features:} Spectral power at stimulation frequencies and harmonics; topographic distributions.
-    \item \textbf{Metrics:} Regression metrics (e.g., MAE/MSE) for RT and accuracy.
+    \item \textbf{Metrics:} RT regression (e.g., MAE/MSE) and correctness classification (accuracy, F1-score, precision, recall).
     \item \textbf{Plots:} SNR spectra and evoked response overlays for CCD.
 \end{itemize}

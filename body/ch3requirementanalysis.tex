@@ -4,10 +4,7 @@
 \section{Research Objectives}
 \label{sec:objectives}
 
-\begin{itemize}
-    \item \textbf{CCD-ITI approach:} Predict reaction time (RT) and accuracy as regression targets using features derived strictly from the 2-second CCD ITI.
-    \item \textbf{Verification:} Confirm presence of SSVEP and P300 components via SNR spectra and evoked response plots.
-\end{itemize}
+The research objective is to assess whether prestimulus CCD-ITI EEG segments contain predictive information about behavioral performance. Specifically, the project targets reaction time (RT) as a regression problem and trial correctness (accuracy) as a binary classification problem. In parallel, steady-state stimulation responses are verified using SNR spectra and related plots to ensure that extracted features are grounded in measurable signal characteristics.
 
 \section{Dataset and Tasks}
 \label{sec:dataset-tasks}
@@ -19,7 +16,7 @@ HBN-EEG provides six tasks: Resting State, Surround Suppression (SuS), Movie Wat
 
 \begin{itemize}
     \item \textbf{Preprocessing:} Bandpass filtering, epoching (CCD ITI: \(-2\) to 0 s), artifact mitigation, and normalization.
-    \item \textbf{Verification:} Compute SNR spectra at stimulation frequencies; plot evoked responses to confirm SSVEP/P300.
-    \item \textbf{Features:} ITI-derived steady-state features (spectral power, harmonics, topographies) for RT/accuracy prediction.
+    \item \textbf{Verification:} Compute SNR spectra at stimulation frequencies and harmonics to validate steady-state responses.
+    \item \textbf{Features:} ITI-derived steady-state features (spectral power, harmonics, topographies) for RT regression and correctness classification.
 \end{itemize}
 

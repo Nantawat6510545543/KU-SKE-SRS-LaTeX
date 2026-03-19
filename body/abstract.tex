@@ -2,10 +2,10 @@
 \label{chap:abstract}
 \addcontentsline{toc}{chapter}{\nameref{chap:abstract}}
 
-Electroencephalography (EEG) research commonly relies on interactive notebook environments for data inspection and experimentation. While flexible, these workflows introduce hidden execution states, environment dependency, and limited reproducibility, making collaboration and systematic experimentation difficult. Furthermore, large-scale EEG datasets require significant computational resources that are not always available on user machines.
+Electroencephalography (EEG) is widely used to study how neural activity relates to behavior, but practical EEG research often depends on ad-hoc exploratory workflows. Interactive notebooks are convenient for inspection and rapid iteration; however, hidden execution state, environment dependency, and inconsistent preprocessing make it difficult to reproduce results and to compare experiments systematically.
 
-This project develops a pipeline for prestimulus EEG-based behavioral prediction on the Healthy Brain Network EEG (HBN-EEG) dataset. We focus on the Contrast Change Detection (CCD) task and use the 2-second inter-trial interval (ITI) segment as a constrained prestimulus window for modeling.
+This project investigates whether prestimulus EEG can predict behavioral performance in the Healthy Brain Network EEG (HBN-EEG) dataset. We focus on the Contrast Change Detection (CCD) task and use the 2-second inter-trial interval (ITI) segment as a constrained prestimulus window for modeling.
 
-The proposed approach extracts steady-state and spectral features from CCD-ITI epochs after standard preprocessing (e.g., bandpass filtering, artifact mitigation, and normalization). We train lightweight models to predict reaction time (RT) and trial-level accuracy as regression targets, and evaluate performance using regression metrics (e.g., MAE/MSE).
+The proposed approach extracts steady-state and spectral features from CCD-ITI epochs after standard preprocessing (e.g., bandpass filtering, artifact mitigation, and normalization). We train models to predict reaction time (RT) as a regression target and trial-level correctness (accuracy) as a binary classification target. Performance is evaluated using regression metrics for RT (e.g., MAE/MSE) and classification metrics for correctness (accuracy, F1-score, precision, and recall).
 
-To support reproducible experimentation, the system includes a lightweight web interface for configuring preprocessing and running analyses without relying on a full notebook environment or heavy local machine learning installations.
+To support reproducible experimentation, the software component provides a lightweight web interface for configuring preprocessing and executing the pipeline without relying on notebook-based trial-and-error.

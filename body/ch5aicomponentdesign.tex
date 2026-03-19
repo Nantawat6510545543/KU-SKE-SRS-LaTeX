@@ -7,9 +7,15 @@
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/CCD-workflow}
+    \begin{tikzpicture}
+        \node[anchor=south west, inner sep=0] (img) at (0,0) {\includegraphics[width=0.95\textwidth]{figures/CCD-workflow}};
+        \begin{scope}[x={(img.south east)}, y={(img.north west)}]
+            \fill[white] (0.275,0.12) rectangle (0.505,0.355);
+            \node[align=center, font=\tiny] at (0.39,0.235) {RT Regression +\\Correctness Classification};
+        \end{scope}
+    \end{tikzpicture}
     \caption{Workflow for prestimulus EEG-based behavioral prediction from CCD-ITI segments.}
-    \label{fig:ssl-workflow}
+    \label{fig:ccd-workflow}
 \end{figure}
 \noindent
 
@@ -80,7 +86,8 @@ Therefore approximate predictions with measurable error are acceptable.
 \vspace{1em}
 \noindent\textbf{Success Metrics:}
 \begin{itemize}
-    \item reduced prediction error (e.g., MAE/MSE) for RT and accuracy
+    \item reduced prediction error (e.g., MAE/MSE) for RT
+    \item improved correctness prediction (accuracy, F1-score, precision, recall)
     \item consistent performance on unseen subjects
     \item reduced experiment setup time
     \item reproducible experiment workflow
@@ -94,7 +101,7 @@ Therefore approximate predictions with measurable error are acceptable.
 \label{subsec:ai-task-requirements}
 \begin{itemize}[leftmargin=3.5em]
     \item \textbf{Requirements (REQ):} Predict behavioral outcomes from prestimulus CCD-ITI EEG segments in HBN-EEG.
-    \item \textbf{Specifications (SPEC):} Evaluate models that map CCD-ITI features to reaction time (RT) and trial-level accuracy as regression targets.
+    \item \textbf{Specifications (SPEC):} Evaluate models that map CCD-ITI features to RT (regression) and trial correctness (classification).
     \item \textbf{Environment (ENV):} Evaluated on multi-subject EEG datasets with different recording conditions. (e.g., noise, subject variation).
 \end{itemize}
 
@@ -102,8 +109,8 @@ Therefore approximate predictions with measurable error are acceptable.
 \label{subsec:ai-canvas-summary}
 \begin{itemize}[leftmargin=3.5em]
     \item \textbf{Input:} Preprocessed EEG segments
-    \item \textbf{Output:} Predicted RT and trial-level accuracy (regression)
-    \item \textbf{Success Criteria:} Lower prediction error with stable generalization to unseen subjects.
+    \item \textbf{Output:} Predicted RT (regression) and predicted correctness (classification)
+    \item \textbf{Success Criteria:} Lower RT prediction error and higher correctness classification performance with stable generalization to unseen subjects.
 \end{itemize}
 
 \subsection{Innovation}
@@ -351,16 +358,12 @@ Technologies used:
 The frontend web system replaces manual notebook execution and allows controlled interaction with the EEG pipeline,
 and the backend exposes endpoints for training, prediction, and evaluation, allowing modular integration and testing.
 
-The model in our system targets prestimulus behavioral prediction from CCD-ITI segments by mapping EEG-derived features to reaction time (RT) and trial-level accuracy as regression targets.
+The model in our system targets prestimulus behavioral prediction from CCD-ITI segments by mapping EEG-derived features to reaction time (RT) (regression) and trial correctness (classification).
 
 \subsection{Proof of Concept}
 \label{subsec:proof-of-concept}
-The model pipeline is validated under two evaluation settings:
-
-\begin{itemize}
-    \item \textbf{Subject-Dependent Setting:} Model is trained and tested on individual subjects.
-    \item \textbf{Subject-Independent Setting:} Model is trained on a group of subjects and tested on unseen individuals.
-\end{itemize}
+The model pipeline is validated under a subject-independent evaluation setting.
+In this setting, the model is trained on a group of subjects and tested on unseen individuals, which better reflects real-world generalization and avoids overly optimistic results from within-subject testing.
 
 The system successfully supports end-to-end workflow:
 
@@ -383,15 +386,16 @@ Results can be accessed both through the interface and API endpoints.
 
 \subsection*{Challenges}
 \begin{itemize}[leftmargin=3.5em]
-    \item subject variability affects generalization
-    \item interpreting learned representations remains difficult
-    \item noisy EEG signals impact performance
+    \item \textbf{Model not completed in time:} The learning procedure still fails to achieve stable performance for correctness classification.
+    \item \textbf{Majority-class collapse:} The correctness classifier tends to predict a single class, yielding an accuracy close to chance level (approximately 50\%) while providing limited practical value.
+    \item \textbf{Class imbalance:} Correct/incorrect labels are imbalanced in parts of the data, which can bias training and evaluation without careful handling.
+    \item \textbf{Data integrity issues:} Evidence of data corruption and trial/label misalignment can cause feature--label shifts, making supervised learning unstable and masking true signal--behavior relationships.
 \end{itemize}
 
 \subsection*{Future Work}
 \begin{itemize}[leftmargin=3.5em]
-    \item transformer-based temporal modeling
-    \item real-time prediction interface
-    \item automated hyperparameter search
-    \item live experiment integration
+    \item \textbf{Fix label reliability:} add dataset-level integrity checks (trial counts, event ordering, and label alignment) and remove or repair corrupted segments.
+    \item \textbf{Handle class imbalance:} use stratified splits, class-weighted loss, resampling, and calibration to avoid majority-class collapse.
+    \item \textbf{Improve evaluation:} report confusion matrices and class-aware metrics (F1-score, precision, recall) alongside accuracy.
+    \item \textbf{Modeling improvements:} explore robust feature sets and temporal models after data alignment is verified.
 \end{itemize}
