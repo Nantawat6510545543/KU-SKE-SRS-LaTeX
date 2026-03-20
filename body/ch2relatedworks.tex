@@ -1,18 +1,46 @@
 \chapter{Literature Review and Related Work}
 \label{ch:relatedworks}
 
-\section{Challenge and Dataset Context}
-\label{sec:challenge-context}
+\noindent
+This chapter reviews related work relevant to prestimulus EEG-based behavioral prediction and to the software workflow required to run such experiments reproducibly. It first summarizes competing tools/workflows and then reviews foundational resources and key methodological insights that informed this project.
+\vspace{1em}
+
+\section{Competitor Analysis}
+\label{sec:competitor-analysis}
+
+Several existing tools support EEG preprocessing and modeling, but they differ in how directly they support a constrained prestimulus prediction setting (CCD-ITI) and how well they support end-to-end reproducible experimentation.
+
+\begin{itemize}
+    \item \textbf{MNE-Python / MNE-BIDS:} strong for EEG preprocessing and BIDS interoperability, but experiment tracking and UI-driven workflows are typically built by the user.
+    \item \textbf{EEGLAB / Brainstorm:} mature GUI tools for analysis and visualization, but reproducible pipeline execution and code-centric experiment comparisons may require additional scripting.
+    \item \textbf{General ML notebooks:} flexible and fast to prototype, but prone to fragmentation (hidden state, inconsistent preprocessing, unclear configurations) unless carefully standardized.
+\end{itemize}
+
+This project complements these tools by emphasizing a traceable workflow tailored to the CCD-ITI prestimulus window: consistent event parsing and trial alignment, standardized preprocessing and feature extraction, and repeatable evaluation for both RT regression and correctness classification.
+
+\section{Literature Review}
+\label{sec:literature-review}
+
+\subsection{Foundational Works Leveraged}
+\label{subsec:foundational-works}
 
 The EEG Foundation Challenge (EEG2025) provides the Healthy Brain Network EEG (HBN-EEG) dataset as a large-scale, high-density, multi-task EEG resource. Importantly for reproducible research, the dataset is distributed in BIDS format with HED annotations, which standardize file organization and event labeling across recordings.\footnote{\cite{eeg_foundation_challenge_2025,hbn_fair_2024}.}
 
-\section{HBN-EEG Resources}
-\label{sec:hbn-resources}
-
 \begin{itemize}
-    \item \textbf{HBN-EEG FAIR Implementation (2024):} Presents analysis-ready EEG with integrated behavioral events and HED annotations, enabling reproducible analyses.\footnote{\cite{hbn_fair_2024}.}
-    \item \textbf{Transdiagnostic Resource (2017):} Describes the HBN biobank’s multimodal, large-scale and community-sampled design to support dimensional (transdiagnostic) research.\footnote{\cite{hbn_transdiagnostic_2017}.}
-    \item \textbf{EEG + Eye Tracking Dataset (2017):} Provides active and passive paradigms, including steady-state and contrast decision tasks, supporting developmental brain investigations.\footnote{\cite{eeg_eye_tracking_2017}.}
+    \item \textbf{HBN-EEG FAIR implementation (2024):} Presents analysis-ready EEG with integrated behavioral events and HED annotations, enabling reproducible analyses.\footnote{\cite{hbn_fair_2024}.}
+    \item \textbf{HBN transdiagnostic resource (2017):} Describes the HBN biobank’s large-scale and community-sampled design to support dimensional research.\footnote{\cite{hbn_transdiagnostic_2017}.}
+    \item \textbf{EEG + eye tracking paradigms (2017):} Provides tasks including steady-state and contrast decision tasks supporting developmental brain investigations.\footnote{\cite{eeg_eye_tracking_2017}.}
+\end{itemize}
+
+\subsection{Key Insights and Adaptations from Recent Methodologies}
+\label{subsec:key-insights}
+
+Based on these resources, this project adopts the following practical principles:
+\begin{itemize}
+    \item \textbf{Event-locked trial construction is critical:} prestimulus prediction requires careful alignment between events, EEG windows, and behavioral labels.
+    \item \textbf{Verification before prediction:} steady-state characteristics should be validated (e.g., via SNR spectra) to ensure that extracted features correspond to measurable signal properties.
+    \item \textbf{Target-specific evaluation:} regression and classification require different metrics and error analyses; reporting should be consistent across runs.
+    \item \textbf{Reproducibility as a software requirement:} pipeline parameters, dataset filters, and split strategies should be explicit to avoid misleading comparisons.
 \end{itemize}
 
 \section{Positioning of This Work}

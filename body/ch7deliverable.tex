@@ -1,17 +1,24 @@
-\chapter{Deliverables and Evaluation}
+\chapter{Deliverable}
 \label{chap:deliverable}
 
-\section{Artifacts}
-\label{section:software-solution}
+\noindent
+This chapter summarizes the tangible outputs produced by the project and the test/evaluation protocol used to assess them. It focuses on what is delivered (software and artifacts) and how performance is measured for RT regression and correctness classification.
+\vspace{1em}
+
+\section{Software Solution}
+\label{sec:software-solution}
 \begin{itemize}
 	\item \textbf{Project repository:} Contains preprocessing scripts and modeling code. [Link: to be added]
-	\item \textbf{Figures:} SNR spectra and evoked response plots verifying steady-state/evoked components for CCD; updated class diagram.
-	\item \textbf{Logs:} Preprocessing and training logs for reproducibility.
+	\item \textbf{Reproducible pipeline artifacts:} dataset construction routines for CCD-ITI windows, preprocessing configurations, feature extraction scripts, and run logging.
+	\item \textbf{Figures:} verification plots (e.g., SNR spectra) and evaluation plots used in the report; architecture diagram(s) documenting the workflow.
+	\item \textbf{Interface documentation/prototype:} UI screenshots and descriptions supporting the experiment workflow.
 \end{itemize}
 
-\section{Evaluation Protocol}
-\label{section:test-report}
+\section{Test Report}
+\label{sec:test-report}
 \begin{itemize}
-	\item \textbf{CCD-ITI approach:} Train on available CCD-ITI segments; report MAE/MSE for RT (regression) and report accuracy, F1-score, precision, and recall for trial correctness (classification).
-	\item \textbf{Verification:} Visualize SNR spectra and evoked responses to confirm signal components.
+	\item \textbf{CCD-ITI approach:} Train on CCD-ITI segments and evaluate under a defined split strategy (preferably subject-independent).
+	\item \textbf{Regression metrics (RT):} MAE and MSE.
+	\item \textbf{Classification metrics (correctness):} accuracy, F1-score, precision, and recall.
+	\item \textbf{Verification:} Use SNR spectra (and related plots) to confirm steady-state characteristics before interpreting model outcomes.
 \end{itemize}

@@ -1,18 +1,30 @@
 \chapter{Software Architecture Design}
 \label{ch:software-architecture-design}
 
-\section{Domain Model}
-\label{sec:domain-model}
+\noindent
+This chapter presents the software architecture that supports reproducible EEG experimentation in this project. It describes a layered architecture, the main execution flow, the AI processing pipeline, and the key data schemas used to make runs traceable and repeatable.
+\vspace{1em}
 
-The architecture reflects a research workflow tailored to the EEG2025 challenge: behavioral prediction using CCD-ITI segments. Components:
+\section{Software Architecture}
+\label{sec:software-architecture}
 
-\begin{itemize}
-    \item \textbf{DataLoader:} Ingests BIDS/HED-formatted HBN-EEG and parses CCD events and metadata.\footnote{\cite{hbn_fair_2024}.}
-    \item \textbf{PreprocessingPipeline:} Bandpass filters, epochs CCD-ITI, artifact mitigation, normalization.
-    \item \textbf{PredictionModel:} Predicts RT (regression) and trial correctness (classification) from ITI-derived steady-state features.
-    \item \textbf{Evaluator:} Computes regression metrics (e.g., MAE/MSE) for RT and classification metrics (accuracy, F1-score, precision, recall) for correctness; produces SNR verification plots.
-    \item \textbf{Visualizer:} Summarizes metrics and renders spectra/evoked responses.
-\end{itemize}
+The architecture reflects a research workflow tailored to the EEG2025 challenge: behavioral prediction using CCD-ITI segments. To keep the codebase maintainable and to separate concerns, the system is organized into layers.
+
+\subsection{API Layer (Presentation)}
+\label{subsec:api-layer}
+This layer provides user-facing interaction points (UI actions and/or API endpoints) such as selecting subjects, triggering dataset construction, running training, and exporting results. It contains minimal domain logic and delegates work to the service layer.
+
+\subsection{Service Layer (Application Logic)}
+\label{subsec:service-layer}
+This layer orchestrates workflows: loading CCD runs, constructing ITI windows, executing preprocessing and feature extraction, training models, running evaluation, and producing report artifacts (plots/tables). It also coordinates caching and logging so that runs are reproducible.
+
+\subsection{Infrastructure Layer (Data Access)}
+\label{subsec:infrastructure-layer}
+This layer handles I/O and integration with external resources, including reading BIDS-formatted HBN-EEG files, caching intermediate artifacts, and persisting run outputs.
+
+\subsection{Domain/Model Layer}
+\label{subsec:domain-layer}
+This layer contains the core domain concepts (trial windows, feature tables, experiment configurations, metrics) and the algorithms that operate on them.
 
 \begin{figure}[h!]
     \centering
@@ -21,21 +33,65 @@ The architecture reflects a research workflow tailored to the EEG2025 challenge:
     \label{fig:design-class}
 \end{figure}
 
-\section{Training and Evaluation Flow}
+\section{Sequence Diagram}
 \label{sec:sequence-diagram}
 
-\textbf{Scenario: Workflow}
+\subsection{Experiment Execution Flow}
+\label{subsec:realtime-tracking-process}
+\textbf{Scenario: Run an experiment}
 \begin{enumerate}
-    \item Load CCD-ITI segments; preprocess and verify steady-state/evoked responses.
-    \item Train the model on CCD-ITI to predict RT and correctness.
-    \item Evaluate metrics and visualize spectra/evoked responses.
+    \item Select subjects/sessions and the CCD task.
+    \item Load BIDS/HED events and construct CCD-ITI windows with aligned RT and correctness labels.
+    \item Apply a fixed preprocessing configuration to the ITI epochs.
+    \item Compute verification plots (e.g., SNR spectra) to confirm steady-state characteristics.
+    \item Extract features and train models for RT regression and correctness classification.
+    \item Evaluate using standard metrics and export a run summary (configs, metrics, and plots).
 \end{enumerate}
 
-\section{Method Notes}
-\label{sec:method-notes}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/architecture/sequence/eegkit-main-flow.png}
+    \caption{EEGKit main interaction flow (Web UI (React) $\rightarrow$ Controller $\rightarrow$ Pipeline)}
+    \label{fig:eegkit-main-sequence}
+\end{figure}
+
+\section{Pipeline}
+\label{sec:pipeline}
+
+\subsection{AI Processing Pipeline}
+\label{subsec:ai-processing-pipeline}
+
+The AI processing pipeline is designed to enforce traceability. Each stage consumes explicit inputs and produces versioned outputs:
+\begin{enumerate}
+    \item \textbf{Ingestion:} load CCD runs and parse events/metadata.\footnote{\cite{hbn_fair_2024}.}
+    \item \textbf{Trial construction:} extract fixed-length ITI windows and attach labels.
+    \item \textbf{Preprocessing:} filter, normalize, mitigate artifacts, and create epochs.
+    \item \textbf{Verification:} compute SNR spectra and related plots for steady-state validation.
+    \item \textbf{Features:} compute ITI-derived features (e.g., spectral power at stimulation frequencies/harmonics).
+    \item \textbf{Modeling:} train RT regressors and correctness classifiers.
+    \item \textbf{Evaluation:} compute metrics and export artifacts for reporting.
+\end{enumerate}
+
+\section{Schemas}
+\label{sec:schemas}
+
+To support reproducibility and consistent reporting, the system uses a small set of explicit schemas (conceptual data structures):
+\begin{itemize}
+    \item \textbf{ExperimentConfig:} dataset filters, preprocessing parameters, feature settings, model hyperparameters, and split strategy.
+    \item \textbf{TrialWindow:} subject/session identifiers, ITI start/end, and behavioral labels (RT and correctness).
+    \item \textbf{FeatureTable:} feature matrix with consistent column definitions and provenance metadata.
+    \item \textbf{MetricReport:} regression and classification metrics, plus links to generated plots.
+\end{itemize}
+
+\section{AI Component}
+\label{sec:ai-component}
+
+The AI component is responsible for mapping CCD-ITI features to behavioral targets. It is integrated as a service-layer workflow that consumes a dataset definition and a configuration, then produces predictions and evaluation artifacts.
 
 \begin{itemize}
-    \item \textbf{Features:} Spectral power at stimulation frequencies and harmonics; topographic distributions.
-    \item \textbf{Metrics:} RT regression (e.g., MAE/MSE) and correctness classification (accuracy, F1-score, precision, recall).
-    \item \textbf{Plots:} SNR spectra and evoked response overlays for CCD.
+    \item \textbf{Targets:} RT (regression) and correctness (binary classification).
+    \item \textbf{Evaluation:} MAE/MSE for RT; accuracy, F1-score, precision, and recall for correctness.
+    \item \textbf{Best practices:} subject-independent evaluation when possible, explicit logging of splits/filters, and verification plots to avoid interpreting spurious results.
 \end{itemize}
+
+Detailed AI design choices (canvas, model development, UX integration, and deployment strategy) are presented in Chapter~\ref{ch:ai-component-design}.

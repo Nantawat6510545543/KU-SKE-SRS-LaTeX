@@ -1,20 +1,30 @@
 \chapter{Conclusion and Discussion}
 \label{chap:conclusion-discussion}
 
-% Template chapter placeholder — to be completed
+\noindent
+This chapter concludes the report by reflecting on the project outcomes, summarizing key challenges encountered during development and evaluation, and outlining directions for future improvement.
+\vspace{1em}
+
 \section{Reflection}
-Summarize the key outcomes and contributions of the project.
+This project set out to answer a constrained research question---whether prestimulus EEG alone can predict behavioral performance---and to deliver software that makes this question testable in a reproducible way. The main contribution is an end-to-end workflow that links (1) event-locked dataset construction for CCD-ITI windows, (2) standardized preprocessing and feature extraction for steady-state characteristics, (3) dual-target modeling (RT regression and correctness classification), and (4) consistent evaluation and reporting artifacts.
+
+From a software engineering perspective, the outcome is a clearer separation between data ingestion, processing, modeling, and reporting. This reduces the risk that results depend on hidden notebook state and makes it easier to rerun experiments, compare configurations, and regenerate figures/tables for the final report.
 
 \section{Challenges}
-List the main technical and non-technical challenges encountered.
+The main challenges encountered are:
 \begin{itemize}
-    \item Challenge 1: ...
-    \item Challenge 2: ...
+    \item \textbf{Trial and label alignment:} prestimulus prediction depends on strict alignment between events, ITI windows, and behavioral labels; small mistakes can invalidate comparisons.
+    \item \textbf{Data quality and non-stationarity:} EEG recordings vary across subjects and sessions, and artifacts/noise can dominate unless preprocessing and sanity checks are systematic.
+    \item \textbf{Class imbalance and instability for correctness:} correctness labels may be imbalanced or noisy, which can lead to majority-class collapse and weak generalization.
+    \item \textbf{Reproducibility overhead:} making experiments repeatable requires extra engineering (configs, caching, logging, deterministic splits) beyond what is needed for a one-off notebook result.
 \end{itemize}
 
 \section{Future Work}
-Outline planned next steps, improvements, and open questions.
+Future work focuses on improving reliability, evaluation strength, and usability:
 \begin{itemize}
-    \item Next step 1: ...
-    \item Next step 2: ...
+    \item \textbf{Data integrity checks:} add automated validation for event ordering, trial counts, and label sanity to detect corruption early.
+    \item \textbf{Better handling of imbalance:} adopt stratified splitting, class weighting, calibration, and more informative analyses (e.g., confusion matrices).
+    \item \textbf{Expanded feature/model exploration:} evaluate additional feature families and more robust models after alignment is verified.
+    \item \textbf{Experiment tracking:} persist configurations and results in a structured format to support systematic comparison across runs.
+    \item \textbf{Generalization to other tasks:} extend the pipeline beyond CCD if similar prestimulus windows and labels can be constructed reliably.
 \end{itemize}

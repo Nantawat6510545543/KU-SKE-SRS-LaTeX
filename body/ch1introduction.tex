@@ -1,10 +1,16 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
+\noindent
+This chapter introduces the motivation for prestimulus EEG-based behavioral prediction and explains why the HBN-EEG CCD task is an appropriate case study. In addition to the research question, it motivates the software need: a reproducible, end-to-end workflow that reduces reliance on fragmented notebooks and makes experiments easier to rerun, compare, and report.
+\vspace{1em}
+
 \section{Background}
 \label{sec:background}
 
 Understanding how brain activity relates to behavioral performance is a central goal in cognitive neuroscience and applied EEG research. A practical question is whether measurable EEG patterns can be used to predict how well a person will perform a task, such as how quickly they respond (reaction time) and whether the response is correct (accuracy).
+
+From a software engineering perspective, EEG modeling work is often carried out through iterative exploration in notebooks and scripts. While this is effective for rapid prototyping, it can lead to inconsistent preprocessing, unclear experiment configurations, and results that are difficult to reproduce or compare across runs. A structured software workflow (data loading, preprocessing, feature extraction, training, evaluation, and visualization) helps make experimentation traceable and repeatable, especially when multiple targets and evaluation settings are involved.
 
 This work uses the Healthy Brain Network EEG (HBN-EEG) dataset, which provides 128-channel EEG recordings across multiple tasks and is distributed in BIDS format with HED annotations to support reproducible analysis. The dataset is provided through the EEG Foundation Challenge (EEG2025), and we use it as the data source while keeping the research question and system design goals driven by this project.\footnote{See \cite{eeg_foundation_challenge_2025,hbn_fair_2024}.}
 
@@ -13,12 +19,96 @@ This work uses the Healthy Brain Network EEG (HBN-EEG) dataset, which provides 1
 
 A key challenge in EEG-based behavioral prediction is that the most informative signals are often tied to the task timeline, while the available data for modeling may be restricted to short windows that occur before a response is made. This motivates a constrained setting: can prestimulus EEG alone predict how well a person will perform?
 
+In practice, addressing this question also requires reliable software support. The workflow must ensure consistent event parsing, trial alignment, preprocessing, and evaluation reporting; otherwise, differences in scripts or notebook state can lead to misleading comparisons or irreproducible results. Therefore, the problem is both methodological (define a valid prestimulus prediction setting) and engineering-focused (implement a reproducible pipeline and interface that makes the setting easy to run and verify).
+
 In this project, we study this question using the Contrast Change Detection (CCD) task in HBN-EEG, a visual task with periodic stimulation and trial-wise behavioral labels. Under the available data constraints, the prestimulus window can be restricted to the short rest time between two trials (i.e., the period after one response ends and before the next trial begins). This rest period is commonly referred to as the \textit{inter-trial interval (ITI)}. The problem is therefore to determine whether information present in the 2-second CCD-ITI segment is sufficient to predict (1) reaction time as a continuous outcome and (2) response correctness as a binary outcome.
 
-\section{Project Aim}
-\label{sec:project-aim}
+\section{Solution Overview}
+\label{sec:solution-overview}
 
-This project aims to develop a principled and reproducible pipeline for prestimulus behavioral prediction in CCD using the 2-second ITI window. The pipeline standardizes preprocessing and feature extraction for steady-state components, trains models for two targets---reaction time (regression) and correctness (classification)---and reports performance using appropriate metrics (MAE/MSE for RT; accuracy, F1-score, precision, and recall for correctness). In addition, the project provides a lightweight interface that supports running and comparing experiments without relying on fragmented notebook versions.
+This project proposes a software-supported workflow for prestimulus behavioral prediction from CCD-ITI EEG segments. The solution consists of a reproducible experimentation pipeline and a lightweight interface for running and comparing experiments.
+
+At a high level, the workflow is:
+
+signal inspection $\rightarrow$ dataset construction $\rightarrow$ preprocessing and feature extraction $\rightarrow$ model training $\rightarrow$ evaluation and reporting.
+
+The pipeline focuses on two behavioral targets:
+\begin{itemize}
+    \item \textbf{Reaction time (RT):} a regression target.
+    \item \textbf{Response correctness:} a binary classification target.
+\end{itemize}
+
+To support fair comparison across runs, the solution standardizes key steps (trial alignment, preprocessing parameters, feature extraction routines, and evaluation metrics). Results are reported using appropriate metrics (e.g., MAE/MSE for RT; accuracy, F1-score, precision, and recall for correctness), together with signal-verification plots (e.g., SNR spectra) that validate steady-state characteristics in the CCD task.
+
+\subsection{Prominent Features}
+\label{subsec:prominent-features}
+
+\begin{itemize}
+    \item \textbf{Reproducible end-to-end pipeline:} consistent data loading, trial alignment, preprocessing, and evaluation across experiments.
+    \item \textbf{Dual-target experimentation:} unified support for RT regression and correctness classification under the same data constraints.
+    \item \textbf{Signal verification:} built-in plots (e.g., SNR spectra) to connect modeling results to measurable EEG characteristics.
+    \item \textbf{Experiment comparability:} consistent metric reporting and exported artifacts (figures/tables) to support the final report.
+\end{itemize}
+
+\subsection{Optional Features}
+\label{subsec:optional-features}
+
+\begin{itemize}
+    \item \textbf{Model registry and configuration presets:} reusable experiment configurations for faster iteration.
+    \item \textbf{Automated integrity checks:} dataset-level checks for corrupted trials, event ordering, and label alignment.
+    \item \textbf{Extended model families:} optional deep or hybrid models once data alignment is verified.
+\end{itemize}
+
+\section{Target User}
+\label{sec:target-user}
+
+The primary target users are students and researchers who want to run EEG experiments with a traceable workflow. The system is also suitable for developers who need a maintainable codebase for iterating on preprocessing and modeling, without relying on a collection of notebook versions.
+
+\section{Benefit}
+\label{sec:benefit}
+
+The main benefits of the solution are:
+\begin{itemize}
+    \item \textbf{Reduced experiment fragmentation:} fewer ``hidden state'' issues compared with ad-hoc notebook execution.
+    \item \textbf{Repeatable evaluation:} consistent splits, parameters, and metrics make results easier to validate and compare.
+    \item \textbf{Clear reporting artifacts:} figures and tables can be regenerated from the same inputs, supporting the final deliverables.
+\end{itemize}
+
+\section{Timeline and Competency-Based Learning Pathway}
+\label{sec:timeline-and-learning}
+
+The project was executed in incremental milestones. Each milestone produced a verifiable artifact (code, plots, tables, or report sections) and developed competencies needed for later stages.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Phase} & \textbf{Milestone} & \textbf{Competency Developed} \\
+\hline
+1 & Dataset understanding and CCD event alignment & BIDS/HED event handling, trial construction, data sanity checks \\
+\hline
+2 & Preprocessing and signal verification & MNE-based preprocessing, epoching, SNR spectra interpretation \\
+\hline
+3 & Feature extraction and baselines & Feature engineering, leakage-aware splits, reproducible evaluation \\
+\hline
+4 & Dual-target modeling and reporting & Regression vs. classification evaluation, metric reporting, error analysis \\
+\hline
+5 & Software packaging and interface documentation & Layered design, experiment configuration, UI/API documentation \\
+\hline
+\end{tabularx}
+\caption{Timeline and competency-based learning pathway.}
+\label{tab:timeline-learning}
+\end{table}
+
+\subsection{Stretch Goals}
+\label{subsec:stretch-goals}
+
+If additional time is available, the next improvements focus on increasing reliability and usability:
+\begin{itemize}
+    \item Add automated dataset integrity checks and warnings.
+    \item Add cross-run experiment tracking (configuration + results) for easier comparisons.
+    \item Extend modeling to additional feature families after verifying label quality.
+\end{itemize}
 
 \section{Terminology}
 \label{sec:terminology}
@@ -27,4 +117,15 @@ This project aims to develop a principled and reproducible pipeline for prestimu
     \item \textbf{SSVEP:} Steady-State Visual Evoked Potential, frequency-locked EEG response to periodic stimulation.
     \item \textbf{ITI:} Inter-Trial Interval, rest period between trials; in CCD, flickering gratings persist during ITI.
     \item \textbf{BIDS/HED:} Data and event annotation standards supporting consistent, analysis-ready datasets.
+\end{itemize}
+
+\section{Personal Development Plan}
+\label{sec:personal-development-plan}
+
+This project is used as a competency-building exercise in software and AI engineering. The personal development goals are to:
+\begin{itemize}
+    \item strengthen the ability to design reproducible ML experimentation pipelines,
+    \item improve EEG-domain engineering skills (event handling, epoching, spectral verification),
+    \item practice writing maintainable software (layering, modular design, configuration management), and
+    \item improve reporting skills by connecting method choices, software artifacts, and evaluation results in a single narrative.
 \end{itemize}

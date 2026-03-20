@@ -1,19 +1,17 @@
 \chapter{AI Component Design}
 \label{ch:ai-component-design}
 
+\noindent
+This chapter describes how the AI component is integrated into the overall system workflow, from dataset construction and signal verification to model training and evaluation. It follows an AI-canvas-style requirement analysis, documents model development and evaluation, and describes how the user experience and deployment support reproducible experiments.
+\vspace{1em}
+
 % 5.1
 \section{Business Context and AI Integration}
 \label{sec:business-context}
 
 \begin{figure}[h]
     \centering
-    \begin{tikzpicture}
-        \node[anchor=south west, inner sep=0] (img) at (0,0) {\includegraphics[width=0.95\textwidth]{figures/CCD-workflow}};
-        \begin{scope}[x={(img.south east)}, y={(img.north west)}]
-            \fill[white] (0.275,0.12) rectangle (0.505,0.355);
-            \node[align=center, font=\tiny] at (0.39,0.235) {RT Regression +\\Correctness Classification};
-        \end{scope}
-    \end{tikzpicture}
+    \includegraphics[width=0.95\textwidth]{figures/CCD-workflow}
     \caption{Workflow for prestimulus EEG-based behavioral prediction from CCD-ITI segments.}
     \label{fig:ccd-workflow}
 \end{figure}
@@ -81,7 +79,7 @@ Therefore approximate predictions with measurable error are acceptable.
 \noindent\textbf{User Goal:} Explore EEG signals, construct datasets, train models, and compare results without manual scripting
 
 \vspace{0.5em}
-\noindent\textbf{AI Model Goal:} Learn representations that generalize across subjects and improve classification performance
+\noindent\textbf{AI Model Goal:} Learn mappings that generalize across subjects for RT prediction (regression) and correctness prediction (classification)
 
 \vspace{1em}
 \noindent\textbf{Success Metrics:}
@@ -117,8 +115,41 @@ Therefore approximate predictions with measurable error are acceptable.
 \label{subsec:innovation}
 The system integrates visualization-driven dataset validation with model training inside a single interactive interface, reducing mismatch between inspected signals and training data.
 
-\pagebreak
 %5.4
+\section{AI Model Development and Evaluation}
+\label{sec:model-development-evaluation}
+
+\subsection{Model Development and Training Strategy}
+\label{subsec:model-development-strategy}
+The modeling workflow is designed to be repeatable and target-aware:
+\begin{itemize}
+    \item \textbf{Inputs:} preprocessed CCD-ITI epochs and ITI-derived feature tables.
+    \item \textbf{Targets:} RT (regression) and correctness (binary classification).
+    \item \textbf{Baseline-first approach:} start with simple, interpretable models before considering more complex architectures.
+    \item \textbf{Split strategy:} prefer subject-independent splits to evaluate generalization and reduce overly optimistic estimates.
+\end{itemize}
+
+\subsection{Testing and Validation Approach}
+\label{subsec:testing-validation}
+Validation focuses on preventing misleading results caused by data issues or leakage:
+\begin{itemize}
+    \item sanity checks for trial counts, label distribution, and missing channels,
+    \item verification plots (e.g., SNR spectra) to confirm steady-state characteristics,
+    \item consistent preprocessing parameters and fixed random seeds,
+    \item run logging of dataset filters, split definitions, and model configurations.
+\end{itemize}
+
+\subsection{Performance Results and Justification}
+\label{subsec:performance-results}
+Model results are reported using target-appropriate metrics:
+\begin{itemize}
+    \item \textbf{RT regression:} MAE and MSE.
+    \item \textbf{Correctness classification:} accuracy, F1-score, precision, and recall.
+\end{itemize}
+In addition to metrics, the evaluation includes qualitative checks (prediction vs. ground truth plots, error distribution summaries) to support interpretation.
+
+\pagebreak
+%5.5
 \section{User Experience Design with AI}
 \label{sec:ux-ai}
 
@@ -328,7 +359,7 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 
 \FloatBarrier
 
-%5.5
+%5.6
 \section{Deployment Strategy}
 \label{sec:deployment-strategy}
 
@@ -360,18 +391,19 @@ and the backend exposes endpoints for training, prediction, and evaluation, allo
 
 The model in our system targets prestimulus behavioral prediction from CCD-ITI segments by mapping EEG-derived features to reaction time (RT) (regression) and trial correctness (classification).
 
-\subsection{Proof of Concept}
-\label{subsec:proof-of-concept}
-The model pipeline is validated under a subject-independent evaluation setting.
-In this setting, the model is trained on a group of subjects and tested on unseen individuals, which better reflects real-world generalization and avoids overly optimistic results from within-subject testing.
+%5.7
+\section{Proof of Concept (Service Demonstration)}
+\label{sec:proof-of-concept}
+The pipeline can be exercised end-to-end under a subject-independent evaluation setting.
+In this setting, models are trained on a group of subjects and tested on unseen individuals, which better reflects generalization and avoids overly optimistic estimates from within-subject testing.
 
-The system successfully supports end-to-end workflow:
+The system supports the workflow:
 
 visualization → dataset selection → training → inference → evaluation
 
-Results can be accessed both through the interface and API endpoints.
+Results can be accessed through the interface and (when enabled) through API endpoints.
 
-%5.6
+%5.8 (optional)
 \section{Reflection and Future Development}
 \label{sec:reflection}
 

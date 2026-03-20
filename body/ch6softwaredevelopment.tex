@@ -1,6 +1,10 @@
 \chapter{Software Development}
 \label{chap:software-development}
 
+\noindent
+This chapter documents how the software was developed to support the project’s research workflow. It describes the development methodology, key architectural patterns used to keep experimentation maintainable, and the technology stack used to implement preprocessing, modeling, evaluation, and the supporting interface.
+\vspace{1em}
+
 \section{Software Development Methodology}
 \label{sec:software-development-methodology}
 This project was developed using an iterative, milestone-driven workflow.
@@ -90,7 +94,7 @@ Table~\ref{tab:progress-tracking} summarizes the main development stages.
 \hline
 3: Preprocessing pipeline & Implement prestimulus window extraction and consistent preprocessing parameters; verify trial counts and split boundaries & Reusable preprocessing scripts, cached intermediate outputs \\
 \hline
-4: Model development & Train regressors for RT and accuracy (as regression targets); compare simple model families and features & Evaluation metrics (e.g., MAE/MSE), prediction vs.
+4: Model development & Train models for RT (regression) and correctness (classification); compare simple model families and feature sets & Evaluation metrics (MAE/MSE for RT; accuracy/F1/precision/recall for correctness) and prediction vs.
 ground-truth plots \\
 \hline
 5: Evaluation \& reporting & Define evaluation protocol, error analysis, and limitations; integrate key results into deliverables chapter & Evaluation tables/figures, updated Chapters 6--7 \\

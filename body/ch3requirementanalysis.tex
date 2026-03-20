@@ -1,22 +1,315 @@
-\chapter{Objectives and Method Overview}
+\chapter{Requirement Analysis}
 \label{ch:requirement-analysis}
 
-\section{Research Objectives}
-\label{sec:objectives}
+\noindent
+This chapter defines the requirements for the \,\textit{EEG Workbench}\, software used in this project. The system is implemented as a notebook-first, Python-based tool (\texttt{eegkit}) that orchestrates loading HBN-EEG (BIDS-like releases), preprocessing, CCD trial/ITI epoching, dataset building, model training, and export of plots/tables/models. The focus is not only to “run experiments”, but to make every run reproducible and auditable through cached pipeline artifacts and on-disk job specifications.
+\vspace{1em}
 
-The research objective is to assess whether prestimulus CCD-ITI EEG segments contain predictive information about behavioral performance. Specifically, the project targets reaction time (RT) as a regression problem and trial correctness (accuracy) as a binary classification problem. In parallel, steady-state stimulation responses are verified using SNR spectra and related plots to ensure that extracted features are grounded in measurable signal characteristics.
+\section{Scope and System Context}
+\label{sec:scope-context}
 
-\section{Dataset and Tasks}
-\label{sec:dataset-tasks}
-
-HBN-EEG provides six tasks: Resting State, Surround Suppression (SuS), Movie Watching, Sequence Learning, Contrast Change Detection (CCD), and Symbol Search. CCD includes periodic stimulation during ITI, yielding steady-state signals suitable for modeling under limited test segments.\footnote{\cite{hbn_fair_2024,eeg_eye_tracking_2017}.}
-
-\section{Preprocessing and Features}
-\label{sec:preprocessing}
-
-\begin{itemize}
-    \item \textbf{Preprocessing:} Bandpass filtering, epoching (CCD ITI: \(-2\) to 0 s), artifact mitigation, and normalization.
-    \item \textbf{Verification:} Compute SNR spectra at stimulation frequencies and harmonics to validate steady-state responses.
-    \item \textbf{Features:} ITI-derived steady-state features (spectral power, harmonics, topographies) for RT regression and correctness classification.
+\subsection{In-scope}
+\label{subsec:in-scope}
+\begin{itemize}[leftmargin=*]
+    \item Notebook-based user interface for selecting an input (single subject or cohort filter), choosing an action (plotting, dataset building, training), and executing it inline or as a background job.
+    \item Deterministic preprocessing and epoch extraction for CCD trial-aligned windows (including prestimulus/ITI windows), with explicit parameters (filter band, notch, resampling, channel selection, cleaning thresholds, $t_{min}$/$t_{max}$).
+    \item Dataset building for: (i) classical ML feature vectors, and (ii) DL-ready epoch tensors.
+    \item Model training/testing workflows that save model artifacts and evaluation summaries.
+    \item Artifact export for reporting: figures, tables, metrics JSON, and run specifications.
 \end{itemize}
+
+\subsection{Out-of-scope}
+\label{subsec:out-of-scope}
+\begin{itemize}[leftmargin=*]
+    \item Clinical decision support, diagnosis, or any medical claim.
+    \item Real-time/online BCI operation.
+    \item Data collection; the tool assumes an existing on-disk HBN-EEG release structure.
+\end{itemize}
+
+\section{Stakeholder Analysis}
+\label{sec:stakeholder-analysis}
+
+\subsection{Primary Stakeholders}
+\label{subsec:primary-stakeholders}
+\begin{itemize}
+    \item \textbf{Student developer/researcher:} needs a maintainable workflow to iterate on preprocessing, feature extraction, and models without losing reproducibility.
+    \item \textbf{Advisor/reviewer:} needs traceable methodology, clear deliverables, and confidence that reported results can be regenerated from saved specifications.
+\end{itemize}
+
+\subsection{Secondary Stakeholders}
+\label{subsec:secondary-stakeholders}
+\begin{itemize}
+    \item \textbf{Future maintainers:} may extend the workflow to additional HBN tasks, alternative epoch definitions, or new models.
+    \item \textbf{Dataset providers:} benefit indirectly from correct use of BIDS/HED conventions and clear documentation of assumptions.\footnote{\cite{hbn_fair_2024,eeg_eye_tracking_2017}.}
+    \item \textbf{Teaching staff / examiners:} need a demonstrable software deliverable whose results and figures can be reproduced.
+\end{itemize}
+
+\section{Users and Interaction Modes}
+\label{sec:users-interaction-modes}
+
+The workbench supports two interaction modes that correspond directly to the UI input schemas:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Single subject mode:} the user selects a subject, task name, and (optional) run identifier, then runs actions such as signal inspection plots, epoch extraction, and dataset/model generation.
+    \item \textbf{Cohort filter mode (group):} the user selects a task and filters subjects by metadata (e.g., sex, age ranges) and task-derived CCD performance metrics (accuracy/response time). The user can optionally execute an action per subject to obtain comparable outputs.
+\end{itemize}
+
+\section{User Stories}
+\label{sec:user-stories}
+
+The following user stories capture the expected interactions with the system.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{US1 (Configure and load):} As a user, I want to point the tool to the HBN-EEG data directory and discover available subjects/tasks so that I can start analysis without manual path edits.
+    \item \textbf{US2 (Inspect quality):} As a researcher, I want to preview raw/filtered EEG and view event tables so that I can verify signal quality and event integrity.
+    \item \textbf{US3 (Reproducible preprocessing):} As a researcher, I want preprocessing/epoch parameters stored explicitly (band, notch, resample rate, channels, $t_{min}$/$t_{max}$, cleaning thresholds) so that results are comparable across runs.
+    \item \textbf{US4 (Correct label alignment):} As a researcher, I want CCD trial outcomes to be aligned deterministically with trial anchors so that labels are not silently shifted.
+    \item \textbf{US5 (Build datasets):} As a researcher, I want to build and save ML feature datasets and DL tensor datasets so that training can be repeated without re-deriving epochs each time.
+    \item \textbf{US6 (Train/test and export):} As a researcher, I want model training/testing to output metrics and saved model artifacts so that I can compare approaches and report evidence.
+    \item \textbf{US7 (Background execution):} As a user, I want long-running actions to run as background jobs with logs and saved outputs so that the notebook remains responsive.
+\end{itemize}
+
+\section{Use Case Overview}
+\label{sec:use-case-overview}
+
+The primary actor is the \textit{Researcher}. The main use cases are: (1) configure and discover data, (2) inspect signals/events, (3) construct epochs and datasets, (4) train/test models, and (5) export and reproduce artifacts.
+
+\section{Use Case Model}
+\label{sec:use-case-model}
+
+\subsection{Use Case 0: Configure Data Root}
+\label{subsec:uc-configure}
+\textbf{Goal:} Configure the workbench to locate the HBN-EEG dataset on disk.
+
+\textbf{Main flow:}
+\begin{enumerate}
+    \item Set an environment variable (e.g., \texttt{DATA\_DIR} / \texttt{EEG\_DATA\_DIR}) pointing to the dataset root.
+    \item Initialize the subject index, which discovers release folders and subject directories.
+    \item List available subjects/tasks to confirm correct data discovery.
+\end{enumerate}
+
+\subsection{Use Case 1: Inspect and Verify a Task Recording}
+\label{subsec:uc-inspect}
+\textbf{Goal:} Inspect a single subject/task/run and validate that events and signals look plausible.
+
+\textbf{Main flow:}
+\begin{enumerate}
+    \item Select \textit{Single subject} input (subject, task, run).
+    \item Apply filtering/cleaning parameters (e.g., band-pass, notch, resample, channel selection).
+    \item View diagnostic plots (time domain, PSD/evoked/topomaps) and tables (events/channels/metadata).
+    \item Confirm that event markers needed for CCD preprocessing exist and are ordered correctly.
+\end{enumerate}
+
+\subsection{Use Case 2: Build CCD Epochs and Labels (Prestimulus/ITI)}
+\label{subsec:uc-epochs}
+\textbf{Goal:} Construct CCD trial-aligned epochs with deterministic outcome labels.
+
+\textbf{Main flow:}
+\begin{enumerate}
+    \item Select an epoch window ($t_{min}$, $t_{max}$) describing the prestimulus/ITI segment.
+    \item Create trial anchors from raw annotations (e.g., \texttt{contrastTrial\_start}).
+    \item Derive trial outcome labels (hit/wrong/miss) from the parsed events table and strictly validate alignment to trial anchors.
+    \item Drop out-of-bounds epochs and interpolate bad channels when needed.
+    \item Cache derived epochs and labels so repeated analysis uses consistent data.
+\end{enumerate}
+
+\subsection{Use Case 3: Build Training Datasets}
+\label{subsec:uc-datasets}
+\textbf{Goal:} Build datasets that can be reused by training runs.
+
+\textbf{Main flow:}
+\begin{enumerate}
+    \item Choose dataset type:
+    \begin{itemize}
+        \item \textbf{ML feature dataset:} extract per-epoch feature vectors from selected channels.
+        \item \textbf{DL epoch tensor dataset:} export epoch tensors shaped for neural networks.
+    \end{itemize}
+    \item Persist arrays \texttt{x}, \texttt{y}, and \texttt{group} (subject identifier) to the job output directory.
+    \item Save a dataset summary (shapes and class/group counts) for reporting and debugging.
+\end{enumerate}
+
+\subsection{Use Case 4: Train/Test Models and Export Artifacts}
+\label{subsec:uc-train-eval}
+\textbf{Goal:} Train/test models and export both metrics and model artifacts.
+
+\textbf{Main flow:}
+\begin{enumerate}
+    \item Select a previously saved dataset (discovered under the \texttt{jobs/} directory).
+    \item Choose model type and hyperparameters.
+    \item Split data using group-aware strategies when possible (to avoid leakage across subjects).
+    \item Train and evaluate, then save: (i) model artifact, (ii) evaluation metrics JSON, and (iii) optional plots.
+\end{enumerate}
+
+\section{User Interface Design}
+\label{sec:ui-design}
+
+The interface is a notebook-embedded GUI built on \texttt{ipywidgets}. It is designed for an experiment loop:
+\textit{inspect} $\rightarrow$ \textit{adjust parameters} $\rightarrow$ \textit{execute} $\rightarrow$ \textit{export/compare}.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Schema-driven inputs:} the UI exposes two input schemas (single subject vs. cohort filter) and validates/collects fields into DTO objects.
+    \item \textbf{Mode/action catalog:} available actions are discovered from the controller’s service specs (e.g., Plot, Machine Learning, Deep Learning).
+    \item \textbf{Parameter panels:} parameter widgets are generated from parameter DTOs (filtering/epoching/training), enabling consistent configuration across runs.
+    \item \textbf{Execution paths:} actions can run inline (immediate output) or be scheduled as a background job (job directory with \texttt{spec.json}, \texttt{job.log}, and saved artifacts).
+\end{itemize}
+
+Screenshots and detailed interaction flows are shown in Chapter~\ref{ch:ai-component-design}.
+
+\section{Target and Development System}
+\label{sec:target-development-system}
+
+\subsection{Data Handling and Input Capabilities}
+\label{subsec:data-handling}
+\begin{itemize}
+    \item Load HBN-EEG from a local directory containing release folders (e.g., \texttt{cmi\_bids\_R*}) with subject directories \texttt{sub-*} and EEG files (\texttt{*\_eeg.set}).
+    \item Parse per-subject task events (\texttt{*\_events.tsv}) and metadata needed for CCD behavioral targets.
+    \item Support single-subject selection and cohort filtering using participant metadata and CCD-derived performance fields.
+    \item Cache pipeline artifacts (filtered raw, epochs, evoked) on disk with a pipeline-version stamp to prevent accidental reuse after logic changes.
+\end{itemize}
+
+\subsection{Core Processing and Modeling Requirements}
+\label{subsec:core-processing}
+\begin{itemize}
+    \item Consistent preprocessing with explicit parameters: band-pass, notch, resampling, channel selection, amplitude bounds, and cleaning thresholds.
+    \item Deterministic epoch extraction for CCD trial-aligned windows (prestimulus/ITI), including label alignment validation.
+    \item Dataset building for both ML feature vectors and DL epoch tensors.
+    \item Training/testing pipelines with repeatable split strategies; group-aware splitting should be used when sufficient subjects exist.
+\end{itemize}
+
+\subsection{User Interface and Visualization Needs}
+\label{subsec:ui-needs}
+\begin{itemize}
+    \item Plots for signal inspection (time domain previews, PSD/evoked/topographic views, and task-specific verification such as SNR where applicable).
+    \item Tables for inspection (events, channels/electrodes, metadata, and epoch summaries).
+    \item Job outputs saved to disk in a consistent directory structure so the report can reference stable file artifacts.
+\end{itemize}
+
+\subsection{Non-Functional Requirements}
+\label{subsec:non-functional}
+\begin{itemize}
+    \item \textbf{Reproducibility:} parameter DTOs (filter/epoch/train) and random seeds are saved in job specs; cached artifacts include a pipeline-version stamp.
+    \item \textbf{Traceability:} every exported artifact (plots, datasets, models) can be traced back to a job directory containing a \texttt{spec.json} and logs.
+    \item \textbf{Robustness:} the pipeline must fail fast on label/epoch alignment mismatches rather than silently producing mis-labeled training data.
+    \item \textbf{Maintainability:} modular components (participant discovery, loader, processor, services, UI) with registry-driven action discovery.
+\end{itemize}
+
+\section{Functional Requirements}
+\label{sec:functional-requirements}
+
+Table~\ref{tab:fr-summary} summarizes the functional requirements (FR) derived from the user stories and the implemented workbench design.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{ID} & \textbf{Requirement} \\
+\hline
+FR1 & The system shall accept a user-configured dataset root directory and discover available releases, subjects, tasks, and runs. \\
+\hline
+FR2 & The system shall provide two input schemas: (i) single subject selection, and (ii) cohort filtering by participant metadata and CCD-derived performance ranges. \\
+\hline
+FR3 & The system shall load raw EEG and event tables for a selected task and expose basic inspection views (plots and tables). \\
+\hline
+FR4 & The system shall apply preprocessing using explicit parameters (band-pass, notch, resample rate, channel selection, amplitude bounds, and cleaning thresholds). \\
+\hline
+FR5 & The system shall build CCD trial-aligned epochs for a user-specified window ($t_{min}$, $t_{max}$) and shall validate label alignment deterministically. \\
+\hline
+FR6 & The system shall cache intermediate artifacts (filtered raw, epochs, evoked) keyed by task/run and parameter hashes, and invalidate caches via a pipeline-version stamp. \\
+\hline
+FR7 & The system shall build and export ML feature datasets as arrays \texttt{x}, \texttt{y}, \texttt{group} and store a dataset summary for inspection. \\
+\hline
+FR8 & The system shall build and export DL epoch tensor datasets (e.g., $N\times 1\times C\times T$) with aligned labels and group identifiers. \\
+\hline
+FR9 & The system shall train/test models on saved datasets and export evaluation metrics and the trained model artifact with metadata. \\
+\hline
+FR10 & The system shall support both inline execution (notebook output) and background execution as a job with persisted specification, logs, and outputs. \\
+\hline
+\end{tabularx}
+\caption{Functional requirements summary for the EEG Workbench.}
+\label{tab:fr-summary}
+\end{table}
+
+\section{Non-Functional Requirements}
+\label{sec:nonfunctional-requirements}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{ID} & \textbf{Requirement} \\
+\hline
+NFR1 & \textbf{Reproducibility:} A run shall be reproducible from a saved job specification (input schema + params DTOs + seed) without manual notebook edits. \\
+\hline
+NFR2 & \textbf{Traceability:} Outputs shall be saved in a stable directory structure with logs so figures/tables in the report can be traced to a specific run. \\
+\hline
+NFR3 & \textbf{Data integrity:} The system shall raise an error on detected trial/label alignment mismatches, and shall avoid silently producing shifted labels. \\
+\hline
+NFR4 & \textbf{Performance:} The system should use caching and cohort batching to reduce redundant processing when iterating on parameters. \\
+\hline
+NFR5 & \textbf{Usability:} The UI shall expose sensible defaults for key parameters (e.g., filter band, channel list) and group actions into understandable modes. \\
+\hline
+NFR6 & \textbf{Maintainability/Extensibility:} New tasks (preprocessors), plots, and AI actions shall be addable through registration/DTO-driven mechanisms without rewriting the UI layer. \\
+\hline
+\end{tabularx}
+\caption{Non-functional requirements summary.}
+\label{tab:nfr-summary}
+\end{table}
+
+\section{Extensibility (Easy to Extend)}
+\label{sec:extensibility}
+
+An explicit goal of the EEG Workbench is that extending the system requires adding \textit{new modules} rather than modifying existing UI logic. This is achieved by three design choices:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Registry-driven actions (plug-in style):} plotting, ML, and DL capabilities are exposed as action registries where each new action registers a \textit{name}, a \textit{parameter DTO class}, and a \textit{handler function}. The UI reads the controller’s \texttt{spec} and automatically lists the new action.
+    \item \textbf{DTO-driven parameters:} UI parameter panels are generated from dataclass DTOs (e.g., filter/epoch/train DTOs). Adding a new parameter set does not require hand-written widget layouts.
+    \item \textbf{Task-specific preprocessors:} each dataset/task can provide its own preprocessing recipe via a lightweight registration mechanism (e.g., \texttt{register\_preprocessor(task\_name)}), so adding a new task does not require rewriting the pipeline core.
+\end{itemize}
+
+Table~\ref{tab:ext-change-cases} summarizes typical extension scenarios and the minimal change surface expected.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Change case} & \textbf{What to add} & \textbf{Why it is low effort} \\
+\hline
+EC1: Add a new plot & A new plot function + a params DTO (optional) registered into the plot action registry. & The UI reads the updated \texttt{spec} and auto-generates parameter widgets from the DTO; no UI refactor is required. \\
+\hline
+EC2: Add a new ML experiment & A new ML action registered via a decorator (name + DTO + handler) that consumes saved datasets. & Training/testing actions share common dataset discovery and job output conventions, so new actions reuse the same execution and export path. \\
+\hline
+EC3: Add a new DL model training & A new DL action with its own training DTO (batch size, epochs, learning rate, etc.) and handler. & DL actions are isolated behind the DL service; registering the action makes it available immediately in the same UI mode. \\
+\hline
+EC4: Support a new HBN task & A new task-specific preprocessor registered under a task name, including event parsing and epoch definitions. & The pipeline core calls a registered preprocessor per task; adding a new task does not require changing unrelated tasks or UI components. \\
+\hline
+\end{tabularx}
+\caption{Extensibility change cases showing how new capabilities can be added with minimal modification to existing code.}
+\label{tab:ext-change-cases}
+\end{table}
+
+\section{Traceability (Stories to Requirements)}
+\label{sec:traceability}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{User story} & \textbf{Mapped requirements} \\
+\hline
+US1 & FR1, FR2 \\
+\hline
+US2 & FR3, FR4 \\
+\hline
+US3 & FR4, FR6, NFR1 \\
+\hline
+US4 & FR5, NFR3 \\
+\hline
+US5 & FR7, FR8, FR6 \\
+\hline
+US6 & FR9, NFR2 \\
+\hline
+US7 & FR10, NFR2 \\
+\hline
+\end{tabularx}
+\caption{Traceability matrix from user stories to requirements.}
+\label{tab:traceability}
+\end{table}
 
