@@ -143,10 +143,13 @@ Validation focuses on preventing misleading results caused by data issues or lea
 \label{subsec:performance-results}
 Model results are reported using target-appropriate metrics:
 \begin{itemize}
-    \item \textbf{RT regression:} MAE and MSE.
+    \item \textbf{RT regression:} MAE, MSE, and and coefficient of determination (R²)
     \item \textbf{Correctness classification:} accuracy, F1-score, precision, and recall.
+    \item \textbf{Training dynamics:} training loss and validation loss across epochs
 \end{itemize}
-In addition to metrics, the evaluation includes qualitative checks (prediction vs. ground truth plots, error distribution summaries) to support interpretation.
+These metrics are generated during model training and presented through training logs and visualizations, allowing users to monitor both model accuracy and generalization performance.
+
+The use of validation-based metrics ensures that model performance is assessed on unseen data, supporting reliable evaluation and reducing the risk of overfitting.
 
 \pagebreak
 %5.5
@@ -154,7 +157,8 @@ In addition to metrics, the evaluation includes qualitative checks (prediction v
 \label{sec:ux-ai}
 
 The platform follows a research-oriented workflow where users first inspect signals before executing machine learning models.
-To support this process, the interface uses a \textbf{mode-action} structure.
+To support this process, the interface uses a \textbf{mode-action} structure, and additionally provides flexible 
+\textbf{subject selection and filtering} to accommodate both single-subject inspection and cohort-level analysis.
 
 \vspace{1em}
 \noindent\textbf{Interface Overview:}
@@ -167,7 +171,26 @@ The interface contains four primary operational modes:
     \item \textbf{AI Mode:} — machine learning experimentation
 \end{itemize}
 
-Each mode exposes only relevant actions.
+Each mode exposes only the actions relevant to the selected context, and all user actions are logged to support transparency and reproducibility.
+
+\begin{itemize}
+    \item \textbf{Subject Selection and Filtering}
+    Users can choose between two primary input types:
+    \begin{itemize}
+        \item \textbf{Single Subject:} 
+        \begin{itemize}
+            \item User selects an individual participant and task.
+            \item All mode actions are executed for the selected subject only.
+            \item This mode is ideal for detailed inspection or troubleshooting of individual EEG recordings.
+        \end{itemize}
+        \item \textbf{Cohort Filter (Meta Filter):} 
+        \begin{itemize}
+            \item User defines filters across attributes: sex, age range, attention, internalizing/externalizing scores, CCD accuracy, response time.
+            \item Optional ``Per Subject'' toggle for applying filters individually or collectively.
+            \item This mode enables exploratory data analysis and large-scale EEG studies without manual participant selection.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
 
 \vspace{2em}
 \noindent\textbf{Visualization and Inspection Modes}
@@ -211,35 +234,75 @@ Available actions include:
 
 \subsection{AI Interaction Mode}
 
-AI Mode enables machine learning experimentation using the prepared EEG data.
+AI Mode enables machine learning experimentation using the prepared EEG data. The interface provides a set of interrelated actions that support an iterative workflow from dataset construction to model training and analysis.
 
 Available actions include:
 
 \begin{itemize}
-    \item Training
-    \item Prediction
-    \item Evaluation
-    \item Model Comparison
+    \item Build Dataset
+    \item TrainEEGNetMultiRegression
+    \item Model Summary
 \end{itemize}
 
 \vspace{1em}
 \noindent\textbf{System Behavior:}
-Upon user interaction, the backend automatically executes preprocessing, training, evaluation, and result generation.
-Logs, graphs, and final metrics are dynamically updated and available for export.
+These actions are interdependent: dataset construction is required before training, and the model summary reflects the structure of the model. Performance metrics are generated during training and updated dynamically.
+
+Logs and outputs are available for inspection and export, supporting transparency and reproducibility.
+
+This design emphasizes transparency by exposing intermediate training metrics directly through logs rather than abstracted summaries.
 
 \vspace{1em}
 \noindent\textbf{Feedback Loop:}
 inspect → adjust → train → evaluate → compare → refine
 
-Researchers can rapidly modify dataset selections and rerun experiments without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
+Researchers can iteratively adjust dataset configurations,rerun experiments, and retrain models without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
 
+\vspace{2em}
 \noindent\textbf{Interface Screenshots:}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/ui/EEGUI}
-    \caption{React Notebook Interface – Model visualization and execution}
+    \includegraphics[width=0.95\textwidth,height=0.999\textheight]{figures/ui/EEGUI}
+    \caption{React Notebook Interface – Model visualization and execution for single subject}
     \label{fig:ui_react_notebook}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth,height=0.999\textheight]{figures/ui/EEGUI_cohort}
+    \caption{React Notebook Interface – Model visualization and execution for multi subject}
+    \label{fig:ui_react_notebook_cohort}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/ui/EEGUI_cohort_2}
+    \caption{React Notebook Interface – Model visualization and execution for multi subject (2)}
+    \label{fig:ui_react_notebook_cohort_2}
+\end{figure}
+
+%Sensor & Time Domain
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/plot/sensor.png}
+    \caption{Sensor layout}
+    \label{fig:plot_sensor}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/plot/time_domain.png}
+    \caption{Time-domain signal}
+    \label{fig:plot_time_domain}
+\end{figure}
+
+%Frequency
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/plot/frequency.png}
+    \caption{Frequency spectrum}
+    \label{fig:plot_frequency}
 \end{figure}
 
 %Evoked & Epoch Plots
@@ -259,9 +322,9 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_grid.png}
-    \caption{Evoked grid view}
-    \label{fig:plot_evoked_grid}
+    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_topo.png}
+    \caption{Evoked topomap}
+    \label{fig:plot_evoked_topo}
 \end{figure}
 
 \begin{figure}[H]
@@ -273,26 +336,20 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_topo.png}
-    \caption{Evoked topomap}
-    \label{fig:plot_evoked_topo}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \includegraphics[width=0.9\textwidth]{figures/plot/evoked_per_condition.png}
     \caption{Evoked per condition}
     \label{fig:plot_evoked_per_condition}
 \end{figure}
 
-%Frequency & Spectral Analysis
+% SNR Spectrum
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/frequency.png}
-    \caption{Frequency spectrum}
-    \label{fig:plot_frequency}
+    \includegraphics[width=0.9\textwidth]{figures/plot/snr_spectrum.png}
+    \caption{Signal-to-noise ratio spectrum}
+    \label{fig:plot_snr_spectrum}
 \end{figure}
 
+%Frequency & Spectral Analysis
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/plot/psd_grid.png}
@@ -302,59 +359,60 @@ Researchers can rapidly modify dataset selections and rerun experiments without 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/snr_spectrum.png}
-    \caption{Signal-to-noise ratio spectrum}
-    \label{fig:plot_snr_spectrum}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \includegraphics[width=0.9\textwidth]{figures/plot/snr_grid.png}
     \caption{Signal-to-noise ratio grid}
     \label{fig:plot_snr_grid}
 \end{figure}
 
-%Sensor & Time Domain
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/sensor.png}
-    \caption{Sensor layout}
-    \label{fig:plot_sensor}
+    \includegraphics[width=0.9\textwidth]{figures/plot/evoked_grid.png}
+    \caption{Evoked grid view}
+    \label{fig:plot_evoked_grid}
+\end{figure}
+
+% Data Table
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/table/eeg_table.png}
+    \caption{EEG Table}
+    \label{fig:eeg_table}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/plot/time_domain.png}
-    \caption{Time-domain signal}
-    \label{fig:plot_time_domain}
+    \includegraphics[width=0.9\textwidth]{figures/table/epochs_table.png}
+    \caption{Epochs Table}
+    \label{fig:epochs_table}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/ui/train_model}
-    \caption{Training Interface – Dataset selection, model configuration, and training log}
-    \label{fig:ui_train_model}
+    \includegraphics[width=0.9\textwidth]{figures/table/metadata_table.png}
+    \caption{Metadata Table}
+    \label{fig:metadata_table}
+\end{figure}
+
+% AI Table
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/table/build_dataset_table.png}
+    \caption{Build Dataset Table}
+    \label{fig:build_dataset_table}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/ui/predict_model}
-    \caption{Prediction Interface – Uploading input data and viewing predicted RT and accuracy}
-    \label{fig:ui_predict_model}
+    \includegraphics[width=0.9\textwidth,height=0.95\textheight]{figures/table/train_eeg_table.png}
+    \caption{Train EEGMultiNetRegression Table}
+    \label{fig:train_eeg_table}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/ui/evaluate_model}
-    \caption{Evaluation Interface – Upload trained model and view performance metrics and curve}
-    \label{fig:ui_evaluate_model}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/ui/compare_model}
-    \caption{Comparison Interface – Visual comparison between model configurations}
-    \label{fig:ui_compare_mode}
+    \includegraphics[width=0.9\textwidth]{figures/table/model_summary_table.png}
+    \caption{Model Summary Table}
+    \label{fig:model_summary_table}
 \end{figure}
 
 \FloatBarrier
@@ -383,7 +441,6 @@ Technologies used:
     \item TensorFlow — neural network execution
     \item scientific Python libraries — preprocessing and evaluation
 \end{itemize}
-
 
 
 The frontend web system replaces manual notebook execution and allows controlled interaction with the EEG pipeline,
