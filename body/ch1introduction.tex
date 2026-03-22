@@ -141,6 +141,21 @@ Finally, the integration of machine learning experimentation within the same env
 %     \item Extend modeling to additional feature families after verifying label quality.
 % \end{itemize}
 
+\section{Scope of the Study}
+\label{sec:scope}
+
+This study focuses on the design and development of an interactive EEG analysis platform that supports data exploration, preprocessing, visualization, and machine learning experimentation within a unified workflow. The system is intended to facilitate efficient analysis of multi-subject EEG datasets, particularly those structured in standardized formats such as BIDS.
+\vspace{0.5em}
+
+The scope of the platform includes functionality for single-subject inspection and cohort-level analysis through flexible filtering mechanisms. It also supports the configuration and execution of preprocessing pipelines, as well as model training and basic evaluation using metrics such as training loss, validation loss, mean absolute error (MAE), and coefficient of determination ($R^2$).
+\vspace{0.5em}
+
+The platform is demonstrated using the Healthy Brain Network EEG (HBN-EEG) dataset, with a focus on behavioral prediction tasks, including contrast change detection (CCD). This serves as a representative use case to validate the system’s capability in supporting real-world EEG research workflows.
+\vspace{0.5em}
+
+However, this study does not aim to develop or optimize state-of-the-art machine learning models. The performance of predictive models is not the primary focus, and the platform is designed to be model-agnostic. Additionally, the system does not address real-time EEG processing, clinical validation, or deployment in medical environments.
+
+
 \section{Terminology}
 \label{sec:terminology}
 
