@@ -8,107 +8,138 @@ This chapter introduces the motivation for prestimulus EEG-based behavioral pred
 \section{Background}
 \label{sec:background}
 
-Understanding how brain activity relates to behavioral performance is a central goal in cognitive neuroscience and applied EEG research. A practical question is whether measurable EEG patterns can be used to predict how well a person will perform a task, such as how quickly they respond (reaction time) and whether the response is correct (accuracy).
+Electroencephalography (EEG) is widely used in neuroscience and brain-computer interface (BCI) research to study brain activity with high temporal resolution. Modern EEG datasets, such as those following the Brain Imaging Data Structure (BIDS), often contain large volumes of multi-subject recordings with complex experimental conditions. Analyzing such data typically involves multiple stages, including signal inspection, preprocessing, feature extraction, and model development.
+\vspace{0.5em}
 
-From a software engineering perspective, EEG modeling work is often carried out through iterative exploration in notebooks and scripts. While this is effective for rapid prototyping, it can lead to inconsistent preprocessing, unclear experiment configurations, and results that are difficult to reproduce or compare across runs. A structured software workflow (data loading, preprocessing, feature extraction, training, evaluation, and visualization) helps make experimentation traceable and repeatable, especially when multiple targets and evaluation settings are involved.
+In current research practice, these workflows are commonly implemented using notebook-based environments. While flexible, this approach requires manual scripting for each step, leading to fragmented processes and limited reproducibility. Researchers must repeatedly configure preprocessing pipelines, adjust parameters, and re-run computations, which becomes increasingly inefficient as dataset size and complexity grow.
+\vspace{0.5em}
 
-This work uses the Healthy Brain Network EEG (HBN-EEG) dataset, which provides 128-channel EEG recordings across multiple tasks and is distributed in BIDS format with HED annotations to support reproducible analysis. The dataset is provided through the EEG Foundation Challenge (EEG2025), and we use it as the data source while keeping the research question and system design goals driven by this project.\footnote{See \cite{eeg_foundation_challenge_2025,hbn_fair_2024}.}
+Furthermore, tasks such as comparing signals across subjects or exploring cohort-level patterns require additional manual effort. As a result, the overall workflow becomes time-consuming and computationally expensive, often requiring significant hardware resources for repeated execution.
+\vspace{0.5em}
+
+This work utilizes the Healthy Brain Network EEG (HBN-EEG) dataset, which provides high-density 128-channel recordings across multiple experimental tasks. The dataset is distributed in BIDS format and incorporates Hierarchical Event Descriptors (HED), supporting standardized and reproducible EEG analysis. It is provided through the EEG Foundation Challenge (EEG2025), highlighting the growing need for scalable and efficient analysis tools. \footnote{See \cite{eeg_foundation_challenge_2025,hbn_fair_2024}.}
 
 \section{Problem Statement}
 \label{sec:problem-statement}
 
-A key challenge in EEG-based behavioral prediction is that the most informative signals are often tied to the task timeline, while the available data for modeling may be restricted to short windows that occur before a response is made. This motivates a constrained setting: can prestimulus EEG alone predict how well a person will perform?
+Despite the availability of powerful EEG processing libraries, the current workflow for EEG data analysis remains inefficient and difficult to scale. The reliance on notebook-based pipelines introduces several key challenges.
+\vspace{0.5em}
 
-In practice, addressing this question also requires reliable software support. The workflow must ensure consistent event parsing, trial alignment, preprocessing, and evaluation reporting; otherwise, differences in scripts or notebook state can lead to misleading comparisons or irreproducible results. Therefore, the problem is both methodological (define a valid prestimulus prediction setting) and engineering-focused (implement a reproducible pipeline and interface that makes the setting easy to run and verify).
+First, setting up and executing preprocessing and analysis pipelines requires substantial time and effort. Even minor changes in parameters often necessitate re-running the entire computation, resulting in slow iteration cycles.
+\vspace{0.5em}
 
-In this project, we study this question using the Contrast Change Detection (CCD) task in HBN-EEG, a visual task with periodic stimulation and trial-wise behavioral labels. Under the available data constraints, the prestimulus window can be restricted to the short rest time between two trials (i.e., the period after one response ends and before the next trial begins). This rest period is commonly referred to as the \textit{inter-trial interval (ITI)}. The problem is therefore to determine whether information present in the 2-second CCD-ITI segment is sufficient to predict (1) reaction time as a continuous outcome and (2) response correctness as a binary outcome.
+Second, existing workflows provide limited support for systematic comparison across subjects. Researchers must manually select and process individual datasets, making cohort-level analysis cumbersome and error-prone.
+\vspace{0.5em}
+
+Third, the computational cost associated with repeated preprocessing and model experimentation can be high. This not only slows down research progress but also may require significant computational resources.
+\vspace{0.5em}
+
+These limitations hinder efficient exploration of EEG data and slow down the development of machine learning models for tasks such as behavioral prediction
+
 
 \section{Solution Overview}
 \label{sec:solution-overview}
 
-This project proposes a software-supported workflow for prestimulus behavioral prediction from CCD-ITI EEG segments. The solution consists of a reproducible experimentation pipeline and a lightweight interface for running and comparing experiments.
+To address these challenges, this thesis proposes an interactive EEG analysis platform designed to streamline the research workflow from data inspection to model experimentation.
+\vspace{0.5em}
 
-At a high level, the workflow is:
+The platform integrates data selection, preprocessing, visualization, and machine learning experimentation into a unified, parameter-driven workflow. By centralizing these functionalities, the system enables users to perform complex analysis tasks without relying on manual scripting.
+\vspace{0.5em}
 
-signal inspection $\rightarrow$ dataset construction $\rightarrow$ preprocessing and feature extraction $\rightarrow$ model training $\rightarrow$ evaluation and reporting.
+A key design feature of the platform is the mode-action interface, which organizes functionality into four primary operational modes: Plot Mode, Grid Plot Mode, Data Mode, and AI Mode. Each mode provides context-specific actions, allowing users to focus on relevant tasks while maintaining a structured workflow.
+\vspace{0.5em}
 
-The pipeline focuses on two behavioral targets:
-\begin{itemize}
-    \item \textbf{Reaction time (RT):} a regression target.
-    \item \textbf{Response correctness:} a binary classification target.
-\end{itemize}
+The platform also supports flexible subject selection and cohort filtering. Users can perform detailed analysis on individual subjects or apply attribute-based filters to explore patterns across multiple participants. This capability facilitates both fine-grained inspection and large-scale exploratory analysis.
+\vspace{0.5em}
 
-To support fair comparison across runs, the solution standardizes key steps (trial alignment, preprocessing parameters, feature extraction routines, and evaluation metrics). Results are reported using appropriate metrics (e.g., MAE/MSE for RT; accuracy, F1-score, precision, and recall for correctness), together with signal-verification plots (e.g., SNR spectra) that validate steady-state characteristics in the CCD task.
+In addition, the platform provides integrated support for machine learning experimentation, including model training and basic evaluation. This allows users to iteratively refine models within the same environment used for data exploration.
+\vspace{0.5em}
 
-\subsection{Prominent Features}
-\label{subsec:prominent-features}
+Overall, the system is designed to enable more efficient iteration during EEG research by reducing reliance on repetitive notebook-based processes.
 
-\begin{itemize}
-    \item \textbf{Reproducible end-to-end pipeline:} consistent data loading, trial alignment, preprocessing, and evaluation across experiments.
-    \item \textbf{Dual-target experimentation:} unified support for RT regression and correctness classification under the same data constraints.
-    \item \textbf{Signal verification:} built-in plots (e.g., SNR spectra) to connect modeling results to measurable EEG characteristics.
-    \item \textbf{Experiment comparability:} consistent metric reporting and exported artifacts (figures/tables) to support the final report.
-\end{itemize}
+% Move to ch5
+% \subsection{Prominent Features}
+% \label{subsec:prominent-features}
 
-\subsection{Optional Features}
-\label{subsec:optional-features}
+% \begin{itemize}
+%     \item \textbf{Reproducible end-to-end pipeline:} consistent data loading, trial alignment, preprocessing, and evaluation across experiments.
+%     \item \textbf{Dual-target experimentation:} unified support for RT regression and correctness classification under the same data constraints.
+%     \item \textbf{Signal verification:} built-in plots (e.g., SNR spectra) to connect modeling results to measurable EEG characteristics.
+%     \item \textbf{Experiment comparability:} consistent metric reporting and exported artifacts (figures/tables) to support the final report.
+% \end{itemize}
 
-\begin{itemize}
-    \item \textbf{Model registry and configuration presets:} reusable experiment configurations for faster iteration.
-    \item \textbf{Automated integrity checks:} dataset-level checks for corrupted trials, event ordering, and label alignment.
-    \item \textbf{Extended model families:} optional deep or hybrid models once data alignment is verified.
-\end{itemize}
+% \subsection{Optional Features}
+% \label{subsec:optional-features}
+
+% \begin{itemize}
+%     \item \textbf{Model registry and configuration presets:} reusable experiment configurations for faster iteration.
+%     \item \textbf{Automated integrity checks:} dataset-level checks for corrupted trials, event ordering, and label alignment.
+%     \item \textbf{Extended model families:} optional deep or hybrid models once data alignment is verified.
+% \end{itemize}
 
 \section{Target User}
 \label{sec:target-user}
 
-The primary target users are students and researchers who want to run EEG experiments with a traceable workflow. The system is also suitable for developers who need a maintainable codebase for iterating on preprocessing and modeling, without relying on a collection of notebook versions.
+The platform is designed for researchers and students working in fields related to neuroscience, brain-computer interfaces (BCI), and EEG data analysis. These users typically require tools for inspecting neural signals, preparing datasets, and developing machine learning models for experimental tasks.
+\vspace{1em}
+
+The system is particularly beneficial for individuals who work with multi-subject EEG datasets and require efficient methods for comparing signals and conducting exploratory analysis.
 
 \section{Benefit}
 \label{sec:benefit}
 
-The main benefits of the solution are:
-\begin{itemize}
-    \item \textbf{Reduced experiment fragmentation:} fewer ``hidden state'' issues compared with ad-hoc notebook execution.
-    \item \textbf{Repeatable evaluation:} consistent splits, parameters, and metrics make results easier to validate and compare.
-    \item \textbf{Clear reporting artifacts:} figures and tables can be regenerated from the same inputs, supporting the final deliverables.
-\end{itemize}
+\noindent
+The proposed platform offers several key benefits.
+\vspace{0.5em}
 
-\section{Timeline and Competency-Based Learning Pathway}
-\label{sec:timeline-and-learning}
+First, it helps reduce the time required for EEG data analysis by minimizing repetitive manual scripting. Users can perform data selection, preprocessing, and visualization through an integrated interface, supporting faster iteration.
+\vspace{0.5em}
 
-The project was executed in incremental milestones. Each milestone produced a verifiable artifact (code, plots, tables, or report sections) and developed competencies needed for later stages.
+Second, the platform improves usability by providing a structured workflow through its mode-action design. This reduces complexity and helps users focus on specific analysis tasks.
+\vspace{0.5em}
 
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|l|X|X|}
-\hline
-\textbf{Phase} & \textbf{Milestone} & \textbf{Competency Developed} \\
-\hline
-1 & Dataset understanding and CCD event alignment & BIDS/HED event handling, trial construction, data sanity checks \\
-\hline
-2 & Preprocessing and signal verification & MNE-based preprocessing, epoching, SNR spectra interpretation \\
-\hline
-3 & Feature extraction and baselines & Feature engineering, leakage-aware splits, reproducible evaluation \\
-\hline
-4 & Dual-target modeling and reporting & Regression vs. classification evaluation, metric reporting, error analysis \\
-\hline
-5 & Software packaging and interface documentation & Layered design, experiment configuration, UI/API documentation \\
-\hline
-\end{tabularx}
-\caption{Timeline and competency-based learning pathway.}
-\label{tab:timeline-learning}
-\end{table}
+Third, the system enhances reproducibility by maintaining a parameter-driven workflow and logging user actions. This ensures that analysis steps can be consistently replicated.
+\vspace{0.5em}
 
-\subsection{Stretch Goals}
-\label{subsec:stretch-goals}
+Finally, the integration of machine learning experimentation within the same environment allows users to seamlessly transition from data exploration to model development. This unified approach supports more efficient research workflows, particularly for tasks involving behavioral prediction from EEG signals.
 
-If additional time is available, the next improvements focus on increasing reliability and usability:
-\begin{itemize}
-    \item Add automated dataset integrity checks and warnings.
-    \item Add cross-run experiment tracking (configuration + results) for easier comparisons.
-    \item Extend modeling to additional feature families after verifying label quality.
-\end{itemize}
+% Move to ch6
+
+% \section{Timeline and Competency-Based Learning Pathway}
+% \label{sec:timeline-and-learning}
+
+% The project was executed in incremental milestones. Each milestone produced a verifiable artifact (code, plots, tables, or report sections) and developed competencies needed for later stages.
+
+% \begin{table}[H]
+% \centering
+% \begin{tabularx}{\textwidth}{|l|X|X|}
+% \hline
+% \textbf{Phase} & \textbf{Milestone} & \textbf{Competency Developed} \\
+% \hline
+% 1 & Dataset understanding and CCD event alignment & BIDS/HED event handling, trial construction, data sanity checks \\
+% \hline
+% 2 & Preprocessing and signal verification & MNE-based preprocessing, epoching, SNR spectra interpretation \\
+% \hline
+% 3 & Feature extraction and baselines & Feature engineering, leakage-aware splits, reproducible evaluation \\
+% \hline
+% 4 & Dual-target modeling and reporting & Regression vs. classification evaluation, metric reporting, error analysis \\
+% \hline
+% 5 & Software packaging and interface documentation & Layered design, experiment configuration, UI/API documentation \\
+% \hline
+% \end{tabularx}
+% \caption{Timeline and competency-based learning pathway.}
+% \label{tab:timeline-learning}
+% \end{table}
+
+% \subsection{Stretch Goals}
+% \label{subsec:stretch-goals}
+
+% If additional time is available, the next improvements focus on increasing reliability and usability:
+% \begin{itemize}
+%     \item Add automated dataset integrity checks and warnings.
+%     \item Add cross-run experiment tracking (configuration + results) for easier comparisons.
+%     \item Extend modeling to additional feature families after verifying label quality.
+% \end{itemize}
 
 \section{Terminology}
 \label{sec:terminology}
