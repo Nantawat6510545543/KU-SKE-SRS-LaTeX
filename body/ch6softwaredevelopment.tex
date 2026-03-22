@@ -7,8 +7,9 @@ This chapter documents how the software was developed to support the project’s
 
 \section{Software Development Methodology}
 \label{sec:software-development-methodology}
-This project was developed using an iterative, milestone-driven workflow.
-The core goal was to implement a reproducible pipeline for prestimulus EEG-based behavioral prediction on the HBN-EEG dataset (CCD ITI segments), and to support rapid experimentation with preprocessing and modeling choices.
+The development of the proposed EEG analysis platform follows an Agile software development methodology. Agile emphasizes iterative development, flexibility, and continuous improvement, making it well-suited for research-oriented systems where requirements may evolve over time.
+
+In the context of this project, Agile supports incremental implementation of system features, allowing the platform to be gradually refined based on testing and usability considerations. This approach is particularly appropriate for EEG data analysis systems, where workflows often require adjustment as new insights are gained during development.
 
 The development process followed four repeating steps:
 \begin{enumerate}[label=\textbf{M\arabic*.}, leftmargin=*]
@@ -25,41 +26,18 @@ To keep the work aligned with the project scope, the model development emphasize
 	\item \textbf{Reproducibility} through deterministic preprocessing parameters, fixed random seeds, and consistent evaluation scripts.
 \end{itemize}
 
-\subsection{Architecture and Patterns}
-\label{subsec:architecture-and-patterns}
-The software is organized to keep experiment logic, UI interaction, and data processing decoupled.
-In practice, the implementation follows a layered structure and applies a small set of design patterns that make experimentation and extension safer:
-\begin{itemize}[leftmargin=*]
-	\item \textbf{Layered architecture:} controller $\rightarrow$ services $\rightarrow$ models $\rightarrow$ pipeline $\rightarrow$ cache.
-	\item \textbf{MVC-ish separation:} Views (EEG UI) focus on interaction and rendering; the Controller orchestrates actions; Models represent cohorts/tasks and their derived artifacts.
-	\item \textbf{Facade pattern:} an \texttt{EEGController} provides a single entry point for common workflows (load data, preprocess, featurize, train, evaluate), hiding internal complexity.
-	\item \textbf{DTOs (Data Transfer Objects):} small, explicit data containers are used when passing results between layers (e.g., feature tables, prediction outputs, and metric summaries).
-	\item \textbf{Dependency Injection / Inversion of Control:} the controller injects service dependencies (e.g., via callbacks and class factories), improving testability and enabling swapping implementations.
-	\item \textbf{Registry/Plugin + Command-style actions:} actions are decorator-registered and invoked by key, enabling extensible UI commands without hard-coding control flow.
-	\item \textbf{Strategy pattern:} task-specific preprocessors are implemented per task type, so CCD ITI rules can differ from other task types without branching throughout the codebase.
-	\item \textbf{Composite/Aggregation:} an \texttt{EEGCohortModel} aggregates multiple \texttt{EEGTaskModel} instances to support cohort-level evaluation.
-	\item \textbf{Interfaces/Protocols:} a \texttt{TaskLike} interface (or protocol) standardizes what a task model must provide to downstream pipeline components.
-	\item \textbf{Factory pattern:} loaders/processors are created through injectable factories, allowing dataset variants and preprocessing configurations to be selected at runtime.
-	\item \textbf{Cache-aside with versioned file cache:} \texttt{CacheKey}/\texttt{LocalCache} implement a cache-aside policy so expensive steps (e.g., extracted windows/features) are reused safely across runs.
-	\item \textbf{Lazy loading:} raw signals/events are loaded on demand; derived objects (e.g., epochs/features) are computed only when required.
-	\item \textbf{Separation of concerns:} loader vs.
-processor responsibilities are split; UI vs.
-batch runs share the same underlying services.
-\end{itemize}
-
 \section{Technology Stack}
 \label{sec:technology-stack}
-The implementation combines a Python-based machine learning pipeline with a lightweight user-facing interface and a \LaTeX{} report workflow.
+The platform is implemented using a combination of modern web technologies and scientific computing libraries, chosen to support both user interaction and EEG data processing.
 
 \begin{itemize}[leftmargin=*]
-	\item \textbf{Programming language:} Python (data processing, feature extraction, modeling, evaluation).
-	\item \textbf{Scientific computing:} NumPy and Pandas for array/dataframe operations.
-	\item \textbf{EEG processing:} MNE-Python for signal handling and standard EEG preprocessing utilities.
-	\item \textbf{Machine learning:} scikit-learn for classical models and metrics; PyTorch for neural models (when applicable).
-	\item \textbf{Visualization:} Matplotlib/Seaborn for static plots; Plotly for interactive exploration.
-	\item \textbf{User interface (documentation/prototype):} a React-based notebook-style UI used to visualize signals, preview tabular features, and record experiment notes.
-	\item \textbf{Version control:} Git for change tracking and branching.
-	\item \textbf{Report tooling:} \LaTeX{} (TeX Live) with \texttt{latexmk} to automate multi-pass builds (cross-references and bibliography).
+  \item \textbf{Frontend:} Developed using React with TypeScript, providing a responsive and structured user interface for interacting with the system.
+  \item \textbf{Backend:} Implemented using FastAPI in Python, which handles API requests, data processing, and communication between system components.
+  \item \textbf{EEG data processing:} Utilizes the MNE library, which provides tools for handling EEG data in standardized formats such as BIDS.
+  \item \textbf{Artifact removal:} Employs the ASRpy library to support artifact removal through the Artifact Subspace Reconstruction method.
+  \item \textbf{Data manipulation and computation:} Performed using NumPy and Pandas.
+  \item \textbf{Data visualization:} Generates visual representations using Matplotlib.
+  \item \textbf{Version control:} Git for change tracking and branching.
 \end{itemize}
 
 \section{Coding Standards}

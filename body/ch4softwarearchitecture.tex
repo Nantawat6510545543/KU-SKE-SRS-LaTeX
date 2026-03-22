@@ -5,6 +5,31 @@
 This chapter presents the software architecture that supports reproducible EEG experimentation in this project. It describes a layered architecture, the main execution flow, the AI processing pipeline, and the key data schemas used to make runs traceable and repeatable.
 \vspace{1em}
 
+\section{Software Architecture}
+\label{sec:software-architecture}
+
+The system is designed using a \textbf{layered client–server architecture}, consisting of a React-based frontend and a FastAPI backend. The backend is implemented as a modular monolith, where functionalities are organized into domain-specific modules such as API handling, data processing, visualization, and machine learning.
+\vspace{0.5em}
+
+At its core, the system follows a \textbf{pipeline-oriented architecture}, where EEG data is processed through sequential stages (e.g., preprocessing, epoch extraction, and feature generation). This structure enables reproducibility and flexible recomputation when parameters change.
+
+\section{Design Patterns}
+\label{sec:design-patterns}
+
+To ensure a modular and extensible architecture capable of handling high-throughput data, the following design patterns were implemented:
+\vspace{0.5em}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Pipeline Pattern:} EEG processing workflow
+    \item \textbf{Facade Pattern:} API endpoints
+    \item \textbf{Strategy Pattern:} parameter-driven behavior
+    \item \textbf{Factory Pattern:} model instantiation
+    \item \textbf{Registry Pattern:} task preprocessor selection
+    \item \textbf{Observer Pattern:} WebSocket progress updates
+    \item \textbf{Repository Pattern:} structured EEG cache
+    \item \textbf{Composite Pattern:} Pipeline Session is a combination of schemas
+\end{itemize}
+
 \section{Domain Model}
 \label{sec:domain-model}
 
@@ -46,7 +71,6 @@ The \textbf{Core module} (app/core) manages configuration and dataset loading. I
 The \textbf{Pipeline module} (app/pipeline) implements the core EEG processing logic. It receives raw EEG data and applies preprocessing steps such as filtering, resampling, and epoching. This module also interacts with the caching mechanism to store and retrieve intermediate results.
 \vspace{0.5em}
 
-\noindent
 The \textbf{Visualization module} (app/plots) contains submodules for different types of outputs:
 
 \begin{itemize}[leftmargin=*]
