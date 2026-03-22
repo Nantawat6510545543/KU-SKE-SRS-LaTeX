@@ -5,44 +5,22 @@
 This chapter defines the requirements for the \,\textit{EEG Workbench}\, software used in this project. The system is implemented as a notebook-first, Python-based tool (\texttt{eegkit}) that orchestrates loading HBN-EEG (BIDS-like releases), preprocessing, CCD trial/ITI epoching, dataset building, model training, and export of plots/tables/models. The focus is not only to “run experiments”, but to make every run reproducible and auditable through cached pipeline artifacts and on-disk job specifications.
 \vspace{1em}
 
-\section{Scope and System Context}
-\label{sec:scope-context}
-
-\subsection{In-scope}
-\label{subsec:in-scope}
-\begin{itemize}[leftmargin=*]
-    \item Notebook-based user interface for selecting an input (single subject or cohort filter), choosing an action (plotting, dataset building, training), and executing it inline or as a background job.
-    \item Deterministic preprocessing and epoch extraction for CCD trial-aligned windows (including prestimulus/ITI windows), with explicit parameters (filter band, notch, resampling, channel selection, cleaning thresholds, $t_{min}$/$t_{max}$).
-    \item Dataset building for: (i) classical ML feature vectors, and (ii) DL-ready epoch tensors.
-    \item Model training/testing workflows that save model artifacts and evaluation summaries.
-    \item Artifact export for reporting: figures, tables, metrics JSON, and run specifications.
-\end{itemize}
-
-\subsection{Out-of-scope}
-\label{subsec:out-of-scope}
-\begin{itemize}[leftmargin=*]
-    \item Clinical decision support, diagnosis, or any medical claim.
-    \item Real-time/online BCI operation.
-    \item Data collection; the tool assumes an existing on-disk HBN-EEG release structure.
-\end{itemize}
-
 \section{Stakeholder Analysis}
 \label{sec:stakeholder-analysis}
 
-\subsection{Primary Stakeholders}
-\label{subsec:primary-stakeholders}
-\begin{itemize}
-    \item \textbf{Student developer/researcher:} needs a maintainable workflow to iterate on preprocessing, feature extraction, and models without losing reproducibility.
-    \item \textbf{Advisor/reviewer:} needs traceable methodology, clear deliverables, and confidence that reported results can be regenerated from saved specifications.
-\end{itemize}
+The primary stakeholders of the proposed EEG analysis platform are researchers and students working in fields related to neuroscience, brain-computer interfaces (BCI), and EEG data analysis.
+\vspace{0.5em}
 
-\subsection{Secondary Stakeholders}
-\label{subsec:secondary-stakeholders}
-\begin{itemize}
-    \item \textbf{Future maintainers:} may extend the workflow to additional HBN tasks, alternative epoch definitions, or new models.
-    \item \textbf{Dataset providers:} benefit indirectly from correct use of BIDS/HED conventions and clear documentation of assumptions.\footnote{\cite{hbn_fair_2024,eeg_eye_tracking_2017}.}
-    \item \textbf{Teaching staff / examiners:} need a demonstrable software deliverable whose results and figures can be reproduced.
-\end{itemize}
+Researchers use the platform to conduct EEG data analysis, including signal inspection, preprocessing, and machine learning experimentation. Their work often involves multi-subject datasets and requires efficient tools for both individual and cohort-level analysis. Reproducibility and transparency are also critical, as experimental results must be consistent and verifiable.
+\vspace{0.5em}
+
+Students use the platform for learning, experimentation, and project development. They often face challenges when working with complex EEG processing pipelines and scripting-based environments. The platform supports their needs by providing an interactive and structured interface that reduces technical barriers while still enabling advanced analysis capabilities.
+\vspace{0.5em}
+
+In addition to primary stakeholders, the system also serves secondary stakeholders, such as machine learning practitioners or developers working with EEG data. These users may utilize the platform to prototype models, test data processing pipelines, or integrate new algorithms into the workflow. While they are not the main target users, the platform provides sufficient flexibility to support their experimentation needs.
+\vspace{0.5em}
+
+Overall, the system is designed to support both experienced users and learners by simplifying EEG data workflows while maintaining the flexibility required for research and development.
 
 \section{Users and Interaction Modes}
 \label{sec:users-interaction-modes}
@@ -56,7 +34,8 @@ The workbench supports two interaction modes that correspond directly to the UI 
 \section{User Stories}
 \label{sec:user-stories}
 
-The following user stories capture the expected interactions with the system.
+The following user stories describe the expected interactions between users and the system. These scenarios capture key functionalities required to support EEG data analysis and machine learning workflows.
+
 \begin{itemize}[leftmargin=*]
     \item \textbf{US1 (Configure and load):} As a user, I want to point the tool to the HBN-EEG data directory and discover available subjects/tasks so that I can start analysis without manual path edits.
     \item \textbf{US2 (Inspect quality):} As a researcher, I want to preview raw/filtered EEG and view event tables so that I can verify signal quality and event integrity.
@@ -141,16 +120,31 @@ The primary actor is the \textit{Researcher}. The main use cases are: (1) config
 \section{User Interface Design}
 \label{sec:ui-design}
 
-The interface is a notebook-embedded GUI built on \texttt{ipywidgets}. It is designed for an experiment loop:
-\textit{inspect} $\rightarrow$ \textit{adjust parameters} $\rightarrow$ \textit{execute} $\rightarrow$ \textit{export/compare}.
+The platform adopts a research-oriented interface design that aligns with the typical EEG analysis workflow. The interface is structured using a mode-action approach, where functionality is organized into context-specific operational modes.
+\vspace{0.5em}
+
+\noindent
+The system provides four primary modes:
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Schema-driven inputs:} the UI exposes two input schemas (single subject vs. cohort filter) and validates/collects fields into DTO objects.
-    \item \textbf{Mode/action catalog:} available actions are discovered from the controller’s service specs (e.g., Plot, Machine Learning, Deep Learning).
-    \item \textbf{Parameter panels:} parameter widgets are generated from parameter DTOs (filtering/epoching/training), enabling consistent configuration across runs.
-    \item \textbf{Execution paths:} actions can run inline (immediate output) or be scheduled as a background job (job directory with \texttt{spec.json}, \texttt{job.log}, and saved artifacts).
+    \item \textbf{Plot Mode:} Enables detailed inspection of EEG signals for a single subject. Users can visualize raw or preprocessed signals to assess quality and identify patterns. 
+    \item \textbf{Grid Plot Mode:} Supports comparative visualization across multiple conditions or subjects. This mode facilitates identification of trends and differences at the cohort level. 
+    \item \textbf{Data Mode:} Provides structured access to dataset components, including metadata, event information, and preprocessing configurations. It serves as the primary interface for data preparation. 
+    \item \textbf{AI Mode:} Enables machine learning experimentation, including dataset construction, model training, and evaluation. Users can configure models and review performance metrics within this mode. 
 \end{itemize}
 
+\noindent
+In addition to mode-based interaction, the system supports flexible subject selection through two approaches:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Single Subject Selection:} Users select an individual participant and task, allowing focused inspection and analysis.
+    \item \textbf{Cohort Filtering (Meta Filter):} Users define filters based on attributes such as age range, sex, behavioral scores, or task performance. This enables large-scale exploratory analysis without manual subject selection. 
+\end{itemize}
+
+Each mode exposes only the actions relevant to its context, reducing interface complexity and guiding users through the analysis workflow. Additionally, all user actions are logged to support transparency and reproducibility.
+\vspace{0.5em}
+
+\noindent
 Screenshots and detailed interaction flows are shown in Chapter~\ref{ch:ai-component-design}.
 
 \section{Target and Development System}
