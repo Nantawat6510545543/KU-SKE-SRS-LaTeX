@@ -5,26 +5,67 @@
 This chapter presents the software architecture that supports reproducible EEG experimentation in this project. It describes a layered architecture, the main execution flow, the AI processing pipeline, and the key data schemas used to make runs traceable and repeatable.
 \vspace{1em}
 
-\section{Software Architecture}
-\label{sec:software-architecture}
+\section{Domain Model}
+\label{sec:domain-model}
 
-The architecture reflects a research workflow tailored to the EEG2025 challenge: behavioral prediction using CCD-ITI segments. To keep the codebase maintainable and to separate concerns, the system is organized into layers.
+The domain model of the proposed EEG analysis platform represents the key entities and their relationships within the system. The design focuses on supporting a structured workflow for EEG data analysis and machine learning experimentation.
+\vspace{0.5em}
 
-\subsection{API Layer (Presentation)}
-\label{subsec:api-layer}
-This layer provides user-facing interaction points (UI actions and/or API endpoints) such as selecting subjects, triggering dataset construction, running training, and exporting results. It contains minimal domain logic and delegates work to the service layer.
+The central entity in the system is the \textbf{Dataset}, which represents EEG data organized in BIDS format. Each dataset consists of multiple \textbf{Subjects}, where each subject contains EEG recordings and associated metadata for specific tasks.
+\vspace{0.5em}
 
-\subsection{Service Layer (Application Logic)}
-\label{subsec:service-layer}
-This layer orchestrates workflows: loading CCD runs, constructing ITI windows, executing preprocessing and feature extraction, training models, running evaluation, and producing report artifacts (plots/tables). It also coordinates caching and logging so that runs are reproducible.
+The \textbf{User} interacts with the system to perform analysis operations on the dataset. These operations include signal inspection, preprocessing, dataset construction, and model training.
+\vspace{0.5em}
 
-\subsection{Infrastructure Layer (Data Access)}
-\label{subsec:infrastructure-layer}
-This layer handles I/O and integration with external resources, including reading BIDS-formatted HBN-EEG files, caching intermediate artifacts, and persisting run outputs.
+A \textbf{PipelineSession} entity represents the sequence of preprocessing operations applied to EEG data. This includes filtering, resampling, artifact removal, and epoching. The pipeline operates on raw EEG signals and produces processed outputs such as prefiltered signals, cleaned data, and epochs.
+\vspace{0.5em}
 
-\subsection{Domain/Model Layer}
-\label{subsec:domain-layer}
-This layer contains the core domain concepts (trial windows, feature tables, experiment configurations, metrics) and the algorithms that operate on them.
+To improve efficiency, the system incorporates a caching mechanism that stores intermediate results. These cached outputs are associated with specific subjects and parameter configurations, allowing the system to reuse previously computed results and reduce redundant processing.
+\vspace{0.5em}
+
+The \textbf{AI Model} entity represents machine learning models used for experimentation. Models can be trained using processed datasets and evaluated using standard performance metrics.
+\vspace{0.5em}
+
+Overall, the domain model reflects a modular structure where data processing, visualization, and machine learning components are integrated into a unified workflow.
+
+\section{Design Class Diagram}
+\label{sec:design-class-diagram}
+
+The system architecture follows a layered design, where different components are organized based on their responsibilities. The main modules correspond to the backend structure implemented using FastAPI.
+\vspace{0.5em}
+
+At the top level, the \textbf{API layer} (app/api/endpoints) handles incoming requests from the frontend. It defines endpoints for operations such as data loading, preprocessing, visualization, and model training. This layer acts as the interface between the user interface and the backend system.
+\vspace{0.5em}
+
+The \textbf{Schema/DTO layer} (app/schemas) defines structured data models used for request validation and response formatting. This includes parameter schemas for preprocessing configurations and UI-related data representations.
+\vspace{0.5em}
+
+The \textbf{Core module} (app/core) manages configuration and dataset loading. It is responsible for accessing EEG data from BIDS-formatted directories and preparing it for further processing.
+\vspace{0.5em}
+
+The \textbf{Pipeline module} (app/pipeline) implements the core EEG processing logic. It receives raw EEG data and applies preprocessing steps such as filtering, resampling, and epoching. This module also interacts with the caching mechanism to store and retrieve intermediate results.
+\vspace{0.5em}
+
+\noindent
+The \textbf{Visualization module} (app/plots) contains submodules for different types of outputs:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{plot:} single-view signal visualization 
+    \item \textbf{grid plot:} comparative visualization
+    \item \textbf{data:} tabular data summaries
+    \item \textbf{ai:} model-related results and metrics 
+\end{itemize}
+
+These modules generate outputs that are returned to the frontend for display.
+\vspace{0.5em}
+
+The \textbf{AI Model module} (app/ai\_models) defines machine learning models used within the platform. These models can be trained and evaluated using processed datasets.
+\vspace{0.5em}
+
+Additionally, the system maintains a \textbf{job/output storage structure} (jobs/ai/train/...) that stores training results, logs, and model artifacts, along with the cache for each pipeline step in \textbf{eegcache} folder (such as prefiltered, cleaned, epochs, etc.) While not a full asynchronous job system, this structure supports persistence and traceability of preprocessing and model training runs.
+\vspace{0.5em}
+
+This modular design ensures separation of concerns, making the system maintainable, extensible, and aligned with the research workflow.
 
 \begin{figure}[h!]
     \centering
@@ -71,27 +112,3 @@ The AI processing pipeline is designed to enforce traceability. Each stage consu
     \item \textbf{Modeling:} train RT regressors and correctness classifiers.
     \item \textbf{Evaluation:} compute metrics and export artifacts for reporting.
 \end{enumerate}
-
-\section{Schemas}
-\label{sec:schemas}
-
-To support reproducibility and consistent reporting, the system uses a small set of explicit schemas (conceptual data structures):
-\begin{itemize}
-    \item \textbf{ExperimentConfig:} dataset filters, preprocessing parameters, feature settings, model hyperparameters, and split strategy.
-    \item \textbf{TrialWindow:} subject/session identifiers, ITI start/end, and behavioral labels (RT and correctness).
-    \item \textbf{FeatureTable:} feature matrix with consistent column definitions and provenance metadata.
-    \item \textbf{MetricReport:} regression and classification metrics, plus links to generated plots.
-\end{itemize}
-
-\section{AI Component}
-\label{sec:ai-component}
-
-The AI component is responsible for mapping CCD-ITI features to behavioral targets. It is integrated as a service-layer workflow that consumes a dataset definition and a configuration, then produces predictions and evaluation artifacts.
-
-\begin{itemize}
-    \item \textbf{Targets:} RT (regression) and correctness (binary classification).
-    \item \textbf{Evaluation:} MAE/MSE for RT; accuracy, F1-score, precision, and recall for correctness.
-    \item \textbf{Best practices:} subject-independent evaluation when possible, explicit logging of splits/filters, and verification plots to avoid interpreting spurious results.
-\end{itemize}
-
-Detailed AI design choices (canvas, model development, UX integration, and deployment strategy) are presented in Chapter~\ref{ch:ai-component-design}.
