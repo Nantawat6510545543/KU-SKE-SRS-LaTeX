@@ -141,15 +141,24 @@ Validation focuses on preventing misleading results caused by data issues or lea
 
 \subsection{Performance Results and Justification}
 \label{subsec:performance-results}
+Recent runs were analyzed from exported W\&B logs for both targets (RT regression and correctness classification). The evaluation intentionally avoids selecting a single ``best model'' because each configuration fails in a different way.
+
 Model results are reported using target-appropriate metrics:
 \begin{itemize}
-    \item \textbf{RT regression:} MAE, MSE, and and coefficient of determination (R²)
-    \item \textbf{Correctness classification:} accuracy, F1-score, precision, and recall.
-    \item \textbf{Training dynamics:} training loss and validation loss across epochs
+    \item \textbf{RT regression:} MAE, RMSE, R², and Pearson correlation.
+    \item \textbf{Correctness classification:} accuracy and balanced accuracy, with sensitivity/specificity and confusion-matrix behavior.
+    \item \textbf{Training dynamics:} training loss and validation loss across epochs.
 \end{itemize}
-These metrics are generated during model training and presented through training logs and visualizations, allowing users to monitor both model accuracy and generalization performance.
 
-The use of validation-based metrics ensures that model performance is assessed on unseen data, supporting reliable evaluation and reducing the risk of overfitting.
+Observed patterns from the latest runs are:
+\begin{itemize}
+    \item \textbf{Regression stagnation:} MAE remains narrowly clustered around 0.287--0.288 and R² remains near zero (about 0.003--0.008), indicating weak explanatory power.
+    \item \textbf{Mean-prediction tendency:} predicted RT mean is close to true RT mean, suggesting partial collapse toward central tendency instead of learning richer trial-level structure.
+    \item \textbf{Imbalance-driven classification failure:} one high-accuracy configuration reaches about 0.729 accuracy but only about 0.501 balanced accuracy, with very high sensitivity and very low specificity, indicating majority-class dominance.
+    \item \textbf{Partial mitigation only:} class weighting, weighted sampling, and undersampling improve specificity somewhat, but none provides consistently strong balanced performance.
+\end{itemize}
+
+These outcomes justify treating the current AI component as a reproducible experimental baseline rather than a finalized predictive solution.
 
 \pagebreak
 %5.5

@@ -18,7 +18,58 @@ This chapter summarizes the tangible outputs produced by the project and the tes
 \label{sec:test-report}
 \begin{itemize}
 	\item \textbf{CCD-ITI approach:} Train on CCD-ITI segments and evaluate under a defined split strategy (preferably subject-independent).
-	\item \textbf{Regression metrics (RT):} MAE and MSE.
-	\item \textbf{Classification metrics (correctness):} accuracy, F1-score, precision, and recall.
+	\item \textbf{Regression metrics (RT):} MAE, RMSE, R², and Pearson correlation.
+	\item \textbf{Classification metrics (correctness):} accuracy, balanced accuracy, sensitivity, and specificity.
 	\item \textbf{Verification:} Use SNR spectra (and related plots) to confirm steady-state characteristics before interpreting model outcomes.
 \end{itemize}
+
+\subsection{Classification Runs}
+\label{subsec:classification-failure-summary}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Balance Strategy} & \textbf{Acc} & \textbf{Bal Acc} & \textbf{Sens} & \textbf{Spec} \\
+\hline
+None & 0.729 & 0.501 & 0.993 & 0.009 \\
+\hline
+Class Weight & 0.604 & 0.544 & 0.674 & 0.414 \\
+\hline
+Weighted Sampler & 0.629 & 0.543 & 0.729 & 0.358 \\
+\hline
+Undersample & 0.652 & 0.537 & 0.787 & 0.287 \\
+\hline
+\end{tabular}
+\caption{Selected classification runs from W\&B export.}
+\label{tab:classification-failure-summary}
+\end{table}
+
+\noindent
+\textbf{Interpretation:} None shows majority-class collapse (almost all predictions biased to the positive class). Class Weight achieves better balance but still exhibits class-bias and limited generalization. Weighted Sampler helps recall but sacrifices specificity. Undersample improves minority exposure, though instability and false-positive pressure remain.
+
+\subsection{Regression Runs}
+\label{subsec:regression-failure-summary}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Loss} & \textbf{MAE} & \textbf{RMSE} & \textbf{R²} & \textbf{Pearson} \\
+\hline
+MAE & 0.2876 & 0.3743 & 0.0063 & 0.0840 \\
+\hline
+MSE & 0.2883 & 0.3749 & 0.0030 & 0.0562 \\
+\hline
+Huber & 0.2874 & 0.3740 & 0.0079 & 0.0903 \\
+\hline
+\end{tabular}
+\caption{Regression runs from W\&B export.}
+\label{tab:regression-failure-summary}
+\end{table}
+
+\noindent
+\textbf{Interpretation:} MAE shows low explanatory power with predictions remaining close to average RT. MSE exhibits similar stagnation, suggesting that loss choice alone does not improve structure learning. Huber performs slightly better in correlation but still shows near-zero R² and weak trial-level fit.
+
+\noindent
+Overall, no single run is presented as ``best.'' The current test report is used to identify concrete failure modes that guide the next iteration.

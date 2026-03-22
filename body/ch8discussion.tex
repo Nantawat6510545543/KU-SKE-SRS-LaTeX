@@ -15,7 +15,8 @@ The main challenges encountered are:
 \begin{itemize}
     \item \textbf{Trial and label alignment:} prestimulus prediction depends on strict alignment between events, ITI windows, and behavioral labels; small mistakes can invalidate comparisons.
     \item \textbf{Data quality and non-stationarity:} EEG recordings vary across subjects and sessions, and artifacts/noise can dominate unless preprocessing and sanity checks are systematic.
-    \item \textbf{Class imbalance and instability for correctness:} correctness labels may be imbalanced or noisy, which can lead to majority-class collapse and weak generalization.
+    \item \textbf{Class imbalance and instability for correctness:} several runs showed strong sensitivity but weak specificity, indicating prediction collapse toward one class despite acceptable overall accuracy.
+    \item \textbf{Weak RT explanatory power:} regression runs with MAE/MSE/Huber losses all produced near-zero R², suggesting underfitting or insufficient predictive signal extraction in the current setup.
     \item \textbf{Reproducibility overhead:} making experiments repeatable requires extra engineering (configs, caching, logging, deterministic splits) beyond what is needed for a one-off notebook result.
 \end{itemize}
 
@@ -23,8 +24,9 @@ The main challenges encountered are:
 Future work focuses on improving reliability, evaluation strength, and usability:
 \begin{itemize}
     \item \textbf{Data integrity checks:} add automated validation for event ordering, trial counts, and label sanity to detect corruption early.
-    \item \textbf{Better handling of imbalance:} adopt stratified splitting, class weighting, calibration, and more informative analyses (e.g., confusion matrices).
-    \item \textbf{Expanded feature/model exploration:} evaluate additional feature families and more robust models after alignment is verified.
-    \item \textbf{Experiment tracking:} persist configurations and results in a structured format to support systematic comparison across runs.
+    \item \textbf{Better handling of imbalance:} combine class-weighting/sampling with threshold tuning and probability calibration, and select models using balanced metrics rather than accuracy alone.
+    \item \textbf{Improve RT modeling capacity:} test richer temporal representations, stronger regularization schedules, and broader architecture ablations to move beyond mean-prediction behavior.
+    \item \textbf{Expanded feature/model exploration:} evaluate additional feature families and robust model variants after alignment is verified.
+    \item \textbf{Experiment tracking and governance:} persist configurations and results in a structured format to support systematic comparison and failure auditing across runs.
     \item \textbf{Generalization to other tasks:} extend the pipeline beyond CCD if similar prestimulus windows and labels can be constructed reliably.
 \end{itemize}

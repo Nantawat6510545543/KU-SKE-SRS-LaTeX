@@ -83,3 +83,17 @@ ground-truth plots \\
 \caption{Progress tracking summary for the prestimulus behavioral prediction project.}
 \label{tab:progress-tracking}
 \end{table}
+
+\section{Final Iteration Status}
+\label{sec:final-iteration-status}
+
+At the final reporting stage, the software workflow is complete for reproducible experimentation (dataset building, preprocessing, training/evaluation execution, logging, and artifact export). However, model quality remains an open technical problem.
+
+The remaining issues are:
+\begin{itemize}[leftmargin=*]
+	\item \textbf{Classification instability under class imbalance:} high headline accuracy can hide poor minority/negative-class behavior.
+	\item \textbf{Regression underfitting:} RT models show near-zero R² across multiple loss functions.
+	\item \textbf{Limited time for broader sweeps:} some planned ablations (broader hyperparameter and architecture studies) were deferred to future work.
+\end{itemize}
+
+Therefore, this final deliverable should be interpreted as a stable engineering baseline and validated experimentation platform, while predictive performance improvements are left as a focused next phase.
