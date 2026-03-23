@@ -131,10 +131,6 @@ Platform designed for researchers with coding capability but limited software en
 - Transparent experiment tracking and artifact caching
 - Clear separation between domain logic and infrastructure
 
----
-
-## Solution Overview (Continued)
-
 **Target Use:**
 - Domain experts conducting EEG research
 - Researchers needing efficient iteration on preprocessing and modeling
@@ -180,13 +176,13 @@ Design a platform that respects domain expertise while providing sound software 
 
 ---
 
-## Our Solution: EEG Analysis Platform (Execution)
+## Our Solution: EEG Analysis Platform
 
 **Core Capabilities:**
 - Load & explore multi-subject BIDS-formatted EEG data
 - Configure reproducible preprocessing pipelines with parameter versioning
 - Generate comparison-ready datasets for machine learning
-- Train and evaluate multiple model architectures systematically
+- Train and evaluate the EEGNet model systematically
 - Export standardized results (metrics, plots, configurations)
 
 **Success Criteria:**
@@ -267,22 +263,11 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 | **Data loading & discovery** | Complete | UC0 implemented, BIDS loader working |
 | **Signal inspection & visualization** | Complete | Plots, topomaps, event tables generated |
 | **Preprocessing pipeline (filter/resample/clean)** | Complete | Reproducible params stored, cached outputs |
-| **CCD-ITI epoch extraction** | Complete | Deterministic trial alignment verified |
-| **Feature extraction (spectral)** | Complete | Ready for ML input |
-| **Dataset building (ML/DL formats)** | Complete | Reusable training datasets created |
-
----
-
-## Feature Completion Matrix (Continued)
-
-### COMPLETED (Core System)
-
-| Feature | Status | Evidence |
-|---------|--------|----------|
-| **Model training & evaluation** | Complete | Multiple architectures trained, metrics logged |
+| **Epoch extraction** | Complete | Deterministic trial alignment verified |
+| **Dataset building** | Complete | Reusable training datasets created |
+| **Model training & evaluation** | Complete | EEGNet trained and evaluated, metrics logged |
 | **Experiment logging & reproducibility** | Complete | W&B tracking, config versioning |
 | **Backend API (FastAPI)** | Complete | All endpoints functional |
-| **Jupyter notebook interface** | Complete | eeg_workbench.ipynb operational |
 | **Job/output storage system** | Complete | Cache, jobs folders organized |
 
 ---
@@ -305,7 +290,7 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 ### Software Artifacts
 - **Backend codebase** (app/api, app/pipeline, app/ai_models, app/core, app/plots)
 - **Preprocessing pipeline** (BIDS loading, filtering, artifact removal, epoching)
-- **Trained AI models (CNN-LSTM, SimpleNN)**
+- **Trained AI model (EEGNet)**
 - **Experiment tracking** (W&B exports, metrics tables)
 - **Documentation** (SRS, architecture diagrams, usage guide)
 - **Reproducible notebooks** (eeg_workbench.ipynb)
@@ -336,7 +321,7 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 
 ---
 
-## Classification Results (Trial Correctness)
+## Classification Results
 
 ### Prediction Target: Is the trial correct or wrong?
 
@@ -363,9 +348,9 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 
 ---
 
-## Regression Results (Reaction Time Prediction)
+## Regression Results
 
-### Prediction Target: What will the reaction time be?
+### Prediction Target: What will the reaction of hit target time be?
 
 **Test Results Across Loss Functions:**
 
@@ -377,7 +362,7 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 
 ---
 
-## Regression Results (Interpretation)
+## Regression Results
 
 ### Prediction Target: What will the reaction time be?
 
@@ -389,7 +374,7 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 
 ---
 
-## What Went Wrong? (Honest Assessment)
+## What Went Wrong?
 
 ### Known Challenges:
 1. **High inter-subject variability** - EEG patterns differ across individuals
@@ -399,7 +384,7 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 5. **Limited prestimulus info** - 2-second window before visual stimulus may inherently lack predictive signal
 
 ### What We Tried:
-- Multiple model architectures (CNN, LSTM, hybrid)
+- EEGNet model with multiple training/evaluation settings
 - Various balancing strategies (class weights, resampling)
 - Hyperparameter tuning
 - Did NOT achieve robust predictive performance
