@@ -19,8 +19,14 @@ This chapter describes how the AI component is integrated into the overall syste
 
 \vspace{1em}
 \noindent\textbf{Diagram Explanation:}
-The system is designed as an experimental EEG research platform integrating signal visualization, dataset inspection, and machine learning experimentation into a unified workflow.
-The frontend interface allows users to explore EEG signals, construct datasets, and execute AI models, while the backend handles preprocessing, model execution, and evaluation.
+In this system, artificial intelligence (AI) is incorporated as an experimentation tool to support EEG-based analysis and model development. Rather than functioning as a standalone predictive system, the AI component is designed to facilitate the process of preparing data, training models, and evaluating results within an integrated workflow.
+\vspace{0.5em}
+
+The platform enables users to work with preprocessed EEG data and apply machine learning models to explore relationships between neural signals and behavioral outcomes. In particular, the system supports the evaluation of models that predict behavioral responses, such as reaction time and task correctness, based on EEG signals.
+\vspace{0.5em}
+
+The inclusion of AI functionality allows users to transition seamlessly from data exploration to model experimentation, reducing the need to switch between multiple tools or environments.
+\vspace{0.5em}
 
 The workflow proceeds as:
 
@@ -70,18 +76,41 @@ Therefore approximate predictions with measurable error are acceptable.
 \section{Goal Hierarchy}
 \label{sec:goal-hierarchy}
 
-\noindent\textbf{Organizational Goal:} Enable efficient experimentation in EEG machine learning research
+The goals of the AI component are structured across multiple levels to reflect organizational intent, system functionality, user needs, and model-specific objectives.
+
+\noindent\textbf{Organizational Goals:}
+\begin{itemize}
+    \item Support efficient and reproducible EEG data analysis
+    \item Facilitate research in EEG-based behavioral prediction
+    \item Provide a unified platform for data exploration and machine learning experimentation
+\end{itemize}
+
+\noindent\textbf{System Goals:}
+\begin{itemize}
+    \item Integrate data preprocessing, visualization, and machine learning into a single workflow
+    \item Enable reusable and parameter-driven data processing
+    \item Support training and evaluation of machine learning models
+    \item Reduce redundant computation through caching mechanisms
+\end{itemize}
+
+\noindent\textbf{User Goals:}
+\begin{itemize}
+    \item Explore EEG signals interactively
+    \item Configure preprocessing and analysis parameters
+    \item Build datasets for machine learning
+    \item Train and evaluate models efficiently
+    \item Compare results across different configurations or subjects
+\end{itemize}
+
+\noindent\textbf{AI Model Goals:}
+\begin{itemize}
+    \item Learn mappings between EEG-derived features and behavioral outcomes
+    \item Predict reaction time (regression task)
+    \item Predict trial correctness (classification task)
+    \item Generalize across multiple subjects and varying EEG conditions
+\end{itemize}
 
 \vspace{0.5em}
-\noindent\textbf{System Goal:} Provide an interactive platform that links signal inspection with machine learning experimentation
-
-\vspace{0.5em}
-\noindent\textbf{User Goal:} Explore EEG signals, construct datasets, train models, and compare results without manual scripting
-
-\vspace{0.5em}
-\noindent\textbf{AI Model Goal:} Learn mappings that generalize across subjects for RT prediction (regression) and correctness prediction (classification)
-
-\vspace{1em}
 \noindent\textbf{Success Metrics:}
 \begin{itemize}
     \item reduced prediction error (e.g., MAE/MSE) for RT
@@ -156,6 +185,23 @@ The use of validation-based metrics ensures that model performance is assessed o
 \section{User Experience Design with AI}
 \label{sec:ux-ai}
 
+The platform incorporates AI functionality through a dedicated \textbf{AI Mode}, which allows users to perform machine learning-related operations within the same interface used for data exploration.
+
+In this mode, users can:
+
+\begin{itemize}
+    \item Configure datasets derived from preprocessed EEG data
+    \item Execute model training procedures
+    \item Evaluate model performance using standard metrics
+\end{itemize}
+
+The system presents outputs in a structured format, including tabular summaries of evaluation metrics and execution logs. This enables users to monitor model performance and understand the outcome of training processes.
+
+The integration of AI functionality within the broader platform ensures a seamless workflow, where users can move from signal inspection to model experimentation without switching environments. This design supports iterative experimentation and reduces the complexity associated with traditional notebook-based workflows.
+
+\vspace{2em}
+
+% move to ch7
 The platform follows a research-oriented workflow where users first inspect signals before executing machine learning models.
 To support this process, the interface uses a \textbf{mode-action} structure, and additionally provides flexible 
 \textbf{subject selection and filtering} to accommodate both single-subject inspection and cohort-level analysis.
@@ -421,32 +467,13 @@ Researchers can iteratively adjust dataset configurations,rerun experiments, and
 \section{Deployment Strategy}
 \label{sec:deployment-strategy}
 
-\subsection{Deployment Plan}
-\label{subsec:deployment-plan}
-The AI component is deployed in a research environment using both local execution and cloud notebooks.
+The system is designed to support web-based deployment using a modern client-server architecture.
 
-The system consists of:
+The \textbf{frontend} is deployed using Vercel, which provides a scalable and efficient hosting environment for React-based applications. This enables users to access the platform through a web interface with minimal setup.
 
-\begin{itemize}
-    \item Frontend — interactive research interface
-    \item Backend — REST API service
-    \item Model — behavioral prediction model
-\end{itemize}
+The \textbf{backend} is deployed using Render, where the FastAPI application handles API requests, data processing, and machine learning operations. This separation of frontend and backend components allows independent scaling and maintenance.
 
-Technologies used:
-
-\begin{itemize}
-    \item React — interactive frontend framework
-    \item FastAPI — model service endpoints
-    \item TensorFlow — neural network execution
-    \item scientific Python libraries — preprocessing and evaluation
-\end{itemize}
-
-
-The frontend web system replaces manual notebook execution and allows controlled interaction with the EEG pipeline,
-and the backend exposes endpoints for training, prediction, and evaluation, allowing modular integration and testing.
-
-The model in our system targets prestimulus behavioral prediction from CCD-ITI segments by mapping EEG-derived features to reaction time (RT) (regression) and trial correctness (classification).
+This deployment approach ensures that the platform can be accessed remotely while maintaining flexibility for future extensions, such as containerization or integration with cloud-based computational resources.
 
 %5.7
 \section{Proof of Concept (Service Demonstration)}
@@ -461,30 +488,28 @@ visualization → dataset selection → training → inference → evaluation
 Results can be accessed through the interface and (when enabled) through API endpoints.
 
 %5.8 (optional)
-\section{Reflection and Future Development}
-\label{sec:reflection}
+% \section{Reflection and Future Development}
+% \label{sec:reflection}
 
+% \subsection*{Lessons Learned}
+% \begin{itemize}[leftmargin=3.5em]
+%     \item Prestimulus CCD-ITI segments contain steady-state information that can support behavioral prediction.
+%     \item A consistent preprocessing and verification workflow improves reproducibility of results.
+%     \item Integrated workflows reduce experimentation overhead
+% \end{itemize}
 
-\subsection*{Lessons Learned}
-\begin{itemize}[leftmargin=3.5em]
-    \item Prestimulus CCD-ITI segments contain steady-state information that can support behavioral prediction.
-    \item A consistent preprocessing and verification workflow improves reproducibility of results.
-    \item Integrated workflows reduce experimentation overhead
-\end{itemize}
+% \subsection*{Challenges}
+% \begin{itemize}[leftmargin=3.5em]
+%     \item \textbf{Model not completed in time:} The learning procedure still fails to achieve stable performance for correctness classification.
+%     \item \textbf{Majority-class collapse:} The correctness classifier tends to predict a single class, yielding an accuracy close to chance level (approximately 50\%) while providing limited practical value.
+%     \item \textbf{Class imbalance:} Correct/incorrect labels are imbalanced in parts of the data, which can bias training and evaluation without careful handling.
+%     \item \textbf{Data integrity issues:} Evidence of data corruption and trial/label misalignment can cause feature--label shifts, making supervised learning unstable and masking true signal--behavior relationships.
+% \end{itemize}
 
-
-\subsection*{Challenges}
-\begin{itemize}[leftmargin=3.5em]
-    \item \textbf{Model not completed in time:} The learning procedure still fails to achieve stable performance for correctness classification.
-    \item \textbf{Majority-class collapse:} The correctness classifier tends to predict a single class, yielding an accuracy close to chance level (approximately 50\%) while providing limited practical value.
-    \item \textbf{Class imbalance:} Correct/incorrect labels are imbalanced in parts of the data, which can bias training and evaluation without careful handling.
-    \item \textbf{Data integrity issues:} Evidence of data corruption and trial/label misalignment can cause feature--label shifts, making supervised learning unstable and masking true signal--behavior relationships.
-\end{itemize}
-
-\subsection*{Future Work}
-\begin{itemize}[leftmargin=3.5em]
-    \item \textbf{Fix label reliability:} add dataset-level integrity checks (trial counts, event ordering, and label alignment) and remove or repair corrupted segments.
-    \item \textbf{Handle class imbalance:} use stratified splits, class-weighted loss, resampling, and calibration to avoid majority-class collapse.
-    \item \textbf{Improve evaluation:} report confusion matrices and class-aware metrics (F1-score, precision, recall) alongside accuracy.
-    \item \textbf{Modeling improvements:} explore robust feature sets and temporal models after data alignment is verified.
-\end{itemize}
+% \subsection*{Future Work}
+% \begin{itemize}[leftmargin=3.5em]
+%     \item \textbf{Fix label reliability:} add dataset-level integrity checks (trial counts, event ordering, and label alignment) and remove or repair corrupted segments.
+%     \item \textbf{Handle class imbalance:} use stratified splits, class-weighted loss, resampling, and calibration to avoid majority-class collapse.
+%     \item \textbf{Improve evaluation:} report confusion matrices and class-aware metrics (F1-score, precision, recall) alongside accuracy.
+%     \item \textbf{Modeling improvements:} explore robust feature sets and temporal models after data alignment is verified.
+% \end{itemize}
