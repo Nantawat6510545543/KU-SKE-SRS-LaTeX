@@ -7,24 +7,136 @@ This chapter summarizes the tangible outputs produced by the project and the tes
 
 \section{Software Solution}
 \label{sec:software-solution}
+
+The proposed system is an interactive EEG analysis platform designed to support data exploration, preprocessing, visualization, and machine learning experimentation within a unified interface. The platform is developed to address inefficiencies in traditional notebook-based workflows by providing a structured and parameter-driven environment for EEG analysis.
+
+For more, please refer to our \textbf{Github:}
+
+	[Link: https://github.com/Nantawat6510545543/senior-project] for the web platform development, and
+	\vspace{0.5em}
+
+	[Link: https://github.com/Nantawat6510545543/eeg2025-Vistec] for the model training development.
+
+\subsection{System Overview}
+\label{sec:system-overview}
+The platform enables users to perform EEG analysis through an integrated interface that combines data selection, preprocessing configuration, visualization, and execution logging. The system supports both single-subject inspection and cohort-level analysis, allowing users to explore EEG data at different levels of granularity.
+
+\vspace{0.5em}
+The interface is designed based on a \textbf{mode-action} structure, where users first select the analysis context (mode) and then perform specific operations (actions). This design guides users through the workflow while reducing interface complexity.
+
+\subsection{Input Configuration}
+\label{sec:input-configuration}
+
+The system provides flexible input selection through two primary modes:
+
 \begin{itemize}
-	\item \textbf{Project repository:} Contains preprocessing scripts and modeling code. [Link: to be added]
-	\item \textbf{Reproducible pipeline artifacts:} dataset construction routines for CCD-ITI windows, preprocessing configurations, feature extraction scripts, and run logging.
-	\item \textbf{Figures:} verification plots (e.g., SNR spectra) and evaluation plots used in the report; architecture diagram(s) documenting the workflow.
-	\item \textbf{Interface documentation/prototype:} UI screenshots and descriptions supporting the experiment workflow.
+	\item \textbf{Single Subject Mode:} Users select an individual subject and a specific task for detailed inspection and analysis.
+	\item \textbf{Meta Filter (Cohort Mode)}: Users define filtering criteria across multiple attributes to select a group of subjects. This enables large-scale analysis without manual subject selection.
+\end{itemize}
+
+In both cases, the selected input determines the scope of subsequent operations.
+
+\subsection{Mode-Based Interaction}
+\label{sec:mode-based-interaction}
+
+The platform organizes functionality into four primary operational modes:
+
+\begin{itemize}
+	\item \textbf{Plot Mode:} Provides detailed visualization of EEG signals. This mode supports both single-subject and cohort-based data, enabling focused signal inspection.
+    \item \textbf{Grid Plot Mode:} Enables comparative visualization across multiple subjects, conditions, or cohorts using structured layouts.
+    \item \textbf{Data Mode:} Presents structured tabular representations of EEG data and derived results, allowing users to inspect intermediate outputs.
+	\item \textbf{AI Mode:} Supports machine learning experimentation, including dataset preparation, model training, and evaluation.
+\end{itemize}
+
+Each mode dynamically exposes relevant actions, allowing users to interact with the system in a structured and context-aware manner.
+
+\subsection{Action Selection}
+\label{sec:action-selection}
+
+Soon.
+
+\subsection{Execution and Logging}
+\label{sec:execution-and-logging}
+
+The platform executes user-selected operations in a synchronous manner. During execution, an execution \textbf{Log Panel} is displayed, providing real-time feedback on system operations such as data loading, preprocessing steps, and plot generation.
+
+\vspace{0.5em}
+To improve efficiency, the system implements a caching mechanism. Intermediate results, including prefiltered signals, cleaned data, and epochs, are stored based on subject and parameter configurations. When the same configuration is reused, the system retrieves cached results instead of recomputing them.
+
+\vspace{0.5em}
+This approach reduces redundant computation and supports faster iteration during analysis.
+
+\vspace{0.5em}
+The platform presents outputs directly within the interface. Visualization results are rendered as plots, while structured outputs are displayed as tables.
+
+\subsection{System Characteristics}
+\label{sec:system-characteristics}
+
+The developed platform demonstrates the following characteristics:
+
+\begin{itemize}
+	\item \textbf{Interactive:} Enables real-time configuration and execution of analysis tasks
+	\item \textbf{Reproducible:} Maintains explicit parameter configurations and execution logs
+	\item \textbf{Efficient:} Reduces redundant computation through caching mechanisms
+	\item \textbf{Flexible:} Supports both single-subject and cohort-level analysis
+	\item \textbf{Integrated:} Combines preprocessing, visualization, and machine learning in a unified system
 \end{itemize}
 
 \section{Test Report}
 \label{sec:test-report}
+
+This section describes the testing approach used to evaluate the correctness and reliability of the proposed EEG analysis platform. The evaluation focuses on functional verification, reproducibility, and system behavior under typical usage scenarios.
+
+\subsection{Testing Approach}
+
+The system was tested using a functional testing approach, where each core component was evaluated independently and as part of the overall workflow. The testing process focuses on verifying that user actions produce correct outputs and that the system behaves consistently across repeated executions.
+
+\vspace{0.5em}
+Testing was performed through manual interaction with the user interface, covering different operational modes and configurations. This approach ensures that the system supports the intended research workflow and that all features are accessible and usable.
+
+\subsection{Functional Testing}
+\label{sec:functional-testing}
+
+Functional testing was conducted to verify that each system component operates as expected. The following aspects were tested:
+
+\begin{itemize}
+	\item Correct loading of EEG datasets and subject selection
+	\item Proper execution of preprocessing steps with user-defined parameters
+	\item Accurate generation of visualization outputs across different modes
+	\item Consistency of results when using cached intermediate data
+	\item Correct rendering of tabular outputs in Data and AI modes
+\end{itemize}
+
+All core functionalities were confirmed to operate correctly under expected usage conditions.
+
+\subsection{Reproducibility Testing}
+\label{sec:reproducibility-testing}
+
+The system was tested for reproducibility by executing identical configurations multiple times. Results were consistent across runs, confirming that:
+
+\begin{itemize}
+	\item Parameter configurations are correctly applied
+	\item Cached results are reused appropriately
+	\item Outputs remain stable across repeated executions
+\end{itemize}
+
+\subsection{Machine Learning Evaluation Testing}
+\label{sec:machine-learning-evaulation-testing}
+
+The platform supports basic machine learning experimentation through its AI mode, and only have loss.
+While the app interface currently focuses on the regression metrics (loss, MAE, RMSE, and R²), the underlying model has undergone extensive evaluation, including
+
 \begin{itemize}
 	\item \textbf{CCD-ITI approach:} Train on CCD-ITI segments and evaluate under a defined split strategy (preferably subject-independent).
-	\item \textbf{Regression metrics (RT):} MAE, RMSE, R², and Pearson correlation.
+	\item \textbf{Regression metrics (RT):} loss, MAE, RMSE, and R².
 	\item \textbf{Classification metrics (correctness):} accuracy, balanced accuracy, sensitivity, and specificity.
 	\item \textbf{Verification:} Use SNR spectra (and related plots) to confirm steady-state characteristics before interpreting model outcomes.
 \end{itemize}
 
 \subsection{Classification Runs}
 \label{subsec:classification-failure-summary}
+
+This section compares the effects of various data balancing strategies on classification performance
 
 \begin{table}[H]
 \centering
@@ -50,6 +162,8 @@ Undersample & 0.652 & 0.537 & 0.787 & 0.287 \\
 
 \subsection{Regression Runs}
 \label{subsec:regression-failure-summary}
+
+This section summarizes the regression performance across different loss functions
 
 \begin{table}[H]
 \centering
