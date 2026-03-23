@@ -256,7 +256,7 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 
 ## Feature Completion Matrix
 
-### COMPLETED (Core System)
+### COMPLETED
 
 | Feature | Status | Evidence |
 |---------|--------|----------|
@@ -334,12 +334,6 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 | **Weighted Sampler** | 0.629 | 0.543 | 0.729 | 0.358 |
 | **Undersampling** | **0.652** | **0.537** | 0.787 | **0.287** |
 
----
-
-## Classification Results (Interpretation)
-
-### Prediction Target: Is the trial correct or wrong?
-
 ### Interpretation:
 - **Baseline shows "accuracy trap"**: achieves 72.9% by predicting *everything* as negative class
 - **Class imbalance is severe** → minority class near-invisible to model
@@ -359,12 +353,6 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 | **MAE** | 0.2876 | 0.3743 | 0.0063 | 0.0840 |
 | **MSE** | 0.2883 | 0.3749 | 0.0030 | 0.0562 |
 | **Huber** | 0.2874 | **0.3740** | **0.0079** | **0.0903** |
-
----
-
-## Regression Results
-
-### Prediction Target: What will the reaction time be?
 
 ### Interpretation:
 - **R² ≈ 0** across all methods → model barely fits data
@@ -388,20 +376,6 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 - Various balancing strategies (class weights, resampling)
 - Hyperparameter tuning
 - Did NOT achieve robust predictive performance
-
----
-
-## Signal Verification (SNR Analysis)
-
-**Question:** Is the prestimulus EEG signal even strong enough?
-
-### Key Finding:
-- **Spectral signature detected** - Clear oscillations in alpha/theta bands
-- **SNR moderate** - Signal present but noisy
-- **Subject-dependent** - Some subjects show clearer patterns than others
-
-### Implication:
-Information IS present, but building generalizable models is harder than expected. This is typical for EEG research.
 
 ---
 
