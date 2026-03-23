@@ -89,10 +89,13 @@ ground-truth plots \\
 
 At the final reporting stage, the software workflow is complete for reproducible experimentation (dataset building, preprocessing, training/evaluation execution, logging, and artifact export). However, model quality remains an open technical problem.
 
+In practice, the team passed through many technical challenges before reaching a stable modeling stage. The main effort was not only training models, but making the pipeline reliable enough that results could be trusted and compared.
+
 The remaining issues are:
 \begin{itemize}[leftmargin=*]
 	\item \textbf{Classification instability under class imbalance:} high headline accuracy can hide poor minority/negative-class behavior.
 	\item \textbf{Regression underfitting:} RT models show near-zero R² across multiple loss functions.
+	\item \textbf{Imbalance mitigation did not fully solve performance:} class weighting, weighted sampling, and undersampling reduced some bias effects but did not produce robust, generalizable performance.
 	\item \textbf{Limited time for broader sweeps:} some planned ablations (broader hyperparameter and architecture studies) were deferred to future work.
 \end{itemize}
 

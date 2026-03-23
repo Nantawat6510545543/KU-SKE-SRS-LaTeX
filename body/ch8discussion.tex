@@ -10,12 +10,15 @@ This project set out to answer a constrained research question---whether prestim
 
 From a software engineering perspective, the outcome is a clearer separation between data ingestion, processing, modeling, and reporting. This reduces the risk that results depend on hidden notebook state and makes it easier to rerun experiments, compare configurations, and regenerate figures/tables for the final report.
 
+From a research perspective, the journey was difficult: substantial effort was required before model training became stable and comparable. Even after overcoming pipeline and data-quality challenges, the final models still did not achieve strong predictive performance.
+
 \section{Challenges}
 The main challenges encountered are:
 \begin{itemize}
     \item \textbf{Trial and label alignment:} prestimulus prediction depends on strict alignment between events, ITI windows, and behavioral labels; small mistakes can invalidate comparisons.
     \item \textbf{Data quality and non-stationarity:} EEG recordings vary across subjects and sessions, and artifacts/noise can dominate unless preprocessing and sanity checks are systematic.
     \item \textbf{Class imbalance and instability for correctness:} several runs showed strong sensitivity but weak specificity, indicating prediction collapse toward one class despite acceptable overall accuracy.
+    \item \textbf{Imbalance mitigation with limited gain:} class weighting, weighted sampling, and undersampling were tested to correct imbalance effects, but improvements were partial and did not deliver consistently reliable classification quality.
     \item \textbf{Weak RT explanatory power:} regression runs with MAE/MSE/Huber losses all produced near-zero R², suggesting underfitting or insufficient predictive signal extraction in the current setup.
     \item \textbf{Reproducibility overhead:} making experiments repeatable requires extra engineering (configs, caching, logging, deterministic splits) beyond what is needed for a one-off notebook result.
 \end{itemize}
