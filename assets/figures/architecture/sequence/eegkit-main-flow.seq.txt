@@ -1,0 +1,27 @@
+title EEGKit Main Flow (Medium)
+
+participant User
+participant "Web UI (React)" as UI
+participant "Backend API" as API
+participant Pipeline
+participant "AI Trainer" as Trainer
+participant "Result Store" as Store
+
+User->UI: Select subject and task
+UI->API: Request experiment run with parameters
+
+API->Pipeline: Load EEG and event metadata
+Pipeline->API: Return trial count and label distribution
+API->UI: Show quick validation summary
+
+UI->API: Confirm run
+API->Pipeline: Preprocess EEG and create epochs
+Pipeline->Trainer: Build features and split data
+
+Trainer->Trainer: Train model and monitor validation
+Trainer->API: Return metrics and predictions
+API->Store: Save config, metrics, and plots
+Store->API: Return artifact paths
+
+API->UI: Send run summary and artifacts
+UI->User: Show SNR/plots and model scores

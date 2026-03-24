@@ -11,19 +11,89 @@
 
 %% Edit past this comment line.
 
-\newappendix{Example}
-<TIP: Put additional or supplementary information/data/figures in appendices. />
+\newappendix{Reproducibility Summary}
 
-%% Remove the following appendix before publishing your work.
+This appendix summarizes the fixed workflow and evaluation protocol used throughout the project.
 
-\newappendix{About \LaTeX}
-LaTeX (stylized as \LaTeX) is a software system for typesetting documents. LaTeX markup describes the content and layout of the document,
-as opposed to the formatted text found in WYSIWYG word processors like Google Docs, LibreOffice Writer, and Microsoft Word.
-The writer uses markup tagging conventions to define the general structure of a document,
-to stylize text throughout a document (such as bold and italics), and to add citations and cross-references.
+\section*{A.1 Data and Task Scope}
+\begin{itemize}
+    \item Dataset context: HBN-EEG, Contrast Change Detection (CCD) task.
+    \item Modeling window: fixed 2-second prestimulus inter-trial interval (ITI).
+    \item Targets: reaction time (regression) and trial correctness (binary classification).
+\end{itemize}
 
-LaTeX is widely used in academia for the communication and publication of scientific documents and technical note-taking in many fields,
-owing partially to its support for complex mathematical notation. It also has a prominent role in the preparation and publication of books and articles
-that contain complex multilingual materials, such as Arabic and Greek.
+\section*{A.2 Fixed Processing Stages}
+The operational pipeline used in this report is:
+\begin{enumerate}
+    \item Ingestion (load runs, events, and metadata)
+    \item Trial construction (ITI extraction and label attachment)
+    \item Preprocessing (filtering/normalization/artifact mitigation)
+    \item Verification (SNR and related signal checks)
+    \item Feature construction
+    \item Modeling (regression and classification)
+    \item Evaluation and artifact export
+\end{enumerate}
 
-Overleaf has also provided a 30-minute guide on how you can get started on using \LaTeX. \cite{overleaf:learnlatex}
+\section*{A.3 Evaluation Metrics}
+\begin{itemize}
+    \item Regression: MAE, RMSE, R\textsuperscript{2}, Pearson correlation.
+    \item Classification: accuracy, balanced accuracy, sensitivity, specificity.
+\end{itemize}
+
+\newappendix{Detailed Result Tables}
+
+This appendix records detailed run summaries from the provided W\&B exports.
+
+\section*{B.1 Classification Runs}
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|l|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Run} & \textbf{Ch} & \textbf{Strategy} & \textbf{WCls} & \textbf{Smooth} & \textbf{Acc} & \textbf{Bal Acc} & \textbf{Sens} & \textbf{Spec} & \textbf{ROC AUC} & \textbf{F1 Bin} \\
+\hline
+allch\_none & 128 & none & false & 0.00 & 0.729 & 0.501 & 0.993 & 0.009 & 0.577 & 0.843 \\
+\hline
+allch\_base & 128 & class\_weight & true & 0.00 & 0.604 & 0.544 & 0.674 & 0.414 & 0.566 & 0.713 \\
+\hline
+allch\_fastdecay & 128 & class\_weight & true & 0.05 & 0.592 & 0.544 & 0.648 & 0.439 & 0.569 & 0.699 \\
+\hline
+allch\_smooth & 128 & class\_weight & true & 0.05 & 0.593 & 0.543 & 0.650 & 0.437 & 0.569 & 0.700 \\
+\hline
+allch\_sampler & 128 & weighted\_sampler & false & 0.00 & 0.629 & 0.543 & 0.729 & 0.358 & 0.573 & 0.742 \\
+\hline
+allch\_undersample & 128 & undersample & false & 0.00 & 0.652 & 0.537 & 0.787 & 0.287 & 0.582 & 0.768 \\
+\hline
+limitch\_base & 13 & weighted\_sampler & false & 0.00 & 0.660 & 0.543 & 0.796 & 0.290 & 0.560 & 0.774 \\
+\hline
+\end{tabular}%
+}
+\caption{Detailed classification run comparison.}
+\label{tab:appendix-classification-runs}
+\end{table}
+
+\noindent\textbf{Column notes:} Ch = number of EEG channels, WCls = class-weighting enabled, Smooth = label smoothing value.
+
+\section*{B.2 Regression Runs}
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|c|c|c|c|c|c|c|}
+\hline
+\textbf{Run} & \textbf{Loss} & \textbf{MAE} & \textbf{RMSE} & \textbf{R\textsuperscript{2}} & \textbf{Pearson} & \textbf{Expl.Var} & \textbf{Pred Mean} & \textbf{True Mean} \\
+\hline
+eegnet\_mae & mae & 0.2876 & 0.3743 & 0.0063 & 0.0840 & 0.0069 & 1.6114 & 1.6019 \\
+\hline
+eegnet\_mse & mse & 0.2883 & 0.3749 & 0.0030 & 0.0562 & 0.0030 & 1.6035 & 1.6019 \\
+\hline
+eegnet\_huber & huber & 0.2874 & 0.3740 & 0.0079 & 0.0903 & 0.0081 & 1.6070 & 1.6019 \\
+\hline
+\end{tabular}%
+}
+\caption{Detailed regression run comparison.}
+\label{tab:appendix-regression-runs}
+\end{table}
+
+\noindent\textbf{Column notes:} Expl.Var = explained variance, Pred Mean = test/y\_pred\_mean, True Mean = test/y\_true\_mean.

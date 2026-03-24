@@ -93,7 +93,7 @@ This modular design ensures separation of concerns, making the system maintainab
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.75\textwidth]{figures/architecture/design-class-diagram-eeg}
+    \includegraphics[width=0.75\textwidth]{figures/architecture/system-architecture-overview}
     \caption{System architecture overview}
     \label{fig:design-class}
 \end{figure}
@@ -105,20 +105,23 @@ This modular design ensures separation of concerns, making the system maintainab
 \label{subsec:realtime-tracking-process}
 \textbf{Scenario: Run an experiment}
 \begin{enumerate}
-    \item Select subjects/sessions and the CCD task.
-    \item Load BIDS/HED events and construct CCD-ITI windows with aligned RT and correctness labels.
-    \item Apply a fixed preprocessing configuration to the ITI epochs.
-    \item Compute verification plots (e.g., SNR spectra) to confirm steady-state characteristics.
-    \item Extract features and train models for RT regression and correctness classification.
-    \item Evaluate using standard metrics and export a run summary (configs, metrics, and plots).
+    \item The user selects a subject and task from the Web UI.
+    \item The Web UI sends an experiment-run request with parameters to the Backend API.
+    \item The Backend API requests the Pipeline to load EEG and event metadata, then returns a quick validation summary to the UI.
+    \item The user confirms the run after reviewing the validation summary.
+    \item The Backend API triggers preprocessing and epoch construction in the Pipeline.
+    \item The Pipeline builds features and forwards data to the AI Trainer for training and validation.
+    \item The trainer returns metrics and predictions, artifacts are persisted in the Result Store, and the UI displays the run summary (plots and model scores).
 \end{enumerate}
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/architecture/sequence/eegkit-main-flow.png}
-    \caption{EEGKit main interaction flow (Web UI (React) $\rightarrow$ Controller $\rightarrow$ Pipeline)}
+    \caption{EEGKit main interaction flow (Web UI $\rightarrow$ Backend API $\rightarrow$ Pipeline $\rightarrow$ AI Trainer/Result Store)}
     \label{fig:eegkit-main-sequence}
 \end{figure}
+
+\FloatBarrier
 
 \section{Pipeline}
 \label{sec:pipeline}

@@ -16,27 +16,18 @@ This chapter describes how the AI component is integrated into the overall syste
     \label{fig:ccd-workflow}
 \end{figure}
 \noindent
-
-\vspace{1em}
 \noindent\textbf{Diagram Explanation:}
 In this system, artificial intelligence (AI) is incorporated as an experimentation tool to support EEG-based analysis and model development. Rather than functioning as a standalone predictive system, the AI component is designed to facilitate the process of preparing data, training models, and evaluating results within an integrated workflow.
-\vspace{0.5em}
 
 The platform enables users to work with preprocessed EEG data and apply machine learning models to explore relationships between neural signals and behavioral outcomes. In particular, the system supports the evaluation of models that predict behavioral responses, such as reaction time and task correctness, based on EEG signals.
-\vspace{0.5em}
 
 The inclusion of AI functionality allows users to transition seamlessly from data exploration to model experimentation, reducing the need to switch between multiple tools or environments.
-\vspace{0.5em}
 
-The workflow proceeds as:
-
-signal inspection → dataset verification → model training → evaluation
+The workflow proceeds as: signal inspection $\rightarrow$ dataset verification $\rightarrow$ model training $\rightarrow$ evaluation.
 
 This ensures that model results are directly connected to verified signal characteristics rather than blindly training on raw data.
-\pagebreak
 
-\vspace{1em}
-\noindent\textbf{Why is AI suitable for this problem?}
+\noindent\textbf{AI Suitability for the Problem}
 
 EEG analysis involves high-dimensional temporal signals with complex spatial relationships across electrodes. Manual feature engineering is difficult because:
 
@@ -48,10 +39,7 @@ EEG analysis involves high-dimensional temporal signals with complex spatial rel
 Machine learning models can learn robust mappings from EEG-derived features to behavioral targets more effectively than fixed heuristics.
 
 \vspace{0.5em}
-\noindent\textbf{Is the problem large, complex, or always changing?}
-
-Yes.
-
+\noindent\textbf{Problem Scale and Complexity}
 
 EEG data presents three major challenges:
 \begin{itemize}
@@ -62,9 +50,9 @@ EEG data presents three major challenges:
 Because of this variability, deterministic rule-based systems are unsuitable.
 
 \vspace{0.5em}
-\noindent\textbf{Can we accept an answer that’s not 100\% perfect?}
+\noindent\textbf{Acceptable Performance Criterion}
 
-Yes. This is a research system.
+Because this is a research system, predictions are expected to be informative rather than perfect.
 
 \vspace{0.5em}
 
@@ -249,7 +237,6 @@ Each mode exposes only the actions relevant to the selected context, and all use
     \end{itemize}
 \end{itemize}
 
-\vspace{2em}
 \noindent\textbf{Visualization and Inspection Modes}
 
 \subsection{Plot Mode}
@@ -297,25 +284,22 @@ Available actions include:
 
 \begin{itemize}
     \item Build Dataset
-    \item TrainEEGNetMultiRegression
+    \item TrainEEGNet
     \item Model Summary
 \end{itemize}
 
-\vspace{1em}
-\noindent\textbf{System Behavior:}
+\paragraph{System Behavior}
 These actions are interdependent: dataset construction is required before training, and the model summary reflects the structure of the model. Performance metrics are generated during training and updated dynamically.
 
 Logs and outputs are available for inspection and export, supporting transparency and reproducibility.
 
 This design emphasizes transparency by exposing intermediate training metrics directly through logs rather than abstracted summaries.
 
-\vspace{1em}
-\noindent\textbf{Feedback Loop:}
-inspect → adjust → train → evaluate → compare → refine
+\paragraph{Feedback Loop}
+The iterative loop follows: inspect $\rightarrow$ adjust $\rightarrow$ train $\rightarrow$ evaluate $\rightarrow$ compare $\rightarrow$ refine.
 
-Researchers can iteratively adjust dataset configurations,rerun experiments, and retrain models without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
+Researchers can iteratively adjust dataset configurations, rerun experiments, and retrain models without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
 
-\vspace{2em}
 \noindent\textbf{Interface Screenshots:}
 
 \begin{figure}[H]

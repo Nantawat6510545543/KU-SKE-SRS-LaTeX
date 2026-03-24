@@ -1,0 +1,77 @@
+@startuml
+title EEG Analysis Platform - System Architecture Overview
+
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+skinparam package {
+  BackgroundColor #F8FAFF
+  BorderColor #6B7A99
+}
+
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #4E5D78
+}
+
+actor User
+
+package "Presentation Layer" {
+  component "Web UI\n(React)" as UI
+}
+
+package "API Layer" {
+  component "REST Endpoints\n(FastAPI)" as API
+  component "Schema Validation\n(Pydantic DTOs)" as DTO
+}
+
+package "Application Layer" {
+  component "Pipeline Orchestrator" as ORCH
+  component "Task Service\n(Train / Evaluate / Predict)" as TASK
+}
+
+package "Domain Processing" {
+  component "EEG Preprocessing" as PRE
+  component "Feature Builder" as FEAT
+  component "Model Trainer" as TRAIN
+}
+
+package "Infrastructure" {
+  database "BIDS Dataset" as DATA
+  database "Result Store\n(metrics, plots, configs)" as STORE
+  folder "Cache" as CACHE
+}
+
+package "Extension Points" {
+  component "Preprocessor Strategy\n(plugin)" as EXT_PRE
+  component "Feature Extractor\n(plugin)" as EXT_FEAT
+  component "Model Factory\n(plugin)" as EXT_MODEL
+}
+
+User --> UI
+UI --> API
+API --> DTO
+API --> ORCH
+ORCH --> TASK
+
+TASK --> PRE
+TASK --> FEAT
+TASK --> TRAIN
+
+PRE --> DATA
+PRE --> CACHE
+FEAT --> CACHE
+TRAIN --> STORE
+
+EXT_PRE ..> PRE : extend
+EXT_FEAT ..> FEAT : extend
+EXT_MODEL ..> TRAIN : extend
+
+note right of ORCH
+  Keep core flow stable,
+  add new capabilities via plugins.
+end note
+
+@enduml
