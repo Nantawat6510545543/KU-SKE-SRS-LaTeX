@@ -41,7 +41,7 @@ The primary domain entities are defined as follows:
     \end{itemize}
 \end{itemize}
 
-\subsection*{Relationships Between Entities}
+\noindent\textbf{Relationships Between Entities}
 The relationships between the entities are structured as follows:
 
 \begin{itemize}
@@ -82,8 +82,7 @@ To ensure a modular and extensible architecture capable of handling high-through
 
 The system adopts a modular and layered design, where responsibilities are separated across execution, processing, visualization, and infrastructure components.
 
-\noindent
-\subsection*{Core Execution Components}
+\noindent\textbf{Core Execution Components}
 \begin{itemize}
     \item \textbf{TaskExecutor}: Handles the execution of the EEG processing pipeline for a single \textbf{Subject--Task} pair. It is responsible for:
     \begin{itemize}
@@ -95,8 +94,7 @@ The system adopts a modular and layered design, where responsibilities are separ
     \item \textbf{CohortExecutor}: Manages batch processing across multiple subjects. It maintains a collection of \textbf{TaskExecutor} instances and executes them iteratively. Additional validation and aggregation logic are applied at this level.
 \end{itemize}
 
-\noindent
-\subsection*{Processing Pipeline Components}
+\noindent\textbf{Processing Pipeline Components}
 \begin{itemize}
     \item \textbf{SignalCleaner}: Performs artifact removal and preprocessing on raw EEG signals.
     \item \textbf{SignalSpatial}: Handles spatial transformations and channel-level operations.
@@ -109,8 +107,7 @@ The system adopts a modular and layered design, where responsibilities are separ
     \item \textbf{TrainerDataBuilder}: Prepares processed EEG data for machine learning tasks.
 \end{itemize}
 
-\noindent
-\subsection*{Visualization Components}
+\noindent\textbf{Visualization Components}
 The visualization system is divided into three categories:
 \begin{itemize}
     \item \textbf{Plot Modules (plot/)}: Generate single visualizations such as time-domain plots, frequency plots, and topographic maps.
@@ -124,8 +121,7 @@ Supporting components include:
     \item \textbf{PlotFinalizer}: Applies consistent styling and formatting across all plots.
 \end{itemize}
 
-\noindent
-\subsection*{Schema Layer}
+\noindent\textbf{Schema Layer}
 \begin{itemize}
     \item \textbf{Parameter Schemas}: Define input parameters for filtering, visualization, and training. These schemas serve both:
     \begin{itemize}
@@ -135,16 +131,14 @@ Supporting components include:
     \item \textbf{UI Schemas}: Define session state, task configuration, and view structure.
 \end{itemize}
 
-\noindent
-\subsection*{Infrastructure Components}
+\noindent\noindent\textbf{Infrastructure Components}
 \begin{itemize}
     \item \textbf{CacheManager}: Stores intermediate processing results (e.g., cleaned signals, filtered signals, epochs) using a hierarchical structure: \textbf{Subject} $\rightarrow$ \textbf{Task} $\rightarrow$ \textbf{Processing Stage} $\rightarrow$ \textbf{Parameter Hash}.
     \item \textbf{ParticipantsLoader}: Loads subject metadata and dataset structure.
     \item \textbf{ProgressLogger \& WebSocketManager}: Provide real-time feedback to the frontend during long-running operations.
 \end{itemize}
 
-\noindent
-\subsection*{Interaction Flow}
+\noindent\textbf{Interaction Flow}
 \begin{enumerate}
     \item The user selects a mode (single or cohort) and defines parameters via \textbf{schemas}.
     \item The system initializes either a \textbf{TaskExecutor} or \textbf{CohortExecutor}.
@@ -154,8 +148,7 @@ Supporting components include:
     \item Final results are returned to the user interface.
 \end{enumerate}
 
-\noindent
-\subsection*{Design Characteristics}
+\noindent\textbf{Design Characteristics}
 \begin{itemize}
     \item \textbf{Modularity}: Each component has a clearly defined responsibility.
     \item \textbf{Reusability}: Processing steps are reused across visualization and training workflows.
@@ -174,11 +167,11 @@ Additionally, the system maintains a \textbf{job/output storage structure} (jobs
 
 This modular design ensures separation of concerns, making the system maintainable, extensible, and aligned with the research workflow.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{figures/architecture/design-class-diagram-eeg}
-    \caption{System architecture overview}
-    \label{fig:design-class}
+    \includegraphics[width=0.95\textwidth,height=0.95\textheight]{figures/architecture/domain-model-eeg.png}
+    \caption{Domain Model Diagram}
+    \label{fig:domain-model-eeg.png}
 \end{figure}
 
 \section{Sequence Diagram}
