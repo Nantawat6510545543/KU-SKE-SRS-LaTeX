@@ -3,15 +3,14 @@
 
 \noindent
 This chapter describes how the AI component is integrated into the overall system workflow, from dataset construction and signal verification to model training and evaluation. It follows an AI-canvas-style requirement analysis, documents model development and evaluation, and describes how the user experience and deployment support reproducible experiments.
-\vspace{1em}
 
 % 5.1
 \section{Business Context and AI Integration}
 \label{sec:business-context}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/CCD-workflow}
+    \includegraphics[width=0.80\textwidth]{figures/architecture/ccd-iti-workflow}
     \caption{Workflow for prestimulus EEG-based behavioral prediction from CCD-ITI segments.}
     \label{fig:ccd-workflow}
 \end{figure}
@@ -59,6 +58,8 @@ Because this is a research system, predictions are expected to be informative ra
 The system is intended for research experimentation rather than safety-critical decision making.
 Model predictions are used as analytical indicators, not medical diagnoses.
 Therefore approximate predictions with measurable error are acceptable.
+
+\FloatBarrier
 
 %5.2
 \section{Goal Hierarchy}
