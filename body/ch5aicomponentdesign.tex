@@ -216,13 +216,13 @@ The integration of AI functionality within the broader platform ensures a seamle
 \section{Deployment Strategy}
 \label{sec:deployment-strategy}
 
-The system is designed to support web-based deployment using a modern client-server architecture.
+The system is designed to support a hybrid deployment using a modern client-server architecture, balancing remote accessibility with necessary computational power.
 
-The \textbf{frontend} is deployed using Vercel, which provides a scalable and efficient hosting environment for React-based applications. This enables users to access the platform through a web interface with minimal setup.
+The \textbf{frontend} is deployed using \textbf{Vercel}, which provides a scalable and efficient hosting environment for React-based applications. This enables users to access the platform through a web interface with minimal setup.
 
-The \textbf{backend} is deployed using Render, where the FastAPI application handles API requests, data processing, and machine learning operations. This separation of frontend and backend components allows independent scaling and maintenance.
+The \textbf{backend} is deployed locally using \textbf{Docker} containerization, with external access securely routed through \textbf{Ngrok}. This transition from cloud hosting was necessary because standard free-tier cloud environments lack sufficient Random Access Memory (RAM) to accommodate the heavy computational and memory demands of the machine learning models.
 
-This deployment approach ensures that the platform can be accessed remotely while maintaining flexibility for future extensions, such as containerization or integration with cloud-based computational resources.
+This deployment approach ensures that the platform remains easily accessible remotely via the cloud-hosted frontend, while strategically bypassing memory constraints by leveraging local hardware for the backend. Furthermore, the use of Docker ensures environmental consistency and seamless portability for future infrastructure upgrades.
 
 %5.7
 \section{Proof of Concept (Service Demonstration)}
