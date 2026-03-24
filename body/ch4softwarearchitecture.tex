@@ -13,6 +13,53 @@ The system is designed using a \textbf{layered client–server architecture}, co
 
 At its core, the system follows a \textbf{pipeline-oriented architecture}, where EEG data is processed through sequential stages (e.g., preprocessing, epoch extraction, and feature generation). This structure enables reproducibility and flexible recomputation when parameters change.
 
+\section{Domain Model}
+\label{sec:domain-model}
+
+The \textbf{domain model} of the system represents the key entities and their relationships involved in EEG data analysis and visualization. The platform is designed around a research-oriented workflow, supporting both \textbf{single-subject analysis} and \textbf{cohort-based analysis}.
+
+\subsection*{Core Entities}
+The primary domain entities are defined as follows:
+
+\begin{itemize}
+    \item \textbf{Subject}: Represents an individual participant in the dataset. Each subject contains multiple experimental tasks and associated EEG recordings.
+    \item \textbf{Task}: Represents a specific experimental condition or recording session associated with a subject. Each task serves as the entry point for EEG data processing.
+    \item \textbf{EEG Raw Data}: The original recorded EEG signals loaded from disk. This data is the starting point of the processing pipeline.
+    \item \textbf{Processed Signals}: Intermediate representations of EEG data, including:
+    \begin{itemize}
+        \item \textbf{Filtered Signals}: Signals after applying frequency filtering and noise removal.
+        \item \textbf{Cleaned Signals}: Signals after artifact removal and preprocessing.
+    \end{itemize}
+    \item \textbf{Epochs}: Segmented EEG data derived from raw signals based on event markers. Epochs enable time-locked analysis of brain responses.
+    \item \textbf{Evoked Responses}: Averaged EEG signals across epochs, representing stimulus-locked neural activity.
+    \item \textbf{Cohort}: A dynamically defined group of subjects selected using filtering criteria (e.g., task type, demographic attributes). Cohorts enable batch analysis across multiple subjects.
+    \item \textbf{Model}: Represents machine learning models used for training and evaluation. Models consume processed EEG features derived from epochs or evoked data.
+    \item \textbf{Visualization Output}: The final output of the system, which can be either:
+    \begin{itemize}
+        \item \textbf{Graphical plots} (e.g., time-domain, frequency-domain, topographic maps).
+        \item \textbf{Tabular data} (e.g., EEG metadata, feature tables, training summaries).
+    \end{itemize}
+\end{itemize}
+
+\noindent\textbf{Relationships Between Entities}
+The relationships between the entities are structured as follows:
+
+\begin{itemize}
+    \item A \textbf{Subject} contains multiple \textbf{Tasks}.
+    \item A \textbf{Task} produces \textbf{EEG Raw Data}.
+    \item \textbf{EEG Raw Data} is transformed into \textbf{Processed Signals} and \textbf{Epochs}.
+    \item \textbf{Epochs} are further transformed into \textbf{Evoked Responses} and \textbf{Features} for \textbf{Model} training.
+    \item A \textbf{Cohort} is a collection of multiple \textbf{Subjects}, each processed independently.
+    \item \textbf{Visualization Output} is generated from any stage of the pipeline depending on user-selected actions.
+\end{itemize}
+
+\subsection*{Processing Flow}
+The domain model follows a sequential processing pipeline:
+
+\begin{center}
+\textbf{Subject} $\rightarrow$ \textbf{Task} $\rightarrow$ \textbf{Raw Data} $\rightarrow$ \textbf{Signal Cleaning/Filtering} $\rightarrow$ \textbf{Epoching} $\rightarrow$ \textbf{Evoked/Features} $\rightarrow$ \textbf{Visualization} or \textbf{Model Training}
+\end{center}
+
 \section{Design Patterns}
 \label{sec:design-patterns}
 
@@ -30,57 +77,86 @@ To ensure a modular and extensible architecture capable of handling high-through
     \item \textbf{Composite Pattern:} Pipeline Session is a combination of schemas
 \end{itemize}
 
-\section{Domain Model}
-\label{sec:domain-model}
-
-The domain model of the proposed EEG analysis platform represents the key entities and their relationships within the system. The design focuses on supporting a structured workflow for EEG data analysis and machine learning experimentation.
-\vspace{0.5em}
-
-The central entity in the system is the \textbf{Dataset}, which represents EEG data organized in BIDS format. Each dataset consists of multiple \textbf{Subjects}, where each subject contains EEG recordings and associated metadata for specific tasks.
-\vspace{0.5em}
-
-The \textbf{User} interacts with the system to perform analysis operations on the dataset. These operations include signal inspection, preprocessing, dataset construction, and model training.
-\vspace{0.5em}
-
-A \textbf{PipelineSession} entity represents the sequence of preprocessing operations applied to EEG data. This includes filtering, resampling, artifact removal, and epoching. The pipeline operates on raw EEG signals and produces processed outputs such as prefiltered signals, cleaned data, and epochs.
-\vspace{0.5em}
-
-To improve efficiency, the system incorporates a caching mechanism that stores intermediate results. These cached outputs are associated with specific subjects and parameter configurations, allowing the system to reuse previously computed results and reduce redundant processing.
-\vspace{0.5em}
-
-The \textbf{AI Model} entity represents machine learning models used for experimentation. Models can be trained using processed datasets and evaluated using standard performance metrics.
-\vspace{0.5em}
-
-Overall, the domain model reflects a modular structure where data processing, visualization, and machine learning components are integrated into a unified workflow.
-
 \section{Design Class Diagram}
 \label{sec:design-class-diagram}
 
-The system architecture follows a layered design, where different components are organized based on their responsibilities. The main modules correspond to the backend structure implemented using FastAPI.
-\vspace{0.5em}
+The system adopts a modular and layered design, where responsibilities are separated across execution, processing, visualization, and infrastructure components.
 
-At the top level, the \textbf{API layer} (app/api/endpoints) handles incoming requests from the frontend. It defines endpoints for operations such as data loading, preprocessing, visualization, and model training. This layer acts as the interface between the user interface and the backend system.
-\vspace{0.5em}
-
-The \textbf{Schema/DTO layer} (app/schemas) defines structured data models used for request validation and response formatting. This includes parameter schemas for preprocessing configurations and UI-related data representations.
-\vspace{0.5em}
-
-The \textbf{Core module} (app/core) manages configuration and dataset loading. It is responsible for accessing EEG data from BIDS-formatted directories and preparing it for further processing.
-\vspace{0.5em}
-
-The \textbf{Pipeline module} (app/pipeline) implements the core EEG processing logic. It receives raw EEG data and applies preprocessing steps such as filtering, resampling, and epoching. This module also interacts with the caching mechanism to store and retrieve intermediate results.
-\vspace{0.5em}
-
-The \textbf{Visualization module} (app/plots) contains submodules for different types of outputs:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{plot:} single-view signal visualization 
-    \item \textbf{grid plot:} comparative visualization
-    \item \textbf{data:} tabular data summaries
-    \item \textbf{ai:} model-related results and metrics 
+\noindent\textbf{Core Execution Components}
+\begin{itemize}
+    \item \textbf{TaskExecutor}: Handles the execution of the EEG processing pipeline for a single \textbf{Subject--Task} pair. It is responsible for:
+    \begin{itemize}
+        \item Loading raw EEG data.
+        \item Applying preprocessing steps (filtering, cleaning).
+        \item Generating \textbf{epochs} and \textbf{evoked responses}.
+        \item Dispatching results to visualization or training modules.
+    \end{itemize}
+    \item \textbf{CohortExecutor}: Manages batch processing across multiple subjects. It maintains a collection of \textbf{TaskExecutor} instances and executes them iteratively. Additional validation and aggregation logic are applied at this level.
 \end{itemize}
 
-These modules generate outputs that are returned to the frontend for display.
+\noindent\textbf{Processing Pipeline Components}
+\begin{itemize}
+    \item \textbf{SignalCleaner}: Performs artifact removal and preprocessing on raw EEG signals.
+    \item \textbf{SignalSpatial}: Handles spatial transformations and channel-level operations.
+    \item \textbf{TaskLoader / TaskResolver / TaskProcessor}: These components collaboratively define and execute processing steps:
+    \begin{itemize}
+        \item \textbf{TaskLoader}: Loads task-specific configurations and data.
+        \item \textbf{TaskResolver}: Determines the required processing steps based on user input.
+        \item \textbf{TaskProcessor}: Executes the processing pipeline.
+    \end{itemize}
+    \item \textbf{TrainerDataBuilder}: Prepares processed EEG data for machine learning tasks.
+\end{itemize}
+
+\noindent\textbf{Visualization Components}
+The visualization system is divided into three categories:
+\begin{itemize}
+    \item \textbf{Plot Modules (plot/)}: Generate single visualizations such as time-domain plots, frequency plots, and topographic maps.
+    \item \textbf{Grid Plot Modules (grid\_plot/)}: Generate multi-condition visualizations for comparative analysis.
+    \item \textbf{Data and AI Views (data/, ai/)}: Produce tabular outputs such as EEG summaries, metadata, and model training results.
+\end{itemize}
+
+Supporting components include:
+\begin{itemize}
+    \item \textbf{PlotMerger}: Combines multiple figures into a unified visualization.
+    \item \textbf{PlotFinalizer}: Applies consistent styling and formatting across all plots.
+\end{itemize}
+
+\noindent\textbf{Schema Layer}
+\begin{itemize}
+    \item \textbf{Parameter Schemas}: Define input parameters for filtering, visualization, and training. These schemas serve both:
+    \begin{itemize}
+        \item \textbf{Request validation} (FastAPI layer).
+        \item \textbf{UI rendering} (dynamic parameter generation).
+    \end{itemize}
+    \item \textbf{UI Schemas}: Define session state, task configuration, and view structure.
+\end{itemize}
+
+\noindent\noindent\textbf{Infrastructure Components}
+\begin{itemize}
+    \item \textbf{CacheManager}: Stores intermediate processing results (e.g., cleaned signals, filtered signals, epochs) using a hierarchical structure: \textbf{Subject} $\rightarrow$ \textbf{Task} $\rightarrow$ \textbf{Processing Stage} $\rightarrow$ \textbf{Parameter Hash}.
+    \item \textbf{ParticipantsLoader}: Loads subject metadata and dataset structure.
+    \item \textbf{ProgressLogger \& WebSocketManager}: Provide real-time feedback to the frontend during long-running operations.
+\end{itemize}
+
+\noindent\textbf{Interaction Flow}
+\begin{enumerate}
+    \item The user selects a mode (single or cohort) and defines parameters via \textbf{schemas}.
+    \item The system initializes either a \textbf{TaskExecutor} or \textbf{CohortExecutor}.
+    \item The execution layer processes EEG data through the pipeline.
+    \item Intermediate results are \textbf{cached} to optimize repeated computations.
+    \item The output is passed to \textbf{visualization modules} (plot/grid/data/ai).
+    \item Final results are returned to the user interface.
+\end{enumerate}
+
+\noindent\textbf{Design Characteristics}
+\begin{itemize}
+    \item \textbf{Modularity}: Each component has a clearly defined responsibility.
+    \item \textbf{Reusability}: Processing steps are reused across visualization and training workflows.
+    \item \textbf{Scalability}: \textbf{CohortExecutor} enables batch processing across multiple subjects.
+    \item \textbf{Extensibility}: New plots, filters, and models can be added without modifying core logic.
+\end{itemize}
+
+The \textbf{Visualization module} (app/plots) contains submodules for different types of outputs:
 \vspace{0.5em}
 
 The \textbf{AI Model module} (app/ai\_models) defines machine learning models used within the platform. These models can be trained and evaluated using processed datasets.
@@ -91,11 +167,11 @@ Additionally, the system maintains a \textbf{job/output storage structure} (jobs
 
 This modular design ensures separation of concerns, making the system maintainable, extensible, and aligned with the research workflow.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{figures/architecture/system-architecture-overview}
-    \caption{System architecture overview}
-    \label{fig:design-class}
+    \includegraphics[width=0.95\textwidth,height=0.95\textheight]{figures/architecture/domain-model-eeg.png}
+    \caption{Domain Model Diagram}
+    \label{fig:domain-model-eeg.png}
 \end{figure}
 
 \section{Sequence Diagram}
