@@ -152,27 +152,50 @@ Testing was performed through manual interaction with the user interface, coveri
 \subsection{Functional Testing}
 \label{sec:functional-testing}
 
-Functional testing was conducted to verify that each system component operates as expected. The following aspects were tested:
+Functional testing was conducted to verify that each system component operates as expected under standard usage conditions. The primary objective of the development was to validate the ``Expected usage scenario''---ensuring that the core research workflow from data loading to machine learning execution functions correctly for valid, expected inputs.
 
-\begin{itemize}
-	\item Correct loading of EEG datasets and subject selection
-	\item Proper execution of preprocessing steps with user-defined parameters
-	\item Accurate generation of visualization outputs across different modes
-	\item Consistency of results when using cached intermediate data
-	\item Correct rendering of tabular outputs in Data and AI modes
-\end{itemize}
+The testing process focused on verifying that user actions produce correct visual and tabular outputs, and that the system behaves consistently across repeated executions. To systematically evaluate this, a core suite of functional test cases was executed covering the platform's primary operational modes. The specific scenarios and their outcomes are summarized in Table \ref{tab:functional-test-cases}.
 
-All core functionalities were confirmed to operate correctly under expected usage conditions.
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.12\linewidth}|p{0.15\linewidth}|p{0.35\linewidth}|p{0.25\linewidth}|c|}
+\hline
+\textbf{Test ID} & \textbf{Component} & \textbf{Scenario / Action} & \textbf{Expected Result} & \textbf{Status} \\
+\hline
+\textbf{TC-01} & Input Config & Load a standard, uncorrupted EEG dataset for a Single Subject. & System successfully parses the file, maps channels, and initializes the Plot Mode. & Pass \\
+\hline
+\textbf{TC-02} & Cohort Filter & Apply a valid filter configuration (e.g., specific subject limit). & System filters the dataset and loads only matching subjects into the active cohort. & Pass \\
+\hline
+\textbf{TC-03} & Preprocessing & Apply a 50Hz bandpass filter and execute the ``Frequency'' plot. & Plot generates successfully, reflecting the expected frequency attenuation. & Pass \\
+\hline
+\textbf{TC-04} & Grid Plot & Execute ``Evoked Grid'' for a multi-subject cohort with valid condition markers. & UI renders a structured grid layout comparing evoked responses across subjects. & Pass \\
+\hline
+\textbf{TC-05} & Data Mode & Access the ``Epochs Table'' after segmenting the EEG data. & Table populates with correctly structured rows representing the segmented epochs. & Pass \\
+\hline
+\textbf{TC-06} & Caching & Re-execute TC-03 without changing any parameters. & System bypasses filtering computation, retrieving the array from cache to render faster. & Pass \\
+\hline
+\textbf{TC-07} & AI Dataset & Execute ``Build Dataset'' on a valid preprocessed subject. & System structures the tensors correctly and displays the data summary in the UI. & Pass \\
+\hline
+\textbf{TC-08} & ML Execution & Run ``Show Train EEG'' using default regression parameters. & Training loop executes synchronously and outputs MAE, RMSE, and $R^2$ metrics. & Pass \\
+\hline
+\end{tabular}
+\vspace{0.5em}
+\caption{Core functional test cases verifying the expected operational workflow.}
+\label{tab:functional-test-cases}
+\end{table}
+
+While all core functionalities were confirmed to operate correctly under these expected usage conditions, it is important to note the boundaries of this initial evaluation. Because the current testing protocol focused heavily on functional verification of the primary research workflow, future iterations of the software will require expanded edge-case and robust error-handling testing. This includes managing corrupted raw files, handling missing condition markers without system failure, and mitigating out-of-memory errors for exceptionally large cohorts.
 
 \subsection{Reproducibility Testing}
 \label{sec:reproducibility-testing}
 
-The system was tested for reproducibility by executing identical configurations multiple times. Results were consistent across runs, confirming that:
+Building upon the functional tests (specifically TC-06), the system was further evaluated for reproducibility by executing identical configurations multiple times. Results were consistently stable across runs, confirming that:
 
 \begin{itemize}
-	\item Parameter configurations are correctly applied
-	\item Cached results are reused appropriately
-	\item Outputs remain stable across repeated executions
+    \item Parameter configurations are strictly adhered to and applied uniformly.
+    \item Cached results are reused appropriately, preventing redundant state changes.
+    \item Visual and tabular outputs remain entirely stable across repeated executions of the same pipeline.
 \end{itemize}
 
 \subsection{Machine Learning Evaluation Testing}
