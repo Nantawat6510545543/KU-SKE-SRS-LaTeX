@@ -5,6 +5,7 @@
 This chapter summarizes the tangible outputs produced by the project and the test/evaluation protocol used to assess them. It focuses on what is delivered (software and artifacts) and how performance is measured for RT regression and correctness classification.
 \vspace{1em}
 
+% 7.1
 \section{Software Solution}
 \label{sec:software-solution}
 
@@ -17,21 +18,30 @@ For more, please refer to our \textbf{Github:}
 
 	[Link: https://github.com/Nantawat6510545543/eeg2025-Vistec] for the model training development.
 
+
 \subsection{System Overview}
 \label{sec:system-overview}
-The platform enables users to perform EEG analysis through an integrated interface that combines data selection, preprocessing configuration, visualization, and execution logging. The system supports both single-subject inspection and cohort-level analysis, allowing users to explore EEG data at different levels of granularity.
-
-\vspace{0.5em}
-The interface is designed based on a \textbf{mode-action} structure, where users first select the analysis context (mode) and then perform specific operations (actions). This design guides users through the workflow while reducing interface complexity.
+The platform follows a research-oriented workflow where users first inspect signals before executing machine learning models.
+To support this process, the interface uses a \textbf{mode-action} structure, and additionally provides flexible 
+\textbf{subject selection and filtering} to accommodate both single-subject inspection and cohort-level analysis.
 
 \subsection{Input Configuration}
 \label{sec:input-configuration}
 
-The system provides flexible input selection through two primary modes:
-
+Users can choose between two primary input types:
 \begin{itemize}
-	\item \textbf{Single Subject Mode:} Users select an individual subject and a specific task for detailed inspection and analysis.
-	\item \textbf{Meta Filter (Cohort Mode)}: Users define filtering criteria across multiple attributes to select a group of subjects. This enables large-scale analysis without manual subject selection.
+    \item \textbf{Single Subject:} 
+    \begin{itemize}
+        \item User selects an individual participant and task.
+        \item All mode actions are executed for the selected subject only.
+        \item This mode is ideal for detailed inspection or troubleshooting of individual EEG recordings.
+    \end{itemize}
+        \item \textbf{Cohort Filter (Meta Filter):} 
+    \begin{itemize}
+        \item User defines filters across attributes: sex, age range, attention, internalizing/externalizing scores, CCD accuracy, response time.
+        \item Optional ``Per Subject'' toggle for applying filters individually or collectively.
+        \item This mode enables exploratory data analysis and large-scale EEG studies without manual participant selection.
+    \end{itemize}
 \end{itemize}
 
 In both cases, the selected input determines the scope of subsequent operations.
@@ -53,7 +63,47 @@ Each mode dynamically exposes relevant actions, allowing users to interact with 
 \subsection{Action Selection}
 \label{sec:action-selection}
 
-Soon.
+Each operational mode in the platform exposes a set of actions that correspond to specific functionalities. These actions are organized within their respective mode (Plot, Grid Plot, Data, AI), enabling users to interact with the system in a structured manner.
+
+\begin{description}
+    \item[Plot Mode Actions] \hfill \\
+    Provides detailed visualization of EEG signals. Available actions include:
+    \begin{itemize}
+        \item \textbf{Evoked} – Visualizes averaged evoked responses for individual conditions or overall.
+        \item \textbf{Frequency} – Generates frequency-domain representations of EEG signals.
+        \item \textbf{Sensors} – Displays the spatial arrangement and activity of EEG sensors.
+        \item \textbf{SNR} – Computes and visualizes the signal-to-noise ratio across channels.
+        \item \textbf{Time Domain} – Shows EEG signal waveforms in the time domain.
+        \item \textbf{Epochs} – Visualizes segmented epochs of EEG data.
+        \item \textbf{Evoked Joint} – Combines multiple evoked responses into a single visualization.
+        \item \textbf{Evoked Per Condition} – Displays evoked responses separately for each experimental condition.
+        \item \textbf{Evoked Topography} – Maps spatial topography of evoked responses across electrodes.
+    \end{itemize}
+
+    \item[Grid Plot Mode Actions] \hfill \\
+    Enables comparative visualization across multiple subjects or conditions:
+    \begin{itemize}
+        \item \textbf{Evoked Grid} – Arranges evoked responses for multiple subjects in a structured grid.
+        \item \textbf{PSD Grid} – Displays power spectral density comparisons across subjects or conditions.
+        \item \textbf{SNR Grid} – Shows signal-to-noise ratio comparisons for multiple subjects in a grid layout.
+    \end{itemize}
+
+    \item[Data Mode Actions] \hfill \\
+    Provides tabular inspection of EEG data and derived metrics:
+    \begin{itemize}
+        \item \textbf{EEG Table} – Presents raw or preprocessed EEG data in tabular form.
+        \item \textbf{Epochs Table} – Displays segmented EEG epochs and associated metadata.
+        \item \textbf{Metadata} – Shows participant and recording metadata in a structured table.
+    \end{itemize}
+
+    \item[AI Mode Actions] \hfill \\
+    Supports machine learning experimentation, including dataset preparation and model evaluation:
+    \begin{itemize}
+        \item \textbf{Build Dataset} – Prepares and visualizes the training dataset for machine learning models.
+        \item \textbf{Model Summary} – Displays architecture and parameters of the selected AI model.
+        \item \textbf{Show Train EEG} – Executes training routines on EEG data and presents training metrics in a structured table.
+    \end{itemize}
+\end{description}
 
 \subsection{Execution and Logging}
 \label{sec:execution-and-logging}
@@ -61,9 +111,8 @@ Soon.
 The platform executes user-selected operations in a synchronous manner. During execution, an execution \textbf{Log Panel} is displayed, providing real-time feedback on system operations such as data loading, preprocessing steps, and plot generation.
 
 \vspace{0.5em}
-To improve efficiency, the system implements a caching mechanism. Intermediate results, including prefiltered signals, cleaned data, and epochs, are stored based on subject and parameter configurations. When the same configuration is reused, the system retrieves cached results instead of recomputing them.
+To improve efficiency, the system implements a \textbf{caching mechanism}. Intermediate results, including prefiltered signals, cleaned data, and epochs, are stored based on subject and parameter configurations. When the same configuration is reused, the system retrieves cached results instead of recomputing them.
 
-\vspace{0.5em}
 This approach reduces redundant computation and supports faster iteration during analysis.
 
 \vspace{0.5em}
@@ -81,6 +130,12 @@ The developed platform demonstrates the following characteristics:
 	\item \textbf{Flexible:} Supports both single-subject and cohort-level analysis
 	\item \textbf{Integrated:} Combines preprocessing, visualization, and machine learning in a unified system
 \end{itemize}
+
+\vspace{1em}
+\textbf{Feedback Loop:}
+inspect → adjust → train → evaluate → compare → refine
+
+Researchers can iteratively adjust dataset configurations,rerun experiments, and retrain models without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
 
 \section{Test Report}
 \label{sec:test-report}
@@ -187,111 +242,6 @@ Huber & 0.2874 & 0.3740 & 0.0079 & 0.0903 \\
 
 \noindent
 Overall, no single run is presented as ``best.'' The current test report is used to identify concrete failure modes that guide the next iteration.
-
-\vspace{5em}
-TODO
-% move to ch7
-The platform follows a research-oriented workflow where users first inspect signals before executing machine learning models.
-To support this process, the interface uses a \textbf{mode-action} structure, and additionally provides flexible 
-\textbf{subject selection and filtering} to accommodate both single-subject inspection and cohort-level analysis.
-
-\vspace{1em}
-\noindent\textbf{Interface Overview:}
-The interface contains four primary operational modes:
-
-\begin{itemize}[leftmargin=3.5em]
-    \item \textbf{Plot Mode:} — detailed single-view signal inspection
-    \item \textbf{Grid Plot Mode:} — comparative multi-condition visualization
-    \item \textbf{Data Mode:} — structured data inspection and preparation
-    \item \textbf{AI Mode:} — machine learning experimentation
-\end{itemize}
-
-Each mode exposes only the actions relevant to the selected context, and all user actions are logged to support transparency and reproducibility.
-
-\begin{itemize}
-    \item \textbf{Subject Selection and Filtering}
-    Users can choose between two primary input types:
-    \begin{itemize}
-        \item \textbf{Single Subject:} 
-        \begin{itemize}
-            \item User selects an individual participant and task.
-            \item All mode actions are executed for the selected subject only.
-            \item This mode is ideal for detailed inspection or troubleshooting of individual EEG recordings.
-        \end{itemize}
-        \item \textbf{Cohort Filter (Meta Filter):} 
-        \begin{itemize}
-            \item User defines filters across attributes: sex, age range, attention, internalizing/externalizing scores, CCD accuracy, response time.
-            \item Optional ``Per Subject'' toggle for applying filters individually or collectively.
-            \item This mode enables exploratory data analysis and large-scale EEG studies without manual participant selection.
-        \end{itemize}
-    \end{itemize}
-\end{itemize}
-
-\vspace{2em}
-\noindent\textbf{Visualization and Inspection Modes}
-
-\subsection{Plot Mode}
-
-Provides detailed EEG inspection including sensor layout, time-domain plots, frequency plots, epoch plots, evoked responses, and SNR analysis.
-
-Available actions include:
-\begin{itemize}
-    \item sensor layout visualization
-    \item time-domain signal plots
-    \item frequency-domain plots
-    \item epoch visualization
-    \item evoked response plots
-    \item evoked topography plots
-    \item SNR spectrum analysis
-\end{itemize}
-
-\subsection{Grid Plot Mode}
-
-Allows comparison across conditions using PSD, SNR, and evoked grids.
-
-Available actions include:
-\begin{itemize}
-    \item PSD Grid
-    \item SNR Grid
-    \item Evoked Grid
-\end{itemize}
-
-\subsection{Data Mode}
-
-Displays structured EEG data tables to confirm dataset composition.
-
-Available actions include:
-\begin{itemize}
-    \item EEG sample tables
-    \item epoch tables
-    \item metadata
-\end{itemize}
-
-\subsection{AI Interaction Mode}
-
-AI Mode enables machine learning experimentation using the prepared EEG data. The interface provides a set of interrelated actions that support an iterative workflow from dataset construction to model training and analysis.
-
-Available actions include:
-
-\begin{itemize}
-    \item Build Dataset
-    \item TrainEEGNetMultiRegression
-    \item Model Summary
-\end{itemize}
-
-\vspace{1em}
-\noindent\textbf{System Behavior:}
-These actions are interdependent: dataset construction is required before training, and the model summary reflects the structure of the model. Performance metrics are generated during training and updated dynamically.
-
-Logs and outputs are available for inspection and export, supporting transparency and reproducibility.
-
-This design emphasizes transparency by exposing intermediate training metrics directly through logs rather than abstracted summaries.
-
-\vspace{1em}
-\noindent\textbf{Feedback Loop:}
-inspect → adjust → train → evaluate → compare → refine
-
-Researchers can iteratively adjust dataset configurations,rerun experiments, and retrain models without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
 
 \vspace{2em}
 \noindent\textbf{Interface Screenshots:}
