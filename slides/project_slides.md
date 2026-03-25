@@ -323,7 +323,8 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 
 ### Software Artifacts
 - **Backend codebase** (app/api, app/pipeline, app/ai_models, app/core, app/plots)
-- **Frontend React UI** (modular and extensible structure for future feature growth)
+- **Frontend React UI** (modular mode-action design, extensible for future workflows)
+- **Interactive analysis flows** (single-subject and cohort-filter execution)
 - **Preprocessing pipeline** (BIDS loading, filtering, artifact removal, epoching)
 - **Trained AI model (EEGNet)**
 - **Experiment tracking** (W&B exports, metrics tables)
@@ -339,6 +340,25 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 ---
 
 # SECTION 4: RESULTS & EVALUATION
+
+---
+
+## Manual Testing Results
+
+### Representative Functional Test Outcomes
+
+| Test Area | Example Check | Result |
+|-----------|---------------|--------|
+| **Input Configuration** | Load valid single-subject EEG dataset | Pass |
+| **Cohort Filter** | Apply valid subject/cohort filter | Pass |
+| **Preprocessing + Plot** | Run filtering and generate frequency plot | Pass |
+| **Grid Plot Mode** | Compare evoked responses across subjects | Pass |
+| **Data Mode** | Inspect epochs table after segmentation | Pass |
+| **Caching** | Re-run same config and reuse cache | Pass |
+| **AI Dataset Build** | Construct training-ready tensors | Pass |
+| **Model Execution** | Run EEG training and return metrics | Pass |
+
+**Result Summary:** Core user workflow was verified manually from data loading to model execution, with stable outputs under expected usage conditions.
 
 ---
 
@@ -402,17 +422,17 @@ Systematic analysis of prestimulus EEG activity during inter-trial intervals can
 
 ## Testing & Validation Protocol
 
-### What We Did:
-1. **Dataset sanity checks** - Trial counts, label distribution, channel integrity
-2. **Train/validation/test splits** - Subject-independent (no data leakage)
-3. **Cross-validation** - Multiple fold strategies tested
-4. **Reproducibility** - Fixed seeds, logged configurations
-5. **Error analysis** - Examined failure modes systematically
+### What We Validated:
+1. **Functional workflow tests** - Input config, preprocessing, plotting, caching, dataset build, and training flow
+2. **Reproducibility checks** - Re-running identical configurations produced stable visual and tabular outputs
+3. **No-leakage evaluation setup** - Subject-independent split strategy and consistent run configuration
+4. **Failure-mode analysis** - Investigated imbalance collapse, weak specificity, and regression underfitting
 
-### Documentation:
-- Metrics tables in W&B
+### Evidence Collected:
+- Manual test report across Plot, Grid Plot, Data, and AI modes
+- Metrics and artifacts in W&B exports
 - Verification plots (SNR spectra, confusion matrices, prediction scatter plots)
-- Experiment logs (preprocessing params, split definitions, model configs)
+- Logged preprocessing params, split definitions, and model configs
 
 ---
 
