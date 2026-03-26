@@ -135,7 +135,7 @@ The developed platform demonstrates the following characteristics:
 \textbf{Feedback Loop:}
 inspect → adjust → train → evaluate → compare → refine
 
-Researchers can iteratively adjust dataset configurations,rerun experiments, and retrain models without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
+Researchers can iteratively adjust dataset configurations, rerun experiments, and retrain models without rewriting scripts or managing computing environments. This significantly shortens the experimental cycle compared to notebook-based pipelines.
 
 \section{Test Report}
 \label{sec:test-report}
@@ -200,10 +200,10 @@ Building upon the functional tests (specifically TC-06), the system was further 
 \end{itemize}
 
 \subsection{Machine Learning Evaluation Testing}
-\label{sec:machine-learning-evaulation-testing}
+\label{sec:machine-learning-evaluation-testing}
 
-The platform supports basic machine learning experimentation through its AI mode, and only have loss.
-While the app interface currently focuses on the regression metrics (loss, MAE, RMSE, and R²), the underlying model has undergone extensive evaluation, including
+The platform supports basic machine learning experimentation through its AI mode.
+While the current interface emphasizes regression-oriented outputs (loss, MAE, RMSE, and R²), the underlying experiments were evaluated more broadly, including:
 
 \begin{itemize}
 	\item \textbf{CCD-ITI approach:} Train on CCD-ITI segments and evaluate under a defined split strategy (preferably subject-independent).
@@ -215,7 +215,7 @@ While the app interface currently focuses on the regression metrics (loss, MAE, 
 \subsection{Classification Runs}
 \label{subsec:classification-failure-summary}
 
-This section compares the effects of various data balancing strategies on classification performance
+This section compares the effects of various data-balancing strategies on classification performance.
 
 \begin{table}[H]
 \centering
@@ -242,7 +242,7 @@ Undersample & 0.652 & 0.537 & 0.787 & 0.287 \\
 \subsection{Regression Runs}
 \label{subsec:regression-failure-summary}
 
-This section summarizes the regression performance across different loss functions
+This section summarizes regression performance across different loss functions.
 
 \begin{table}[H]
 \centering
@@ -287,7 +287,7 @@ Overall, no single run is presented as ``best.'' The current test report is used
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/ui/EEGUI_cohort_2}
-    \caption{React Notebook Interface – Model visualization and execution for multi subject (2)}
+    \caption{React Notebook Interface - model visualization and execution for multiple subjects (2)}
     \label{fig:ui_react_notebook_cohort_2}
 \end{figure}
 
