@@ -3,6 +3,10 @@
 \renewcommand{\thenappendix}{\Alph{nappendix}}
 \newcommand{\newappendix}[1]{%
     \refstepcounter{nappendix}
+    \setcounter{table}{0}
+    \setcounter{figure}{0}
+    \renewcommand{\thetable}{\thenappendix.\arabic{table}}
+    \renewcommand{\thefigure}{\thenappendix.\arabic{figure}}
     \onetextpage{Appendix \thenappendix}
     \chapter*{Appendix \thenappendix: #1}
     \label{appendix:\thenappendix}
