@@ -50,3 +50,35 @@ This project uses HBN-EEG to study a focused research question: whether prestimu
 
 We evaluate this question in the Contrast Change Detection (CCD) task, where periodic visual stimulation during the rest period between trials supports steady-state feature extraction. By restricting inputs to a fixed 2-second prestimulus window, the modeling setting is intentionally constrained and emphasizes signal validation (via SNR spectra) and reproducible evaluation.
 
+\subsection{CCD Experimental Design}
+\label{subsec:ccd-experimental-design}
+
+The CCD paradigm used in this study follows a structured visual stimulation and response protocol.
+
+\textbf{Stimuli and visual setup:}
+Subjects view a continuously flickering annular stimulus (1$^{\circ}$--6$^{\circ}$ visual angle) composed of two overlaid gratings:
+\begin{itemize}
+    \item Left-tilted grating ($-45^{\circ}$): flickers at 20 Hz
+    \item Right-tilted grating ($+45^{\circ}$): flickers at 25 Hz
+\end{itemize}
+At baseline, both gratings are presented at 50\% contrast.
+
+\textbf{Target events:}
+On each trial, one grating increases linearly to 100\% contrast while the other simultaneously decreases to 0\%. The contrast-change period lasts 1.6 s, followed by a 0.8 s return-to-baseline period. Targets are presented with an inter-target interval of 2.8 s, 4.4 s, or 6 s.
+
+Participants respond using left-hand click for left-tilted contrast increase and right-hand click for right-tilted contrast increase.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{figures/CCD/experimental_setup_ccd}
+    \caption{CCD experimental setup with fixation-centered visual stimulation and left/right response mapping.}
+    \label{fig:ccd-experimental-setup}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/CCD/CCD_trail_sequence}
+    \caption{Example CCD trial sequence showing contrast-change events, button responses, and feedback.}
+    \label{fig:ccd-trial-sequence}
+\end{figure}
+

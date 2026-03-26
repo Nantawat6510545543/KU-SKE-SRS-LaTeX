@@ -90,6 +90,15 @@ The primary actor is the \textit{Researcher}. The main use cases are: (1) config
     \item Cache derived epochs and labels so repeated analysis uses consistent data.
 \end{enumerate}
 
+The ITI timeline in Figure~\ref{fig:ccd-trial-iti} is used directly to define prestimulus window picking before target onset.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/CCD/CCD_trail_with_ITI}
+    \caption{CCD trial timeline used to define ITI-window selection before target onset, with contrast-change events, button responses, and feedback markers.}
+    \label{fig:ccd-trial-iti}
+\end{figure}
+
 \subsection{Use Case 3: Build Training Datasets}
 \label{subsec:uc-datasets}
 \textbf{Goal:} Build datasets that can be reused by training runs.
