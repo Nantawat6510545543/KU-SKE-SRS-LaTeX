@@ -42,9 +42,10 @@ the expected curriculum level.
 \caption{AI-based evaluation of knowledge and skills dimensions.}
 \label{tab:ai-evaluation}
 \small
-\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|X|p{0.09\textwidth}|p{0.09\textwidth}|p{0.09\textwidth}|}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.23\textwidth}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{0.11\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|>{\centering\arraybackslash}p{0.10\textwidth}|}
 \hline
-\textbf{Dimension} & \textbf{AI-Assessed Level Description} & \textbf{Expected Level} & \textbf{AI Level} & \textbf{Judgment} \\
+\textbf{Dimension} & \textbf{AI-Assessed Level Description} & \textbf{Expected} & \textbf{AI} & \textbf{Result} \\
 \hline
 Software Development \& Programming &
     Scalable systems, modular architecture, deployment & 2 & 3 & Exceeds \\
@@ -412,15 +413,91 @@ four lines in the same figure: (1) the program's target levels, (2) the AI-based
 (3) the student's self-evaluation, and (4) the advisor's evaluation. This figure provides a
 comprehensive comparison across all perspectives.
 
-\textit{[To be completed by the advisor.]}
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+\begin{polaraxis}[
+    width=10cm,
+    height=10cm,
+    grid=both,
+    ymin=0, ymax=4,
+    ytick={1,2,3,4},
+    xtick={0,72,144,216,288},
+    xticklabels={
+        Software Development,
+        Machine Learning,
+        Data Management,
+        Critical Thinking,
+        Collaboration
+    },
+    xticklabel style={align=center},
+    legend style={at={(0.5,-0.22)}, anchor=north, legend columns=1}
+]
 
-% Example figure placeholder:
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.75\textwidth]{figures/eval/radar_advisor}
-%     \caption{Radar chart comparing program targets, AI evaluation, self-evaluation, and advisor evaluation.}
-%     \label{fig:radar-advisor}
-% \end{figure}
+% Expected Curriculum
+\addplot[
+    color=green,
+    mark=*,
+    thick
+] coordinates {
+    (0,2)
+    (72,3)
+    (144,2)
+    (216,3)
+    (288,3)
+    (360,2)
+};
+
+% AI-Assessed
+\addplot[
+    color=red,
+    mark=square*,
+    thick
+] coordinates {
+    (0,3)
+    (72,2)
+    (144,3)
+    (216,3)
+    (288,3)
+    (360,3)
+};
+
+% Self-Evaluation
+\addplot[
+    color=blue,
+    mark=triangle*,
+    thick
+] coordinates {
+    (0,3)
+    (72,3)
+    (144,3)
+    (216,3)
+    (288,3)
+    (360,3)
+};
+
+% Advisor Evaluation
+\addplot[
+    color=orange,
+    mark=diamond*,
+    thick
+] coordinates {
+    (0,3)
+    (72,3)
+    (144,3)
+    (216,3)
+    (288,3)
+    (360,3)
+};
+
+\legend{Expected Curriculum Level, AI-Assessed Level, Self-Evaluation, Advisor Evaluation}
+
+\end{polaraxis}
+\end{tikzpicture}
+\caption{Radar chart comparing program targets, AI evaluation, self-evaluation, and advisor evaluation across five dimensions.}
+\label{fig:radar-advisor}
+\end{figure}
+\FloatBarrier
 
 \subsection{Advisor's Comments on the Evaluation}
 \label{subsec:advisor-comments}
@@ -429,7 +506,35 @@ This section summarizes the advisor's opinions and explanations regarding the ev
 advisor clarifies why each level was assigned and may comment on the student's strengths,
 progress, limitations, and future development directions.
 
-\textit{[To be completed by the advisor.]}
+\subsubsection{Software Development \& Programming --- Level 3}
+
+The students developed a structured EEG analysis platform with modular architecture and
+reproducible pipeline design. The implementation is solid, though further refinement in system
+scalability and optimization could be explored.
+
+\subsubsection{Machine Learning / LLM / Agentic AI --- Level 3}
+
+The students applied machine learning techniques for regression and classification on
+EEG-derived features. The work emphasizes reproducible experimentation, though model
+performance remains limited and exploratory.
+
+\subsubsection{Data Management / Knowledge Systems --- Level 3}
+
+The students handled complex multi-subject EEG datasets with structured preprocessing,
+caching, and traceability mechanisms. The data pipeline is well-designed for reproducibility,
+though not deeply optimized for large-scale deployment.
+
+\subsubsection{Critical \& Creative Thinking --- Level 3}
+
+The students addressed limitations of notebook-based workflows by proposing a reproducible
+and integrated analysis platform. The solution is well-justified, though further methodological
+innovation could strengthen the contribution.
+
+\subsubsection{Collaboration \& Communication --- Level 3}
+
+The students worked collaboratively to design, implement, and evaluate the system across
+software and research components. Communication is clear and supports the presentation of
+technical results.
 
 \subsection{Student Reflection on the Advisor's Evaluation}
 \label{subsec:reflection-advisor}
@@ -438,4 +543,27 @@ This section presents the student's reflection on the advisor's assessment. The 
 discuss points of agreement or disagreement, lessons learned from the advisor's perspective,
 and how the evaluation contributes to personal and professional development.
 
-\textit{[To be completed by the authors.]}
+We generally agree with the advisor's Level~3 evaluation across all dimensions. The feedback
+is consistent with our understanding of the project: we established a strong foundation in
+software architecture, reproducible experimentation, and structured data processing, while
+recognizing that parts of the system remain at a research-prototype stage.
+
+In particular, we appreciate the advisor's comment that our implementation is solid but can be
+further improved in scalability and optimization. This feedback is important because our current
+design is optimized for correctness, traceability, and reproducibility rather than throughput at
+large deployment scale. The same pattern appears in the machine learning results: although the
+workflow is methodologically sound, predictive performance is still limited and requires deeper
+model and feature optimization.
+
+From this evaluation, we learned that high-quality engineering in AI projects must balance two
+goals: scientific validity and operational maturity. Our project made strong progress in the first
+goal, and the advisor's assessment helps us prioritize the second.
+
+As a concrete response, our next development direction includes: (1) profiling and optimizing
+pipeline bottlenecks, (2) improving model performance through more systematic feature
+engineering and hyperparameter search, (3) strengthening evaluation protocols for robustness
+across cohorts, and (4) preparing cleaner packaging and deployment workflows for broader use.
+
+Overall, the advisor's evaluation confirms that our core approach is sound and gives us a clear
+roadmap for advancing this work from a reliable academic platform toward a more mature
+engineering and AI system.
